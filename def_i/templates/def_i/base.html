@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'def_i/css/base.css' %}">
+    {% block extra_style %}{% endblock %}
+    <title>DefInit</title>
+</head>
+<body>
+    {% block header %}
+    <header class="header">
+        <div class="header-container">
+            <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
+            <h1 class="header-container__title">Def init</h1>
+            <p class="header-container__contents"><a href="">課題をする</a></p>
+            <p class="header-container__contents"><a href="">学ぶ</a></p>
+            <p class="header-container__contents"><a href="">まとめる</a></p>
+            <p class="header-container__usericon"><a href=""><img src="" alt=""></a></p>
+        </div>
+    </header>
+    {% endblock header %}
+</body>
+</html>
