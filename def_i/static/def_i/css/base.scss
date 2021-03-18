@@ -13,8 +13,13 @@ body{
     padding: 0%;
 }
 .header{
+    position: fixed;
+    top: 0%;
+    left: 0%;
     height: 4rem;
+    width: 100%;
     background-color: black;
+    z-index: 1;
     &-container{
         width: 80%;
         margin: 0 auto;
@@ -36,6 +41,7 @@ body{
             font-weight: normal;
             margin: auto 0;
             padding: 0.8rem 0 0 0;
+            white-space:nowrap;
         }
         &__contents{
             margin: 0 2rem;
@@ -56,9 +62,31 @@ body{
             }
         }
         &__usericon{
-            height: 40px;
-            width: 40px;
-            border-radius: 50%;
+            height: 2rem;
+            width: 2rem;
+            padding: 0 1rem;
+            border-left: oldlace 3px solid;
+            img{
+                max-height: 100%;
+                max-width: 100%;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+        }
+    }
+}
+.main{
+    background-color: #f4f4f4;
+    height: 1000px;
+    width: 100%;
+    &-container{
+        &__menubar{
+            position: fixed;
+            left: 0%;
+            top: 10rem;
+            width: 15rem;
+            height: 20rem;
+            border-right: $list-stay 3px solid;
         }
     }
 }

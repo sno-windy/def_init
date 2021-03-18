@@ -8,8 +8,13 @@ body {
 }
 
 .header {
+  position: fixed;
+  top: 0%;
+  left: 0%;
   height: 4rem;
+  width: 100%;
   background-color: black;
+  z-index: 1;
 }
 
 .header-container {
@@ -42,6 +47,7 @@ body {
   font-weight: normal;
   margin: auto 0;
   padding: 0.8rem 0 0 0;
+  white-space: nowrap;
 }
 
 .header-container__contents {
@@ -66,8 +72,32 @@ body {
 }
 
 .header-container__usericon {
-  height: 40px;
-  width: 40px;
+  height: 2rem;
+  width: 2rem;
+  padding: 0 1rem;
+  border-left: oldlace 3px solid;
+}
+
+.header-container__usericon img {
+  max-height: 100%;
+  max-width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
   border-radius: 50%;
+}
+
+.main {
+  background-color: #f4f4f4;
+  height: 1000px;
+  width: 100%;
+}
+
+.main-container__menubar {
+  position: fixed;
+  left: 0%;
+  top: 10rem;
+  width: 15rem;
+  height: 20rem;
+  border-right: #837F7F 3px solid;
 }
 /*# sourceMappingURL=base.css.map */
