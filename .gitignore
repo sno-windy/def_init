@@ -277,3 +277,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/django,python,windows,macos,linux
 
 local_settings.py
+**/__pycache/__

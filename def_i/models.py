@@ -5,30 +5,30 @@ from django.utils import timezone
 
 class User(AbstractUser):
     position = models.CharField(max_length=20)
-    like_count = models.PositiveIntegerField(default=0)
-    user_image = models.ImageField(upload_to="image/")
+    like_count = models.PositiveIntegerField(default=0) #?
+    user_image = models.ImageField(upload_to="image/", default="default.png") #defaultを仮で入れた。
 
 class Article(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
     title = models.CharField(max_length=30)
     content = models.TextField()
     like_count = models.PositiveIntegerField(default=0)
-    time = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
 class Question(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
     title = models.CharField(max_length=30)
     content = models.TextField()
-    solved = models.BooleanField(default=False)
-    time = models.DateTimeField(default=timezone.now)
+    if_answerd = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    time = models.DateTimeField(default=timezone.now)
+    time = models.DateTimeField(default=timezone.now) #不要説　
 
-class Kadai(models.Model):
-    name = models.CharField()
+class Task(models.Model):
+    title = models.CharField(max_length=30)
     clear = models.BooleanField(default=False)
 
 class Talk(models.Model):
@@ -40,11 +40,9 @@ class Talk(models.Model):
     def __str__(self):
         return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
 
+#add
+class TalkAtArticle(Talk):
+    msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
 
-
-
-
-
-
-
-
+class TalkAtQuestion(Talk):
+    msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
