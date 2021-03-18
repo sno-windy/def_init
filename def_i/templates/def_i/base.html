@@ -22,5 +22,18 @@
         </div>
     </header>
     {% endblock header %}
+    {% block contents %}
+    <main class="main">
+    <div class="main-container">
+    {% block menubar %}
+    <div class="main-container__menubar">
+
+    </div>
+    {% endblock menubar %}
+    </main>
+    </div>
+    {% endblock contents %}
+    {% block javascript %}{% endblock javascript %}
 </body>
+
 </html>
