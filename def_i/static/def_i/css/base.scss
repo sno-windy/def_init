@@ -109,11 +109,43 @@ body{
             p{
                 font-size: 0.75rem;
                 color: $list-stay;
+                margin: 0;
+                padding: 0.5rem 0;
                 &:hover{
                     color: #f4f4f4;
                     background-color: $list-hover;
                 }
             }
         }
+        &__contents{
+            // position: fixed;
+            // top: 5rem;
+            // left: 15rem;
+            margin: 0%;
+            padding: 5rem 0 0 12rem;
+            width: 60%;
+            &-article{
+                height: 10%;
+                border-top: 1px $list-stay solid;
+                background-color: #fcfcfc;
+                h2{
+                    margin: 0%;
+                    font-size: 1rem;
+                }
+                p{
+                    margin: 0%;
+                    font-size: 0.75rem;
+                    color: $list-stay;
+                }
+            }
+        }
     }
+}
+.now-here h2{
+    color: #f4f4f4;
+    background-color: $list-stay;
+}
+.now-here-sub p{
+    color: #f4f4f4;
+    background-color: $list-hover;
 }
