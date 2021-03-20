@@ -19,7 +19,7 @@ class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
     title = models.CharField(max_length=30)
     content = models.TextField()
-    if_answerd = models.BooleanField(default=False)
+    if_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
 
 class Like(models.Model):

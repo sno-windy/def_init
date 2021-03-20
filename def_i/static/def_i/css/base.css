@@ -126,9 +126,44 @@ body {
 .main-container__menubar p {
   font-size: 0.75rem;
   color: #837F7F;
+  margin: 0;
+  padding: 0.5rem 0;
 }
 
 .main-container__menubar p:hover {
+  color: #f4f4f4;
+  background-color: #C3BABA;
+}
+
+.main-container__contents {
+  margin: 0%;
+  padding: 5rem 0 0 12rem;
+  width: 60%;
+}
+
+.main-container__contents-article {
+  height: 10%;
+  border-top: 1px #837F7F solid;
+  background-color: #fcfcfc;
+}
+
+.main-container__contents-article h2 {
+  margin: 0%;
+  font-size: 1rem;
+}
+
+.main-container__contents-article p {
+  margin: 0%;
+  font-size: 0.75rem;
+  color: #837F7F;
+}
+
+.now-here h2 {
+  color: #f4f4f4;
+  background-color: #837F7F;
+}
+
+.now-here-sub p {
   color: #f4f4f4;
   background-color: #C3BABA;
 }

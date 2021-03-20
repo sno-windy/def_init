@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,51 +10,57 @@
     {% block extra_style %}{% endblock %}
     <title>DefInit</title>
 </head>
+
 <body>
     {% block header %}
     <header class="header">
         <div class="header-container">
             <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
             <h1 class="header-container__title">Def init</h1>
-            <p class="header-container__contents"><a href="">課題をする</a></p>
-            <p class="header-container__contents"><a href="">学ぶ</a></p>
-            <p class="header-container__contents"><a href="">まとめる</a></p>
+            <p class="header-container__contents tasknow"><a href="">課題をする</a></p>
+            <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
+            <p class="header-container__contents sumnow"><a href="">まとめる</a></p>
             <p class="header-container__usericon"><a href=""><img src="" alt=""></a></p>
         </div>
     </header>
     {% endblock header %}
-    {% block contents %}
     <main class="main">
-    <div class="main-container">
-    {% block menubar %}
-    <div class="main-container__menubar">
-        <a href="" class="main-container__menubar-link">
-            <h2>機能</h2>
-        </a>
-        <a href="" class="main-container__menubar-link">
-            <h2>課題内容</h2>
-        </a>
-        <!--<div class="">box</div>-->
-        <a href="" class="main-container__menubar-sublink">
-            <p><span style="color:#f4f4f4;">──</span>──新着順</p>
-        </a>
-        <a href="" class="main-container__menubar-sublink">
-            <p><span style="color:#f4f4f4;">──</span>──未回答</p>
-        </a>
-        <a href="" class="main-container__menubar-link">
-            <h2>過去のまとめ</h2>
-        </a>
-        <a href="" class="main-container__menubar-sublink">
-            <p><span style="color:#f4f4f4;">──</span>──新着順</p>
-        </a>
-        <a href="" class="main-container__menubar-sublink">
-            <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
-        </a>
-        <h2>メモ帳</h2>
-    {% endblock menubar %}
+        <div class="main-container">
+            {% block menubar %}
+            <div class="main-container__menubar">
+                <a href="" class="main-container__menubar-link">
+                    <h2>機能</h2>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>課題内容</h2>
+                </a>
+                <!--<div class="">box</div>-->
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──未回答</p>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>過去のまとめ</h2>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>メモ帳</h2>
+                </a>
+            </div>
+            {% endblock menubar %}
+            <div class="main-container__contents">
+                {% block contents %}
+                {% endblock contents %}
+            </div>
+        </div>
     </main>
-    </div>
-    {% endblock contents %}
     {% block javascript %}{% endblock javascript %}
 </body>
 
