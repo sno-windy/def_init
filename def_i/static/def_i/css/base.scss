@@ -26,6 +26,7 @@ body{
         display: flex;
         flex-direction: row;
         height: 4rem;
+        white-space:nowrap;
         &__icon{
             height: 3rem;
             width: 3rem;
@@ -45,16 +46,17 @@ body{
         }
         &__contents{
             margin: 0 2rem;
+            width: 20%;
             a{
                 text-align: center;
-                width: 5rem;
+
                 padding: 1.4rem 2rem;
                 display: inline-block;
                 height: 0.6rem;
                 font-size: 1rem;
                 color: $header-contents;
                 text-decoration: none;
-                border-bottom: $header-contents 5px solid;
+                // border-bottom: $header-contents 5px solid;
                 &:hover{
                     color: oldlace;
                     border-bottom: oldlace 5px solid;
@@ -80,13 +82,70 @@ body{
     height: 1000px;
     width: 100%;
     &-container{
+        height: 100%;
+        width: 90%;
+        margin: 0 auto;
         &__menubar{
             position: fixed;
-            left: 0%;
-            top: 10rem;
-            width: 15rem;
-            height: 20rem;
-            border-right: $list-stay 3px solid;
+            left: 5%;
+            top: 5rem;
+            width: 10rem;
+            height: 70%;
+            border-right: $button-gray 3px solid;
+            a{
+                text-decoration: none;
+                // display: inline-block;
+            }
+            h2{
+                font-weight: normal;
+                margin: 0.2rem 0;
+                font-size: 1rem;
+                color: $list-stay;
+                &:hover{
+                    color: #f4f4f4;
+                    background-color: $list-stay;
+                }
+            }
+            p{
+                font-size: 0.75rem;
+                color: $list-stay;
+                margin: 0;
+                padding: 0.5rem 0;
+                &:hover{
+                    color: #f4f4f4;
+                    background-color: $list-hover;
+                }
+            }
+        }
+        &__contents{
+            // position: fixed;
+            // top: 5rem;
+            // left: 15rem;
+            margin: 0%;
+            padding: 5rem 0 0 12rem;
+            width: 60%;
+            &-article{
+                height: 10%;
+                border-top: 1px $list-stay solid;
+                background-color: #fcfcfc;
+                h2{
+                    margin: 0%;
+                    font-size: 1rem;
+                }
+                p{
+                    margin: 0%;
+                    font-size: 0.75rem;
+                    color: $list-stay;
+                }
+            }
         }
     }
+}
+.now-here h2{
+    color: #f4f4f4;
+    background-color: $list-stay;
+}
+.now-here-sub p{
+    color: #f4f4f4;
+    background-color: $list-hover;
 }

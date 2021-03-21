@@ -1,0 +1,32 @@
+{% extends 'def_i/base-education.html' %}
+{% load static %}
+    {% block extra_style %}
+    <link rel="stylesheet" href="{% static 'def_i/css/article_feed.css' %}">{% endblock %}
+
+{% block contents %}
+
+    {% for a in articles %}
+    <article class="main-container__contents-article">
+        <p>{{a.poster}}が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+        <a href="{% url 'article_detail' a.pk %}">
+            <h2>{{a.title}}</h2>
+        </a>
+        <p>{{a.like_count}}いいね</p>
+    </article>
+    {% endfor %}
+
+{% endblock contents %}
+{% block javascript %}
+<!-- <script>
+const newSort = document.getElementById('order-by-new')
+const likeSort = document.getElementById('order-by-like')
+newSort.onclick = function(){
+    // newSort.classList.add('now-here-sub')
+    likeSort.classList.remove('now-here-sub')
+}
+likeSort.onclick = function(){
+    // likeSort.classList.add('now-here-sub')
+    newSort.classList.remove('now-here-sub')
+}
+</script> JSはURL変更時にリロードされるから詰み。-->
+{% endblock javascript %}
