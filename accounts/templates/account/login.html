@@ -1,0 +1,25 @@
+{% extends "def_i/base.html" %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/login.css' %}">
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block menubar %}
+{% endblock menubar %}
+{% block contents %}
+<div class="login-container">
+    <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
+    <p class="header-container__title">Def init</p>
+    #def initとアイコンは白いだけであります
+    <form action="{% url 'account_login' %}" method="POST">
+        {% csrf_token %}
+        <p>{{ form.login }}</p>
+        <p>{{ form.password }}</p>
+        <p><input type="submit" value="ログイン"></p>
+
+        <p>会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
+    </form>
+</div>
+{% endblock contents %}
+

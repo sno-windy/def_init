@@ -11,6 +11,7 @@ from .models import User,Article
 def index(request):
     return render(request,"def_i/index.html")
 
+
 class ArticleFeed(ListView):
     model = Article
     context_object_name = "articles"
