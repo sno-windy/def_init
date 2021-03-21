@@ -10,13 +10,4 @@ from .forms import LoginForm
 def index(request):
     return render(request,"def_i/index.html")
 
-class Login(LoginView):
-    """ログインページ"""
-    form_class = LoginForm
-    template_name = 'def_i/login.html'
-
-
-class Logout(LogoutView):
-    """ログアウトページ"""
-    template_name = 'def_i/top.html'
 
