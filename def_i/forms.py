@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Article, Question, Like, Task, Talk
+from .models import User, Article, Question, Like, Task, Talk, TalkAtArticle, TalkAtQuestion
 from django.contrib.auth.forms import (
     AuthenticationForm
 )
@@ -11,3 +11,8 @@ class LoginForm(AuthenticationForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
+
+class ArticleTalkForm(forms.ModelForm):
+    class Meta:
+        model = TalkAtArticle
+        # fields = ()

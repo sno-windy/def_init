@@ -27,7 +27,7 @@ class ArticleFeed(ListView):
         return context
 
 class ArticleFeedLike(ArticleFeed):
-    def get_queryset(self):
+    def get_queryset(self): #queryset=だけでいいことが判明
         articles = Article.objects.order_by('-like_count')
         return articles
 
@@ -40,7 +40,7 @@ class ArticleDetail(DetailView):
     model = Article
     context_object_name = "contents"
     template_name = "def_i/article_detail.html"
-
+    # form_class =
 
 class Login(LoginView):
     """ログインページ"""
