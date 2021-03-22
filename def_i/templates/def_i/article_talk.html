@@ -1,0 +1,17 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block menubar %}{% endblock menubar %}
+{% block contents %}
+    {% for m in messages %}
+    <article class="main-container__contents-messages">
+        <p>{{m.msg_from}}></p>
+        <h2>{{m.msg}}</h2>
+        <p>{{m.created_at|date:"Y年 M j日 H:i:s"}}</p>
+    </article>
+    {% endfor %}
+    <form method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type='submit'>送信</button>
+    </form>
+{% endblock contents %}

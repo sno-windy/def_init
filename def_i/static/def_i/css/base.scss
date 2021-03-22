@@ -27,6 +27,10 @@ body{
         flex-direction: row;
         height: 4rem;
         white-space:nowrap;
+        text-decoration: none;
+        a{
+            text-decoration: none;
+        }
         &__icon{
             height: 3rem;
             width: 3rem;
@@ -123,7 +127,7 @@ body{
             // left: 15rem;
             margin: 0%;
             padding: 5rem 0 0 12rem;
-            width: 60%;
+            width: 70%;
             &-article{
                 height: 10%;
                 border-top: 1px $list-stay solid;

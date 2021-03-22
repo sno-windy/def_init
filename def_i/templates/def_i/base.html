@@ -15,9 +15,13 @@
     {% block header %}
     <header class="header">
         <div class="header-container">
-            <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
-            <h1 class="header-container__title">Def init</h1>
-            <p class="header-container__contents tasknow"><a href="">課題をする</a></p>
+            <a href="{% url 'index' %}">
+                <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
+            </a>
+            <a href="{% url 'index' %}">
+                <h1 class="header-container__title">Def init</h1>
+            </a>
+            <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
             <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
             <p class="header-container__contents sumnow"><a href="">まとめる</a></p>
             <p class="header-container__usericon"><a href=""><img src="" alt=""></a></p>

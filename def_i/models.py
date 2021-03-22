@@ -28,7 +28,7 @@ class Task(models.Model):
     clear = models.BooleanField(default=False)
 
 class Talk(models.Model):
-    msg = models.CharField(max_length=120)
+    msg = models.CharField(max_length=1000)
     msg_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_form")
     msg_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_to")
     time = models.DateTimeField(auto_now_add=True)
