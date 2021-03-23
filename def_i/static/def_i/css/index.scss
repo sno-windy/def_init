@@ -8,6 +8,7 @@
     text-align: center;
     align-items: center;
     margin: 2rem 0 0 0;
+    width: 140%;
     &-box{
         height: 20rem;
         width: 20rem;
@@ -30,7 +31,7 @@
         a{
             text-decoration: none;
             position: absolute;
-            bottom: 3rem;
+            bottom: rem;
             left: 10%;
             right: 10%;
             border: black 2px solid;

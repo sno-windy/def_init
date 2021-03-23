@@ -5,6 +5,7 @@ html {
 body {
   margin: 0%;
   padding: 0%;
+  background-color: #f4f4f4;
 }
 
 .header {
@@ -17,6 +18,16 @@ body {
   z-index: 1;
 }
 
+.header__hover-item {
+  position: fixed;
+  top: 5rem;
+  right: 10%;
+  z-index: 5;
+  background-color: white;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
 .header-container {
   width: 80%;
   margin: 0 auto;
@@ -27,6 +38,9 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   height: 4rem;
   white-space: nowrap;
   text-decoration: none;
@@ -57,8 +71,14 @@ body {
 }
 
 .header-container__contents {
-  margin: 0 2rem;
+  margin: 0 3%;
   width: 20%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .header-container__contents a {
@@ -142,8 +162,8 @@ body {
 
 .main-container__contents {
   margin: 0%;
-  padding: 5rem 0 0 12rem;
-  width: 70%;
+  padding: 5rem 0 5rem 12rem;
+  width: 50%;
 }
 
 .main-container__contents-article {
@@ -171,5 +191,9 @@ body {
 .now-here-sub p {
   color: #f4f4f4;
   background-color: #C3BABA;
+}
+
+.hidden_class {
+  visibility: hidden;
 }
 /*# sourceMappingURL=base.css.map */
