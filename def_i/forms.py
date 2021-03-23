@@ -18,7 +18,13 @@ class ArticleTalkForm(forms.ModelForm):
         model = TalkAtArticle
         fields = ['msg',]
 
-
+class ArticlePostForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['title','content','poster',]
+        widgets = {
+            'poster':forms.HiddenInput
+        }
 class MyCustomLoginForm(LoginForm):
     def login(self, *args, **kwargs):
 

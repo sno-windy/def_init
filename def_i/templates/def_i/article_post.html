@@ -1,0 +1,9 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block contents %}
+<form action = "" method = "POST">
+{% csrf_token %}
+{{form}}
+<button type="submit">投稿</button>
+</form>
+{% endblock contents %}
