@@ -3,9 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
     LoginView, LogoutView
 )
-from django.views.generic import ListView,DetailView,FormView,TemplateView
+from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView
 from django.views.generic.edit import FormMixin
-from .forms import LoginForm, ArticleTalkForm
+from .forms import LoginForm, ArticleTalkForm, ArticlePostForm
 from .models import User,Article,TalkAtArticle
 
 def index(request):
@@ -43,12 +43,10 @@ class ArticleDetail(DetailView):
     # form_class = ArticleTalkForm
 
 class ArticleTalk(FormMixin,ListView):
-    model = TalkAtArticle
+    model =TalkAtArticle
     context_object_name = "messages"
     form_class = ArticleTalkForm #いらんかも
     template_name = 'def_i/article_talk.html'
-    success_url = 'def_i/index.html'
-    # success_url =
     def get(self,request,pk):
         form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
@@ -73,6 +71,15 @@ class ArticleTalkSuc(TemplateView):
     def get(self,request,pk):
         return redirect("article_talk",pk=pk)
 
+class ArticlePost(CreateView):
+    form_class = ArticlePostForm
+    template_name = 'def_i/article_post.html'
+    success_url = '../article_feed' #まだ途中なので適当
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['poster']=self.request.user
+        print(initial['poster'])
+        return initial
 
 class Login(LoginView):
     """ログインページ"""
