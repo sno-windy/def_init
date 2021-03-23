@@ -16,6 +16,7 @@
       -ms-flex-align: center;
           align-items: center;
   margin: 2rem 0 0 0;
+  width: 140%;
 }
 
 .indexbox-container-box {
@@ -50,7 +51,7 @@
 .indexbox-container-box a {
   text-decoration: none;
   position: absolute;
-  bottom: 3rem;
+  bottom: 1.5rem;
   left: 10%;
   right: 10%;
   border: black 2px solid;

@@ -1,17 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render,reverse,redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import (
     LoginView, LogoutView
 )
-from django.views.generic import ListView,DetailView,FormView
+from django.views.generic import ListView,DetailView,FormView,TemplateView
 from django.views.generic.edit import FormMixin
 from .forms import LoginForm, ArticleTalkForm
 from .models import User,Article,TalkAtArticle
 
-
 def index(request):
     return render(request,"def_i/index.html")
-
 
 class ArticleFeed(ListView):
     model = Article
@@ -47,14 +45,14 @@ class ArticleDetail(DetailView):
 class ArticleTalk(FormMixin,ListView):
     model = TalkAtArticle
     context_object_name = "messages"
-    form_class = ArticleTalkForm
+    form_class = ArticleTalkForm #いらんかも
     template_name = 'def_i/article_talk.html'
     success_url = 'def_i/index.html'
     # success_url =
     def get(self,request,pk):
         form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
-        messages = TalkAtArticle.objects.filter(msg_at=article).order_by('-time')
+        messages = TalkAtArticle.objects.filter(msg_at=article).order_by('time')
         return render(request,self.template_name,{"messages":messages,"form":form})
     def post(self,request,pk,*args,**kwargs):
         form = ArticleTalkForm(request.POST)
@@ -64,10 +62,16 @@ class ArticleTalk(FormMixin,ListView):
             article_poster = User.objects.get(pk=article.poster.id)
             msg = self.model.objects.create(msg=messages,msg_from = request.user,msg_to = article_poster,msg_at=article)
             msg.save()
-        return render(request,self.template_name,{"form":form})
+            return redirect("article_talk_suc",pk=pk)
+
+# def article_talk_suc(request):
+#     return render(request, 'def_i/article_talk_suc.html')
 
 
-
+class ArticleTalkSuc(TemplateView):
+    template_name = "article_talk_suc.html"
+    def get(self,request,pk):
+        return redirect("article_talk",pk=pk)
 
 
 class Login(LoginView):
