@@ -141,14 +141,3 @@ class QuestionPost(CreateView):
         return initial
 
 
-
-
-# class Login(LoginView):
-#     """ログインページ"""
-#     form_class = LoginForm
-#     template_name = 'def_i/login.html'
-
-
-# class Logout(LogoutView):
-#     """ログアウトページ"""
-#     template_name = 'def_i/top.html'
