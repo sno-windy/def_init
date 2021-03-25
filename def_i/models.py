@@ -18,7 +18,8 @@ class Question(models.Model):
     content = models.TextField(null=True)
     if_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
-
+    def __str__(self):
+        return str(self.title)+" by "+str(self.poster)
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,5 +41,9 @@ class Talk(models.Model):
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
 class TalkAtQuestion(Talk):
     msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
+    def __str__(self):
+        return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
