@@ -1,0 +1,9 @@
+{% extends 'def_i/base.html' %}
+{% block menubar %}{% endblock menubar %}
+{% block contents %}
+<h1>{{contents.title}}</h1>
+<p>質問者：{{contents.poster}}</p>
+<p>{{contents.content}}</p>
+<a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く</p></a>
+<a href="{% url 'question_feed_new' %}"><p>質問フィードに戻る</p></a>
+{% endblock contents %}

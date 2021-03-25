@@ -20,13 +20,13 @@
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
             {% endif %}
-                <a href="" class="main-container__menubar-link">
+                <a href="{% url 'question_feed_new' %}" class="main-container__menubar-link">
                     <h2>質問フィード</h2>
                 </a>
-                <a href="" class="main-container__menubar-sublink">
+                <a href="{% url 'question_feed_new' %}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
                 </a>
-                <a href="" class="main-container__menubar-sublink">
+                <a href="{% url 'question_feed_unanswered' %}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──未回答</p>
                 </a>
             </div>

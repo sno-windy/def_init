@@ -23,7 +23,8 @@
             </a>
             <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
             <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
-            <p class="header-container__contents sumnow"><a href="">まとめる</a></p>
+            <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>
+            <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
             <p class="header-container__usericon" id="icon"><img src="{{ user.user_image.url }}" alt=""></p>
         </div>
         <div class="header__hover-item hidden_class" id="hover_item">

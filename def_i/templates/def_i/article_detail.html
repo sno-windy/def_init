@@ -9,8 +9,9 @@
                 </a> {% endcomment %}<!--menuバーいらない気がする。-->
 {% endblock menubar %}
 {% block contents %}
-<h1>{{conotents.title}}</h1>
-<p>{{contents.poster}}</p>
+<h1>{{contents.title}}</h1>
+<p>投稿者：{{contents.poster}}</p>
 <p>{{contents.content}}</p>
 <a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く</p></a>
+<a href="{% url 'article_feed' %}"><p>記事フィードに戻る</p></a>
 {% endblock contents %}

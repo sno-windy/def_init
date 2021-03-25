@@ -25,6 +25,20 @@ class ArticlePostForm(forms.ModelForm):
         widgets = {
             'poster':forms.HiddenInput
         }
+
+class QuestionTalkForm(forms.ModelForm):
+    class Meta:
+        model = TalkAtQuestion
+        fields = ['msg',]
+
+class QuestionPostForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['title','content','poster',]
+        widgets = {
+            'poster':forms.HiddenInput
+        }
+
 class MyCustomLoginForm(LoginForm):
     def login(self, *args, **kwargs):
 
