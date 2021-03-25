@@ -92,6 +92,8 @@ body {
 }
 
 .header-container__contents a:hover {
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
   color: oldlace;
   border-bottom: oldlace 5px solid;
 }
@@ -145,6 +147,8 @@ body {
   margin: 0.2rem 0;
   font-size: 1rem;
   color: #837F7F;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .main-container__menubar h2:hover {
@@ -157,6 +161,8 @@ body {
   color: #837F7F;
   margin: 0;
   padding: 0.5rem 0;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .main-container__menubar p:hover {

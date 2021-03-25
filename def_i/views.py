@@ -7,6 +7,7 @@ from django.views.generic import ListView,DetailView,FormView,TemplateView,Creat
 from django.views.generic.edit import FormMixin
 from .forms import LoginForm, ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
 from .models import User,Article,TalkAtArticle,Question,TalkAtQuestion
+from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
     return render(request,"def_i/index.html")
@@ -80,11 +81,8 @@ class QuestionFeed(ListView):
     model = Question
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
-    paginate_by = 10
+    # paginate_by = 10
     queryset = Question.objects.order_by('-created_at')
-    # def get_queryset(self):
-    #     questions = Article.objects.order_by('-created_at')
-    #     return questions
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
@@ -92,7 +90,17 @@ class QuestionFeed(ListView):
         return context
 
 class QuestionFeedUnanswered(QuestionFeed):
-    def get_queryset(self): #queryset=だけでいいことが判明
+    def get_queryset(self):
+        question = Question.objects.all()
+        for q in question:
+            talk = TalkAtQuestion.objects.filter(msg_at=q)
+            if len(talk) == 0:
+                q.if_answered = False
+                q.save()
+            else:
+                q.if_answered = True
+                q.save()
+
         articles = Question.objects.filter(if_answered=False)
         return articles
 
@@ -134,10 +142,9 @@ class QuestionTalkSuc(TemplateView):
 class QuestionPost(CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
-    success_url = '../question_feed' #まだ途中なので適当
+    success_url = '../question_feed_new/' #まだ途中なので適当
     def get_initial(self):
         initial = super().get_initial()
         initial['poster']=self.request.user
         return initial
-
 
