@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,30 +10,75 @@
     {% block extra_style %}{% endblock %}
     <title>DefInit</title>
 </head>
+
 <body>
     {% block header %}
     <header class="header">
         <div class="header-container">
-            <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
-            <h1 class="header-container__title">Def init</h1>
-            <p class="header-container__contents"><a href="">課題をする</a></p>
-            <p class="header-container__contents"><a href="">学ぶ</a></p>
-            <p class="header-container__contents"><a href="">まとめる</a></p>
-            <p class="header-container__usericon"><a href=""><img src="" alt=""></a></p>
+            <a href="{% url 'index' %}">
+                <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
+            </a>
+            <a href="{% url 'index' %}">
+                <h1 class="header-container__title">Def init</h1>
+            </a>
+            <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
+            <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
+            <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>
+            <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
+            <p class="header-container__usericon" id="icon"><img src="{{ user.user_image.url }}" alt=""></p>
+        </div>
+        <div class="header__hover-item hidden_class" id="hover_item">
+        <p>{{ user.username }}</p>
+
+        <a href=""><h2>マイページ</h2></a>
+        <a href="{% url 'article_post' %}"><h2>新規投稿</h2></a>
+        <a href=""><h2>ログアウト</h2></a>
+
         </div>
     </header>
     {% endblock header %}
-    {% block contents %}
     <main class="main">
-    <div class="main-container">
-    {% block menubar %}
-    <div class="main-container__menubar">
-
-    </div>
-    {% endblock menubar %}
+        <div class="main-container">
+            {% block menubar %}
+            <div class="main-container__menubar">
+                <a href="" class="main-container__menubar-link">
+                    <h2>機能</h2>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>課題内容</h2>
+                </a>
+                <!--<div class="">box</div>-->
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──未回答</p>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>過去のまとめ</h2>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+                </a>
+                <a href="" class="main-container__menubar-sublink">
+                    <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
+                </a>
+                <a href="" class="main-container__menubar-link">
+                    <h2>メモ帳</h2>
+                </a>
+            </div>
+            {% endblock menubar %}
+            <div class="main-container__contents">
+                {% block contents %}
+                {% endblock contents %}
+            </div>
+        </div>
     </main>
-    </div>
-    {% endblock contents %}
+    <script>
+        document.getElementById('icon').addEventListener('click',()=>{
+            document.getElementById('hover_item').classList.toggle('hidden_class')
+        })
+    </script>
     {% block javascript %}{% endblock javascript %}
 </body>
 

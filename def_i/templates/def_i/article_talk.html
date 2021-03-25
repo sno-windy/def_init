@@ -1,0 +1,21 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/article_talk.css' %}">
+{% endblock extra_style %}
+{% block menubar %}{% endblock menubar %}
+{% block contents %}
+    {% for m in messages %}
+    <article class="main-container__contents-article">
+        <p>{{m.msg_from}}></p>
+        <h2>{{m.msg}}</h2>
+        <p>{{m.time|date:"Y年 M j日 H:i:s"}}</p>
+    </article>
+    {% endfor %}
+    <form method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type='submit'>送信</button>
+    </form>
+    <a href="{% url 'article_detail' pk=pk %}">記事に戻る</a>
+{% endblock contents %}

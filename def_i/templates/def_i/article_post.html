@@ -1,0 +1,13 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/article_post.css' %}">
+{% endblock extra_style %}
+{% block contents %}
+<h2>投稿</h2>
+<form action = "" method = "POST">
+{% csrf_token %}
+{{form}}
+<button type="submit">投稿する</button>
+</form>
+{% endblock contents %}
