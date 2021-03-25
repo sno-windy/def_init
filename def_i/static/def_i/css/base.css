@@ -103,6 +103,10 @@ body {
   border-left: oldlace 3px solid;
 }
 
+.header-container__usericon:hover {
+  cursor: pointer;
+}
+
 .header-container__usericon img {
   height: calc(3rem - 16px);
   width: calc(3rem - 16px);
@@ -181,6 +185,14 @@ body {
   margin: 0%;
   font-size: 0.75rem;
   color: #837F7F;
+}
+
+.main-container__contents-article a {
+  color: #837F7F;
+}
+
+.main-container__contents-article a:hover {
+  color: black;
 }
 
 .now-here h2 {

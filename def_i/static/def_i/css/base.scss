@@ -87,6 +87,9 @@ body{
             width: 2rem;
             padding: 0 1rem;
             border-left: oldlace 3px solid;
+            &:hover{
+                cursor: pointer;
+            }
             img{
                 height: calc(3rem - 16px);
                 width: calc(3rem - 16px);
@@ -155,6 +158,12 @@ body{
                     margin: 0%;
                     font-size: 0.75rem;
                     color: $list-stay;
+                }
+                a{
+                    color: $list-stay;
+                    &:hover{
+                        color: black;
+                    }
                 }
             }
         }

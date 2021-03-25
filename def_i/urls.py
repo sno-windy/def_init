@@ -13,7 +13,7 @@ urlpatterns = [
     path('question_feed_new/',views.QuestionFeed.as_view(),name='question_feed_new'),
     path('question_feed_unanswered/',views.QuestionFeedUnanswered.as_view(),name='question_feed_unanswered'),
     path('question_detail/<int:pk>/',views.QuestionDetail.as_view(),name='question_detail'),
-    # path('question_talk/<int:pk>/',name='question_talk'),
-    # path('question_talk_suc/<int:pk>/',name='question_talk_suc'),
-    # path('question_post/',name='question_post'),
+    path('question_talk/<int:pk>/',views.QuestionTalk.as_view(),name='question_talk'),
+    path('question_talk_suc/<int:pk>/',views.QuestionTalkSuc.as_view(),name='question_talk_suc'),
+    path('question_post/',views.QuestionPost.as_view(),name='question_post'),
 ]
