@@ -147,3 +147,4 @@ class QuestionPost(CreateView):
         initial = super().get_initial()
         initial['poster']=self.request.user
         return initial
+
