@@ -1,5 +1,8 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/article_post.css' %}">
+{% endblock extra_style %}
 {% block contents %}
 <form action = "" method = "POST">
 {% csrf_token %}
