@@ -4,6 +4,7 @@ from django.views.generic import ListView,DetailView,FormView,TemplateView,Creat
 from django.views.generic.edit import FormMixin
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
 from .models import User,Task,Talk,Article,TalkAtArticle,Question,TalkAtQuestion
+
 from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
