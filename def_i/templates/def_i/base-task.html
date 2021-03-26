@@ -2,3 +2,22 @@
 {% load static %}
 {% block extra_style %}
 {% endblock extra_style %}
+{% block contents %}
+<h2>課題</h2>
+<a href="">
+    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題１</p><p class="main-container__contents-taskbox-descript">説明１</p></div>
+</a>
+<a href="">
+    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題２</p><p class="main-container__contents-taskbox-descript">説明２</p></div>
+</a>
+<a href="">
+    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題３</p><p class="main-container__contents-taskbox-descript">説明３</p></div>
+</a>
+<a href="">
+    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題４</p><p class="main-container__contents-taskbox-descript">説明４</p></div>
+</a>
+<a href="">
+    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題５</p><p class="main-container__contents-taskbox-descript">説明５</p></div>
+</a>
+<a href="{% url 'index' %}" class="button"><p>ひとつ前に戻る</p></a>
+{% endblock contents %}

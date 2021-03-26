@@ -7,7 +7,7 @@
 
 {% block menubar %}
             <div class="main-container__menubar">
-                <a href="" class="main-container__menubar-link now-here">
+                <a href="{% url 'index' %}" class="main-container__menubar-link now-here">
                     <h2>講座一覧</h2>
                 </a>
                 <a href="" class="main-container__menubar-link">
@@ -16,7 +16,7 @@
             </div>
 {% endblock menubar %}
 {% block contents %}
-<h1>講座一覧</h1>
+<h2>講座一覧</h2>
 <div class="indexbox-container">
     <div class="indexbox-container-box">
         <h2>バックエンド編</h2>

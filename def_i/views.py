@@ -2,8 +2,9 @@ from django.shortcuts import render,reverse,redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView
 from django.views.generic.edit import FormMixin
-from .forms import  ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
-from .models import User,Task,Article,TalkAtArticle,Question,TalkAtQuestion
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
+from .models import User,Task,Talk,Article,TalkAtArticle,Question,TalkAtQuestion
+
 from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
@@ -148,6 +149,14 @@ class QuestionPost(CreateView):
 class BackendTaskList(ListView):
     model = Task
     template_name = "def_i/base-task.html"
+
 class FrontendTaskList(ListView):
     model = Task
     template_name = "def_i/base-task.html"
+
+# class MessageNotification(ListView):
+#     model = Talk
+#     template_name = 'def_i/message_notification.html'
+#     def get(self,request):
+#         messages = Talk.objects.filter(msg_to=request.user.id).order_by('time')
+#         return redirect(request,'def_i/message_notification.html',{"messages":messages,})
