@@ -2,7 +2,7 @@ from django.shortcuts import render,reverse,redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView
 from django.views.generic.edit import FormMixin
-from .forms import LoginForm, ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
+from .forms import  ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
 from .models import User,Task,Article,TalkAtArticle,Question,TalkAtQuestion
 from django.core.exceptions import ObjectDoesNotExist
 
