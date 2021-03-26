@@ -58,4 +58,10 @@
   color: black;
   border-radius: 10px;
 }
+
+.indexbox-container-box a:hover {
+  background-color: #cacaca;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
 /*# sourceMappingURL=index.css.map */

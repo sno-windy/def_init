@@ -1,7 +1,8 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
+{% load sass_tags %}
 {% block extra_style %}
-    <link rel="stylesheet" href="{% static 'def_i/css/index.css' %}">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/index.scss' %}">
 {% endblock %}
 
 {% block menubar %}
@@ -21,13 +22,13 @@
         <h2>バックエンド編</h2>
         <img src="{% static 'def_i/img/django_three_bros.png' %}" alt="">
         <p>Pythonのフルスタックフレームワークのdjangoを使ってバックエンドの学習を行います</p>
-        <a href="">バックエンド編をはじめる</a>
+        <a href="{% url 'task_backend' %}">バックエンド編をはじめる</a>
     </div>
     <div class="indexbox-container-box">
         <h2>フロンドエンド編</h2>
         <img src="{% static 'def_i/img/front_three_bros.jpeg' %}" alt="">
         <p>HTML, CSS, JavaScriptを使ってフロントエンドの学習を行います</p>
-        <a href="">フロントエンド編をはじめる</a>
+        <a href="{% url 'task_frontend' %}">フロントエンド編をはじめる</a>
     </div>
 </div>
 {% endblock contents %}

@@ -37,6 +37,10 @@
             border: black 2px solid;
             color: black;
             border-radius: 10px;
+            &:hover{
+                background-color: rgb(202, 202, 202);
+                transition: 0.5s;
+            }
         }
     }
 }
