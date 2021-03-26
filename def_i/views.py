@@ -2,8 +2,8 @@ from django.shortcuts import render,reverse,redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView
 from django.views.generic.edit import FormMixin
-from .forms import  ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
-from .models import User,Article,TalkAtArticle,Question,TalkAtQuestion
+from .forms import LoginForm, ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
+from .models import User,Task,Article,TalkAtArticle,Question,TalkAtQuestion
 from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
@@ -145,3 +145,9 @@ class QuestionPost(CreateView):
         initial['poster']=self.request.user
         return initial
 
+class BackendTaskList(ListView):
+    model = Task
+    template_name = "def_i/base-task.html"
+class FrontendTaskList(ListView):
+    model = Task
+    template_name = "def_i/base-task.html"

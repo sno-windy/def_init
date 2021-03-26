@@ -16,4 +16,6 @@ urlpatterns = [
     path('question_talk/<int:pk>/',views.QuestionTalk.as_view(),name='question_talk'),
     path('question_talk_suc/<int:pk>/',views.QuestionTalkSuc.as_view(),name='question_talk_suc'),
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
+    path('task_backend/',views.BackendTaskList.as_view(),name='task_backend'),
+    path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
 ]
