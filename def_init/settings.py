@@ -110,8 +110,8 @@ LOGIN_REDIRECT_URL = 'index'
 WSGI_APPLICATION = 'def_init.wsgi.application'
 
 ACCOUNT_FORMS = {
-    'login': 'def_i.forms.MyCustomLoginForm',
-    'signup': 'def_i.forms.MyCustomSignupForm'
+    'login': 'accounts.forms.MyCustomLoginForm',
+    'signup': 'accounts.forms.MyCustomSignupForm'
     }
 
 
