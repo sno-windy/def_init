@@ -1,11 +1,12 @@
-from django.shortcuts import render,reverse,redirect
+from django.shortcuts import render,reverse,redirect,get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView
 from django.views.generic.edit import FormMixin
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
-from .models import User,Task,Talk,Article,TalkAtArticle,Question,TalkAtQuestion
-
+from .models import User,Task,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion
+from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse,HttpResponse
 
 def index(request):
     return render(request,"def_i/index.html")
@@ -18,6 +19,9 @@ class ArticleFeed(ListView):
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
+        for a in articles:
+            a.like_count = Like.objects.filter(article = a.pk).count()
+            a.save()
         return articles
 
     def get_context_data(self,**kwargs):
@@ -27,7 +31,10 @@ class ArticleFeed(ListView):
 
 class ArticleFeedLike(ArticleFeed):
     def get_queryset(self): #queryset=だけでいいことが判明
-        articles = Article.objects.order_by('-like_count')
+        article = Article.objects.all()
+        for a in article:
+            a.like_count = Like.objects.filter(article = a.pk).count()
+        articles = article.order_by('-like_count')
         return articles
 
     def get_context_data(self,**kwargs):
@@ -37,9 +44,19 @@ class ArticleFeedLike(ArticleFeed):
 
 class ArticleDetail(DetailView):
     model = Article
-    context_object_name = "contents"
     template_name = "def_i/article_detail.html"
-    # form_class = ArticleTalkForm
+    def get(self,request,pk):
+        articles = Article.objects.all()
+        liked_list = []
+        for a in articles:
+            liked = a.like_set.filter(user=request.user)
+            if liked.exists():
+                liked_list.append(a.pk)
+        params ={
+            'contents':Article.objects.get(pk=pk),
+            'liked_list':liked_list,
+        }
+        return render(request,self.template_name,params)
 
 class ArticleTalk(FormMixin,ListView):
     model =TalkAtArticle
@@ -112,6 +129,7 @@ class QuestionDetail(DetailView):
     context_object_name = "contents"
     template_name = "def_i/question_detail.html"
 
+
 class QuestionTalk(FormMixin,ListView):
     model =TalkAtQuestion
     context_object_name = "messages"
@@ -154,9 +172,53 @@ class FrontendTaskList(ListView):
     model = Task
     template_name = "def_i/base-task.html"
 
-# class MessageNotification(ListView):
-#     model = Talk
-#     template_name = 'def_i/message_notification.html'
-#     def get(self,request):
-#         messages = Talk.objects.filter(msg_to=request.user.id).order_by('time')
-#         return redirect(request,'def_i/message_notification.html',{"messages":messages,})
+class MessageNotification(ListView):
+    model = Talk
+    template_name = 'def_i/message_notification.html'
+    def get(self,request):
+        messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
+        print(messages)
+        return render(request,self.template_name,{"messages":messages})
+
+# class LikeView(TemplateView):
+#     def post(self,request,pk):
+#         article = Article.objects.get(pk=pk)
+#         print(article)
+#         user = request.user
+#         liked = False
+#         like = Like.objects.filter(article=article,user=user)
+#         if like.exists():
+#             like.delete()
+#         else:
+#             like.create(article=article,user=user)
+#             liked = True
+#         params={
+#             'article_id':article.id,
+#             'liked':liked,
+#             'count':article.like_set.count(),
+#             # 'pk':pk,
+#         }
+#         if request.is_ajax():
+#             return JsonResponse(params)
+def LikeView(request,pk):
+    if request.method =="GET":
+        article = Article.objects.get(pk=pk)
+        user = request.user
+        liked = False
+        like = Like.objects.filter(article=article, user=user)
+        if like.exists():
+            like.delete()
+        else:
+            like.create(article=article, user=user)
+            liked = True
+
+        params={
+            'article_id': article.id,
+            'liked': liked,
+            'count': article.like_set.count(),
+        }
+
+    # if request.is_ajax():
+    #     return JsonResponse(params)
+    # else:
+        return JsonResponse(params)
