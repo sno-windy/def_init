@@ -9,7 +9,8 @@ class MyCustomSignupForm(SignupForm):
     user_image = forms.ImageField(required=False)
     class Meta:
         model = User
-        fields = [ 'position', 'user_image']
+        fields = ['username', 'email', 'password1', 'password2', 'position', 'user_image']
+
 
     def save(self, request):
     
@@ -18,6 +19,7 @@ class MyCustomSignupForm(SignupForm):
         user = super(MyCustomSignupForm, self).save(request)
 
         # Add your own processing here.
+        user.position = request.POST.get('position')
         user.user_image = request.FILES.get('user_image')
         user.save()
 
@@ -33,21 +35,26 @@ class MyCustomLoginForm(LoginForm):
         # You must return the original result.
         return super(MyCustomLoginForm, self).login(*args, **kwargs)
 
-class UserChangeForm(ModelForm):
-    class Meta:
-        model = User
-        fields = [ 'position', 'user_image']
+class UserChangeForm(MyCustomSignupForm):
+    user_image = forms.ImageField(required=False)
+    
+    def __init__(self, email=None, username=None, position=None, password1=None, password2=None, user_image=None, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super().__init__(*args, **kwargs)
+        # ユーザーの更新前情報をフォームに挿入
+        if email:
+            self.fields['email'].widget.attrs['value'] = email
+        if username:
+            self.fields['username'].widget.attrs['value'] = username
+        if position:
+            self.fields['position'].widget.attrs['value'] = position
+        if password1:
+            self.fields['password1'].widget.attrs['value'] = password1
+        if password2:
+            self.fields['password2'].widget.attrs['value'] = password2
+        if user_image:
+            self.fields['user_image'].widget.attrs['value'] = user_image
 
-    # def __init__(self, email=None, first_name=None, last_name=None, *args, **kwargs):
-    #     kwargs.setdefault('label_suffix', '')
-    #     super().__init__(*args, **kwargs)
-    #     # ユーザーの更新前情報をフォームに挿入
-    #     if email:
-    #         self.fields['email'].widget.attrs['value'] = email
-    #     if first_name:
-    #         self.fields['first_name'].widget.attrs['value'] = first_name
-    #     if last_name:
-    #         self.fields['last_name'].widget.attrs['value'] = last_name
     def update(self, user):
         user.email = self.cleaned_data['email']
         user.username = self.cleaned_data['username']

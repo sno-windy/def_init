@@ -1,6 +1,8 @@
 from django.shortcuts import render,reverse,redirect
-from django.views.generic import FormView
-from .forms import  MyCustomSignupForm, MyCustomLoginForm
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import FormView, DetailView, UpdateView
+from .forms import  MyCustomSignupForm, MyCustomLoginForm, UserChangeForm
 from allauth.account.views import LoginView, SignupView, LogoutView, login, logout, signup
 
 
@@ -11,7 +13,7 @@ class MySignupView(SignupView):
 class UserChangeView(LoginRequiredMixin, FormView):
     template_name = 'account/change.html'
     form_class = UserChangeForm
-    success_url = reverse_lazy('account_mypage')
+    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         #formのupdateメソッドにログインユーザーを渡して更新
@@ -25,11 +27,19 @@ class UserChangeView(LoginRequiredMixin, FormView):
             'email' : self.request.user.email,
             'username' : self.request.user.username,
             'position' : self.request.user.position,
-            'password1' : self.request.user.password1,
-            'password2' : self.request.user.password2,
-            'user_image' : self.request.user.user_image,
+            # 'password1' : self.request.user.password1,
+            # 'password2' : self.request.user.password2,
+            'user_image' : self.request.user.user_image.url,
         })
+        print(kwargs)
         return kwargs
 
 
 change = UserChangeView.as_view()
+
+class OnlyYouMixin(UserPassesTestMixin):
+    raise_exception = False     # set True if raise 403_Forbidden
+
+    def test_func(self):
+        user = self.request.user
+        return user.pk == self.kwargs['pk'] or user.is_superuser
