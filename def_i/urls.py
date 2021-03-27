@@ -18,5 +18,6 @@ urlpatterns = [
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
     path('task_backend/',views.BackendTaskList.as_view(),name='task_backend'),
     path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
-    # path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
+    path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
+    path('like/<int:pk>/',views.LikeView,name='like'),
 ]
