@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
+    {% comment %} <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title> {% endcomment %}
 </head>
 <body>
     <form action="{% url 'like' contents.pk %}" method="POST">
@@ -14,7 +14,7 @@
     {% else %}
         <button id="like" name="{{contents.id}}"><i class="far fa-lg fa-heart"></i></button>
     {% endif %}
-</form>
+    </form>
 <p name="{{contents.id}}" class="count" id="count"> {{ contents.like_set.count }} </p>
 </body>
 </html>
