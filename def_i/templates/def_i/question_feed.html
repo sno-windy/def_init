@@ -8,7 +8,7 @@
     <article class="main-container__contents-article">
         <p>{{q.poster}}が{{q.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
         <a href="{% url 'question_detail' q.pk %}">
-            <h2>{{q.title}}</h2>
+            <h1>{{q.title}}</h1>
         </a>
     </article>
     {% endfor %}

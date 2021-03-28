@@ -1,5 +1,8 @@
 {% extends 'def_i/base.html' %}
+{% load static %}
+{% load sass_tags %}
 {% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
@@ -11,15 +14,15 @@
 {% include 'def_i/like.html' %}
 </div>
 <p>投稿者：{{contents.poster}}</p>
-<p>{{contents.content}}</p>
-<a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く</p></a>
+<p class="article-contents">{{contents.content}}</p>
+<a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く<span>({{comments}})</span></p></a>
 <a href="{% url 'article_feed' %}"><p>記事フィードに戻る</p></a>
 {% endblock contents %}
 {% block javascript %}
 <script>
     $(document).ready(function(e){
         $(document).on('click','#like',function(e){
-            e.preventDefault();
+            e.preventDefault(); //button&POSTに対しては効きません．．．．
             $.ajax({
                 type:'GET',
                 url:"{% url 'like' contents.pk %}",

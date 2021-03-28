@@ -7,11 +7,12 @@ from .models import User,Task,Talk,Like,Article,TalkAtArticle,Question,TalkAtQue
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
+from django.db.models import Q, OuterRef, Subquery
 
 def index(request):
     return render(request,"def_i/index.html")
 
-class ArticleFeed(ListView):
+class ArticleFeed(LoginRequiredMixin,ListView):
     model = Article
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
@@ -27,6 +28,9 @@ class ArticleFeed(ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = True
+        context['member'] = User.objects.annotate(latest_post_time=Subquery(
+            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+        )).order_by('-latest_post_time')
         return context
 
 class ArticleFeedLike(ArticleFeed):
@@ -40,9 +44,12 @@ class ArticleFeedLike(ArticleFeed):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = False
+        context['member'] = User.objects.annotate(latest_post_time=Subquery(
+            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+        )).order_by('-latest_post_time')
         return context
 
-class ArticleDetail(DetailView):
+class ArticleDetail(LoginRequiredMixin,DetailView):
     model = Article
     template_name = "def_i/article_detail.html"
     def get(self,request,pk):
@@ -52,13 +59,15 @@ class ArticleDetail(DetailView):
             liked = a.like_set.filter(user=request.user)
             if liked.exists():
                 liked_list.append(a.pk)
+        comments = TalkAtArticle.objects.filter(msg_at=pk).count()
         params ={
             'contents':Article.objects.get(pk=pk),
             'liked_list':liked_list,
+            'comments':comments,
         }
         return render(request,self.template_name,params)
 
-class ArticleTalk(FormMixin,ListView):
+class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtArticle
     context_object_name = "messages"
     form_class = ArticleTalkForm #いらんかも
@@ -78,12 +87,12 @@ class ArticleTalk(FormMixin,ListView):
             msg.save()
             return redirect("article_talk_suc",pk=pk)
 
-class ArticleTalkSuc(TemplateView):
+class ArticleTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "article_talk_suc.html"
     def get(self,request,pk):
         return redirect("article_talk",pk=pk)
 
-class ArticlePost(CreateView):
+class ArticlePost(LoginRequiredMixin,CreateView):
     form_class = ArticlePostForm
     template_name = 'def_i/article_post.html'
     success_url = '../article_feed' #まだ途中なので適当
@@ -92,7 +101,7 @@ class ArticlePost(CreateView):
         initial['poster']=self.request.user
         return initial
 
-class QuestionFeed(ListView):
+class QuestionFeed(LoginRequiredMixin,ListView):
     model = Question
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
@@ -102,6 +111,9 @@ class QuestionFeed(ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = True
+        context['member'] = User.objects.annotate(latest_post_time=Subquery(
+            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+        )).order_by('-latest_post_time')
         return context
 
 class QuestionFeedUnanswered(QuestionFeed):
@@ -122,15 +134,23 @@ class QuestionFeedUnanswered(QuestionFeed):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = False
+        context['member'] = User.objects.annotate(latest_post_time=Subquery(
+            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+        )).order_by('-latest_post_time')
         return context
 
-class QuestionDetail(DetailView):
+class QuestionDetail(LoginRequiredMixin,DetailView):
     model = Question
     context_object_name = "contents"
     template_name = "def_i/question_detail.html"
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
+        return context
 
 
-class QuestionTalk(FormMixin,ListView):
+
+class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtQuestion
     context_object_name = "messages"
     form_class = QuestionTalkForm #いらんかも
@@ -150,12 +170,12 @@ class QuestionTalk(FormMixin,ListView):
             msg.save()
             return redirect("question_talk_suc",pk=pk)
 
-class QuestionTalkSuc(TemplateView):
+class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "question_talk_suc.html"
     def get(self,request,pk):
         return redirect("question_talk",pk=pk)
 
-class QuestionPost(CreateView):
+class QuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
     success_url = '../question_feed_new/' #まだ途中なので適当
@@ -164,15 +184,15 @@ class QuestionPost(CreateView):
         initial['poster']=self.request.user
         return initial
 
-class BackendTaskList(ListView):
+class BackendTaskList(LoginRequiredMixin,ListView):
     model = Task
     template_name = "def_i/base-task.html"
 
-class FrontendTaskList(ListView):
+class FrontendTaskList(LoginRequiredMixin,ListView):
     model = Task
     template_name = "def_i/base-task.html"
 
-class MessageNotification(ListView):
+class MessageNotification(LoginRequiredMixin,ListView):
     model = Talk
     template_name = 'def_i/message_notification.html'
     def get(self,request):
@@ -222,3 +242,35 @@ def LikeView(request,pk):
     #     return JsonResponse(params)
     # else:
         return JsonResponse(params)
+
+class UserPageView(ListView):
+    model = Article
+    context_object_name = "articles"
+    template_name = 'def_i/user_page.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = User.objects.get(pk=self.kwargs['pk'])
+        #イイネ数の保存
+        context["user_data"] = user
+        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
+        return context
+
+    def get_queryset(self,**kwargs):
+        articles = Article.objects.filter(poster=self.kwargs['pk']).order_by('-created_at')
+        return articles
+
+class MyPageView(ListView):
+    model = Article
+    context_object_name = "articles"
+    template_name = 'def_i/mypage.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_data"] = User.objects.get(user=request.user)
+        like_article = Like.objects.filter(user=request.user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
+        article_list = Article.objects.filter(pk__in = like_article)
+        context["articles_like"] = article_list #いいねした記事リスト
+        return context
+
+    def get_queryset(self,**kwargs):
+        articles = Article.objects.filter(poster=self.kwargs['pk'])
+        return articles
