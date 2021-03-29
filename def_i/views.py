@@ -250,7 +250,9 @@ class UserPageView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['pk'])
-        #イイネ数の保存
+        article_like_count = Article.objects.filter(poster=user).values_list('like_count',flat=True)
+        user.like_count = sum(article_like_count)
+        user.save()
         context["user_data"] = user
         context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
         return context
@@ -261,16 +263,18 @@ class UserPageView(ListView):
 
 class MyPageView(ListView):
     model = Article
-    context_object_name = "articles"
-    template_name = 'def_i/mypage.html'
-    def get_context_data(self, **kwargs):
+    # context_object_name = "articles"
+    template_name = 'def_i/my_page.html'
+    def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_data"] = User.objects.get(user=request.user)
-        like_article = Like.objects.filter(user=request.user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
+        user = self.request.user
+        context["user_data"] = User.objects.get(username=user)
+        like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
         article_list = Article.objects.filter(pk__in = like_article)
         context["articles_like"] = article_list #いいねした記事リスト
+        context["articles"] = Article.objects.filter(poster=user)
         return context
 
-    def get_queryset(self,**kwargs):
-        articles = Article.objects.filter(poster=self.kwargs['pk'])
-        return articles
+    # def get_queryset(self,request,**kwargs):
+    #     articles = Article.objects.filter(poster=request.user)
+    #     return articles

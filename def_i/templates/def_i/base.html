@@ -34,7 +34,7 @@
         <div class="header__hover-item hidden_class" id="hover_item">
         <p>{{ user.username }}</p>
         <p>{{user.position}}</p>
-        <a href=""><h1>マイページ</h1></a>
+        <a href="{% url 'my_page' %}"><h1>マイページ</h1></a>
         <a href="{% url 'article_post' %}"><h1>新規投稿</h1></a>
         <a href="{% url 'account_logout' %}"><h1>ログアウト</h1></a>
         <a href="{% url 'account_change' %}">アカウント設定</a>
