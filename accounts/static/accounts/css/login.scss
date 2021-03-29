@@ -50,6 +50,11 @@
                     text-indent: 0rem;
                     font-weight: 600;
                     color: rgb(184, 182, 182);
+
+                    &:hover{
+                        cursor: pointer;
+                        color: black;
+                    }
                     
                 }
             }
