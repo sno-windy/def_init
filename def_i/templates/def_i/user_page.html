@@ -1,0 +1,67 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% load sass_tags %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/user_page.scss' %}">
+{% endblock extra_style %}
+{% block menubar %}
+<div class="main-container__userinfo">
+<p><img src="{{user_data.user_image.url}}" alt=""></p>
+<div>
+    <h1>{{user_data.username}}</h1>
+    <p>{{user_data.position}}</p>
+</div>
+<h2>総いいね数：<span>{{user_data.like_count}}</span></h2>
+<p><a href="{% url 'article_feed' %}">検索に戻る</a></p>
+</div>
+{% endblock menubar %}
+{% block contents %}
+<h1>投稿記事</h1>
+<div class="choice-button">
+<p id="new" class="here">新着順</p>
+<p id="like">いいね順</p>
+</div>
+    <div id="new-articles">
+        {% for a in articles %}
+            <article class="main-container__contents-article">
+                <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+                <a href="{% url 'article_detail' a.pk %}">
+                    <h1>{{a.title}}</h1>
+                </a>
+                <p>{{a.like_count}}いいね</p>
+            </article>
+        {% endfor %}
+    </div>
+    <div id="like-articles" class="hidden">
+        {% for a in articles_like %}
+        <article class="main-container__contents-article like-articles">
+            <p><a href="">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+            <a href="{% url 'article_detail' a.pk %}">
+                <h1>{{a.title}}</h1>
+            </a>
+            <p>{{a.like_count}}いいね</p>
+        </article>
+        {% endfor %}
+    </div>
+
+
+{% endblock contents %}
+{% block member_list %}{% endblock member_list %}
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    document.getElementById('new').addEventListener('click',()=>{
+        document.getElementById('new-articles').classList.remove('hidden')
+        document.getElementById('like-articles').classList.add('hidden')
+        document.getElementById('new').classList.add('here')
+        document.getElementById('like').classList.remove('here')
+    })
+    document.getElementById('like').addEventListener('click',()=>{
+        document.getElementById('like-articles').classList.remove('hidden')
+        document.getElementById('new-articles').classList.add('hidden')
+        document.getElementById('new').classList.remove('here')
+        document.getElementById('like').classList.add('here')
+    })
+})
+</script>
+{% endblock javascript %}

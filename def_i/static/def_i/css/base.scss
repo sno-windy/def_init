@@ -14,7 +14,9 @@ body{
     margin: 0%;
     padding: 0%;
     background-color: #f4f4f4;
-
+}
+h1{
+    font-size: 1.5rem;
 }
 .header{
     position: fixed;
@@ -32,6 +34,12 @@ body{
         background-color: white;
         border-radius: 5px;
         border: 1px solid black;
+        a{
+            color: $list-hover;
+            &:hover{
+                color: $list-stay;
+            }
+        }
     }
     &-container{
         width: 80%;
@@ -121,7 +129,7 @@ body{
                 text-decoration: none;
                 // display: inline-block;
             }
-            h2{
+            h1{
                 font-weight: normal;
                 margin: 0.2rem 0;
                 font-size: 1rem;
@@ -150,12 +158,12 @@ body{
             // left: 15rem;
             margin: 0%;
             padding: 5rem 0 5rem 12rem;
-            width: 50%;
+            width: 55%;
             &-article{
                 height: 10%;
                 border-top: 1px $list-stay solid;
                 background-color: #fcfcfc;
-                h2{
+                h1{
                     margin: 0%;
                     font-size: 1rem;
                 }
@@ -193,9 +201,36 @@ body{
                 }
             }
         }
+        &__member-list{
+            position: fixed;
+            top: 5rem;
+            right: 5%;
+            border: 2px solid black;
+            background-color: white;
+            &-block{
+                display: flex;
+                flex-direction: row;
+                img{
+                    height: calc(2rem - 18px);
+                    width: calc(2rem - 18px);
+                    object-fit: cover;
+                    border-radius: 50%;
+                    padding: 0.2rem 0 0 0;
+                }
+            }
+            &-title{
+                padding: 0 0.2rem;
+                margin: 0 -0.1rem;
+                color: oldlace;
+                background-color: black;
+            }
+            &-name{
+                margin: 0;
+            }
+        }
     }
 }
-.now-here h2{
+.now-here h1{
     color: #f4f4f4;
     background-color: $list-stay;
 }

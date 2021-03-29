@@ -8,24 +8,24 @@
 {% block menubar %}
             <div class="main-container__menubar">
                 <a href="{% url 'index' %}" class="main-container__menubar-link now-here">
-                    <h2>講座一覧</h2>
+                    <h1>講座一覧</h1>
                 </a>
-                <a href="" class="main-container__menubar-link">
-                    <h2>メッセージ</h2>
+                <a href="{% url 'message_notification' %}" class="main-container__menubar-link">
+                    <h1>メッセージ</h1>
                 </a>
             </div>
 {% endblock menubar %}
 {% block contents %}
-<h2>講座一覧</h2>
+<h1>講座一覧</h1>
 <div class="indexbox-container">
     <div class="indexbox-container-box">
-        <h2>バックエンド編</h2>
+        <h1>バックエンド編</h1>
         <img src="{% static 'def_i/img/django_three_bros.png' %}" alt="">
         <p>Pythonのフルスタックフレームワークのdjangoを使ってバックエンドの学習を行います</p>
         <a href="{% url 'task_backend' %}">バックエンド編をはじめる</a>
     </div>
     <div class="indexbox-container-box">
-        <h2>フロンドエンド編</h2>
+        <h1>フロンドエンド編</h1>
         <img src="{% static 'def_i/img/front_three_bros.jpeg' %}" alt="">
         <p>HTML, CSS, JavaScriptを使ってフロントエンドの学習を行います</p>
         <a href="{% url 'task_frontend' %}">フロントエンド編をはじめる</a>

@@ -33,10 +33,10 @@
         </div>
         <div class="header__hover-item hidden_class" id="hover_item">
         <p>{{ user.username }}</p>
-
-        <a href=""><h2>マイページ</h2></a>
-        <a href="{% url 'article_post' %}"><h2>新規投稿</h2></a>
-        <a href="{% url 'account_logout' %}"><h2>ログアウト</h2></a>
+        <p>{{user.position}}</p>
+        <a href="{% url 'my_page' %}"><h1>マイページ</h1></a>
+        <a href="{% url 'article_post' %}"><h1>新規投稿</h1></a>
+        <a href="{% url 'account_logout' %}"><h1>ログアウト</h1></a>
         <a href="{% url 'account_change' %}">アカウント設定</a>
 
         </div>
@@ -47,10 +47,10 @@
             {% block menubar %}
             <div class="main-container__menubar">
                 <a href="" class="main-container__menubar-link">
-                    <h2>機能</h2>
+                    <h1>機能</h1>
                 </a>
                 <a href="" class="main-container__menubar-link">
-                    <h2>課題内容</h2>
+                    <h1>課題内容</h1>
                 </a>
                 <!--<div class="">box</div>-->
                 <a href="" class="main-container__menubar-sublink">
@@ -60,7 +60,7 @@
                     <p><span style="color:#f4f4f4;">──</span>──未回答</p>
                 </a>
                 <a href="" class="main-container__menubar-link">
-                    <h2>過去のまとめ</h2>
+                    <h1>過去のまとめ</h1>
                 </a>
                 <a href="" class="main-container__menubar-sublink">
                     <p><span style="color:#f4f4f4;">──</span>──新着順</p>
@@ -69,13 +69,14 @@
                     <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
                 </a>
                 <a href="" class="main-container__menubar-link">
-                    <h2>メモ帳</h2>
+                    <h1>メモ帳</h1>
                 </a>
             </div>
             {% endblock menubar %}
             <div class="main-container__contents">
                 {% block contents %}
                 {% endblock contents %}
+            {% block member_list %}{% endblock member_list %}
             </div>
         </div>
     </main>
