@@ -121,7 +121,7 @@ h1{
         &__menubar{
             position: fixed;
             left: 5%;
-            top: 5rem;
+            top: 7rem;
             width: 10rem;
             height: 70%;
             border-right: $button-gray 3px solid;
@@ -203,29 +203,38 @@ h1{
         }
         &__member-list{
             position: fixed;
-            top: 5rem;
+            top: 7rem;
             right: 5%;
-            border: 2px solid black;
-            background-color: white;
             &-block{
                 display: flex;
                 flex-direction: row;
+                border-bottom: 1px solid $button-gray;
                 img{
-                    height: calc(2rem - 18px);
-                    width: calc(2rem - 18px);
+                    height: calc(3rem - 18px);
+                    width: calc(3rem - 18px);
                     object-fit: cover;
                     border-radius: 50%;
-                    padding: 0.2rem 0 0 0;
+                    padding: 0.4rem 0 0 0;
                 }
             }
             &-title{
-                padding: 0 0.2rem;
-                margin: 0 -0.1rem;
-                color: oldlace;
-                background-color: black;
+                border-bottom: $button-gray 1px solid;
+                margin: 0;
             }
             &-name{
                 margin: 0;
+                padding: 0 0 0 0.3rem;
+
+                a{
+                    color: $list-stay;
+                    &:hover{
+                        color: black;
+                    }
+                }
+                span{
+                    font-size: 0.7rem;
+                    color: $list-stay;
+                }
             }
         }
     }

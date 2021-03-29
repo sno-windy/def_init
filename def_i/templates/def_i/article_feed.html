@@ -4,6 +4,10 @@
     <link rel="stylesheet" href="{% static 'def_i/css/article_feed.css' %}">{% endblock %}
 
 {% block contents %}
+<form action="" method="GET">
+    <input name="query" value="{{request.GET.query}}" type="text">
+    <button type="submit">検索する</button>
+</form>
 
     {% for a in articles %}
     <article class="main-container__contents-article">

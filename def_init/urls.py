@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('def_i.urls')),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
+    path('markdownx/',include('markdownx.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
