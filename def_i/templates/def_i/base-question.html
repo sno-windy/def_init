@@ -37,7 +37,7 @@
             {% for m in member %}
             <div class="main-container__member-list-block">
                 <img src="{{m.user_image.url}}">
-                <p class="main-container__member-list-name"><a href="">{{m.username}}</a></p>
+                <p class="main-container__member-list-name"><a href="{% url 'user_page' m.pk %}">{{m.username}}<br><span>{{m.position}}</span></a></p>
             </div>
             {% endfor %}
         </div>

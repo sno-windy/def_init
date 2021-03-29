@@ -31,6 +31,15 @@ class ArticleFeed(LoginRequiredMixin,ListView):
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
+        #検索
+        query_word =self.request.GET.get('query')
+        if query_word:
+            objects_list = Article.objects.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
+        else:
+            objects_list = Article.objects.order_by('-created_at')
+        context['articles'] = objects_list
         return context
 
 class ArticleFeedLike(ArticleFeed):
@@ -47,6 +56,15 @@ class ArticleFeedLike(ArticleFeed):
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
+        #検索
+        query_word =self.request.GET.get('query')
+        if query_word:
+            objects_list = Article.objects.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
+        else:
+            objects_list = Article.objects.order_by('-like_count')
+        context['articles'] = objects_list
         return context
 
 class ArticleDetail(LoginRequiredMixin,DetailView):
@@ -243,7 +261,7 @@ def LikeView(request,pk):
     # else:
         return JsonResponse(params)
 
-class UserPageView(ListView):
+class UserPageView(LoginRequiredMixin,ListView):
     model = Article
     context_object_name = "articles"
     template_name = 'def_i/user_page.html'
