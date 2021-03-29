@@ -17,9 +17,15 @@ $header-contents:rgba(250, 247, 247, 0.5);
     border-right: $button-gray 3px solid;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
         h1{
             // font-weight: normal;
-            margin: 5.1rem 0.5rem 0 2rem;
+            margin: 4.1rem 0.5rem 0 2rem;
+            font-size: 1.1rem;
+            color: $list-stay;
+        }
+        h2{
+            margin: 0 0 0 2.3rem;
             font-size: 1.1rem;
             color: $list-stay;
         }
@@ -33,7 +39,7 @@ $header-contents:rgba(250, 247, 247, 0.5);
                 width: calc(5rem - 16px);
                 object-fit: cover;
                 border-radius: 50%;
-                margin-top: 4rem;
+                margin-top: 3rem;
             }
         }
     }
