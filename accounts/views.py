@@ -4,11 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import FormView, DetailView, UpdateView
 from .forms import  MyCustomSignupForm, MyCustomLoginForm, UserChangeForm
 from allauth.account.views import LoginView, SignupView, LogoutView, login, logout, signup
+from django.views.generic.edit import UpdateView
 
 
 class MySignupView(SignupView):
     form_class = MyCustomSignupForm
     
+
+
 
 class UserChangeView(LoginRequiredMixin, FormView):
     template_name = 'account/change.html'
