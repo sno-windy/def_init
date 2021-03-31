@@ -30,6 +30,8 @@
                 </a>
                 <p>{{a.like_count}}いいね</p>
             </article>
+        {% empty %}
+        <p>記事がありません．</p>
         {% endfor %}
     </div>
     <div id="like-articles" class="hidden">
@@ -41,8 +43,11 @@
             </a>
             <p>{{a.like_count}}いいね</p>
         </article>
+        {% empty %}
+        <p>記事がありません．</p>
         {% endfor %}
     </div>
+<div class="pagination">{% include 'def_i/pagination.html' %}</div>
 
 
 {% endblock contents %}

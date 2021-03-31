@@ -9,13 +9,32 @@
 {% block menubar %}
 {% endblock menubar %}
 {% block contents %}
+{% if messages %}
+	{% for message in messages %}
+		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+	{% endfor %}
+{% endif %}
 <h1>{{contents.title}}</h1>
+{% if user == contents.poster %}
+    <span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
+{% endif %}
 <div class="like-outer">
 {% include 'def_i/like.html' %}
 </div>
 <p>投稿者：{{contents.poster}}</p>
 <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-<a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く<span>({{comments}})</span></p></a>
+<p>最新のコメント</p>
+    {% for c in comments %}
+    <article class="main-container__contents-article">
+        <p>{{c.msg_from}}></p>
+        <h1>{{c.msg}}</h1>
+        <p>{{c.time|date:"Y年 M j日 H:i:s"}}</p>
+    </article>
+    {% empty %}
+        <p>コメントがありません．</p>
+
+    {% endfor %}
+<a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
 <a href="{% url 'article_feed' %}"><p>記事フィードに戻る</p></a>
 {% endblock contents %}
 {% block javascript %}

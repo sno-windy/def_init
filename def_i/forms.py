@@ -13,10 +13,10 @@ class ArticleTalkForm(forms.ModelForm):
 class ArticlePostForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title','content','poster',]
-        widgets = {
-            'poster':forms.HiddenInput
-        }
+        fields = ['title','content',]
+        # widgets = {
+        #     'poster':forms.HiddenInput
+        # } #フォームバリッド関数を使わない場合
 
 class QuestionTalkForm(forms.ModelForm):
     class Meta:
@@ -26,9 +26,4 @@ class QuestionTalkForm(forms.ModelForm):
 class QuestionPostForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ['title','content','poster',]
-        widgets = {
-            'poster':forms.HiddenInput
-        }
-
-
+        fields = ['title','content',]

@@ -33,11 +33,11 @@
         </div>
         <div class="header__hover-item hidden_class" id="hover_item">
         <p>{{ user.username }}</p>
-        <p>{{user.position}}</p>
+        <span>{{user.position}}</span>
         <a href="{% url 'my_page' %}"><h1>マイページ</h1></a>
         <a href="{% url 'article_post' %}"><h1>新規投稿</h1></a>
         <a href="{% url 'account_logout' %}"><h1>ログアウト</h1></a>
-        <a href="{% url 'account_change'  %}">アカウント設定</a>
+        <a href="{% url 'account_change' %}"><h1>アカウント設定</h1></a>
         <a href="{% url 'password_change' %}">パスワード変更</a>
 
         </div>

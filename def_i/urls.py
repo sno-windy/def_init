@@ -10,6 +10,7 @@ urlpatterns = [
     path('article_talk/<int:pk>/',views.ArticleTalk.as_view(),name="article_talk"),
     path('article_talk_suc/<int:pk>/',views.ArticleTalkSuc.as_view(),name='article_talk_suc'),
     path('article_post/',views.ArticlePost.as_view(),name='article_post'),
+    path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('question_feed_new/',views.QuestionFeed.as_view(),name='question_feed_new'),
     path('question_feed_unanswered/',views.QuestionFeedUnanswered.as_view(),name='question_feed_unanswered'),
     path('question_detail/<int:pk>/',views.QuestionDetail.as_view(),name='question_detail'),
