@@ -1,0 +1,21 @@
+.like-outer{
+    display: flex;
+    flex-direction: row;
+    p{
+        margin: 0%;
+        padding: 0 0 0 1rem;
+    }
+    #like{
+        border: 0;
+        padding: 0%;
+    }
+    i{
+        font-size: 1rem;
+    }
+}
+.article{
+    &-contents{
+        background-color: white;
+        padding: 1rem;
+    }
+}

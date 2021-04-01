@@ -1,0 +1,8 @@
+.studynow a{
+    color: oldlace;
+    border-bottom: oldlace 5px solid;
+}
+.pagination-box{
+    display: inline-block;
+    border: 2px solid black;
+}
