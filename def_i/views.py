@@ -1,7 +1,7 @@
 from django.shortcuts import render,reverse,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView
+from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm
 from .models import User,Task,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion
@@ -117,7 +117,7 @@ class ArticleTalkSuc(LoginRequiredMixin,TemplateView):
 class ArticlePost(LoginRequiredMixin,CreateView):
     form_class = ArticlePostForm
     template_name = 'def_i/article_post.html'
-    success_url = '../article_feed'
+    success_url = reverse_lazy('article_feed')
     # def get_initial(self): #form_validを使わない場合
     #     initial = super().get_initial()
     #     initial['poster']=self.request.user
@@ -150,12 +150,20 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
         messages.error(self.request,'記事更新に失敗しました．')
         return super().form_invalid(form)
 
+class ArticleDeleteView(LoginRequiredMixin,DeleteView):
+    model = Article
+    template_name = 'def_i/article_delete.html'
+    success_url = reverse_lazy('article_feed')
+
+    def delete(self,request,*args,**kwargs):
+        messages.success(self.request,'記事を削除しました．')
+        return super().delete(request,*args,**kwargs)
 
 class QuestionFeed(LoginRequiredMixin,ListView):
     model = Question
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
-    # paginate_by = 10
+    paginate_by = 10
     queryset = Question.objects.order_by('-created_at')
 
     def get_context_data(self,**kwargs):
@@ -198,8 +206,6 @@ class QuestionDetail(LoginRequiredMixin,DetailView):
         context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
         return context
 
-
-
 class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtQuestion
     context_object_name = "messages"
@@ -228,7 +234,7 @@ class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
 class QuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
-    success_url = '../question_feed_new/'
+    success_url = reverse_lazy('question_feed_new')
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
@@ -239,6 +245,31 @@ class QuestionPost(LoginRequiredMixin,CreateView):
     def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
         messages.error(self.request,'質問作成に失敗しました．')
         return super().form_invalid(form)
+
+class QuestionUpdateView(LoginRequiredMixin,UpdateView):
+    model = Question
+    form_class = QuestionPostForm
+    template_name = 'def_i/question_edit.html'
+
+    def get_success_url(self,**kwargs):
+        return reverse_lazy('question_detail',kwargs={"pk":self.kwargs['pk']})
+
+    def form_valid(self,form):
+        messages.success(self.request,'質問を編集しました．')
+        return super().form_valid(form)
+
+    def form_invalid(self,form):
+        messages.error(self.request,'質問更新に失敗しました．')
+        return super().form_invalid(form)
+
+class QuestionDeleteView(LoginRequiredMixin,DeleteView):
+    model = Question
+    template_name = 'def_i/question_delete.html'
+    success_url = reverse_lazy('question_feed_new')
+
+    def delete(self,request,*args,**kwargs):
+        messages.success(self.request,'質問を削除しました．')
+        return super().delete(request,*args,**kwargs)
 
 class BackendTaskList(LoginRequiredMixin,ListView):
     model = Task

@@ -1,9 +1,23 @@
 {% extends 'def_i/base.html' %}
+{% load sass_tags %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
+{% endblock extra_style %}
+
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
+{% if messages %}
+	{% for message in messages %}
+		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+	{% endfor %}
+{% endif %}
 <h1>{{contents.title}}</h1>
+{% if user == contents.poster %}
+    <span><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>
+    <span><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
+{% endif %}
 <p>質問者：{{contents.poster}}</p>
-<p>{{contents.content}}</p>
+<p class="article-contents">{{contents.content}}</p>
 <a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments}})</span></p></a>
 <a href="{% url 'question_feed_new' %}"><p>質問フィードに戻る</p></a>
 {% endblock contents %}
