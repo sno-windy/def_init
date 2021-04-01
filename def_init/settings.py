@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'taggit',
     'markdownx',
     'cms_integration',
+
 ]
 
 SITE_ID = 1
@@ -105,6 +106,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = True
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = 'index'
@@ -169,6 +172,7 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static/')
 # STATICFILES_DIRS = (
 # os.path.join(BASE_DIR, 'static'),
 # )
+
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
 SASS_PRECISION = 8
