@@ -1,0 +1,12 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block menubar %}{% endblock menubar %}
+{% block contents %}
+<form action="" method="POST">
+{% csrf_token %}
+<p>タイトル：{{article.title}}</p>
+<p>本当に削除しますか？</p>
+<button class="button" type="submit">はい，削除します</button>
+<a href="{% url 'article_detail' object.pk %}">やっぱりやめます</a>
+</form>
+{% endblock contents %}

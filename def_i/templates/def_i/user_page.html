@@ -6,10 +6,12 @@
 {% endblock extra_style %}
 {% block menubar %}
 <div class="main-container__userinfo">
+<div class="main-container__userinfo-user">
 <p><img src="{{user_data.user_image.url}}" alt=""></p>
 <div>
     <h1>{{user_data.username}}</h1>
     <p>{{user_data.position}}</p>
+</div>
 </div>
 <h2>総いいね数：<span>{{user_data.like_count}}</span></h2>
 <p><a href="{% url 'article_feed' %}">検索に戻る</a></p>
