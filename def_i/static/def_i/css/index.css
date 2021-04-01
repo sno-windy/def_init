@@ -1,0 +1,72 @@
+h1 {
+  font-size: 1.5rem;
+}
+
+.tasknow a {
+  color: oldlace;
+  border-bottom: oldlace 5px solid;
+}
+
+.indexbox-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 2rem 0 0 0;
+  width: 140%;
+}
+
+.indexbox-container-box {
+  height: 20rem;
+  width: 20rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 0 0 0 2rem;
+  background-color: white;
+  position: relative;
+}
+
+.indexbox-container-box h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.indexbox-container-box img {
+  height: 7rem;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.indexbox-container-box p {
+  margin: 0 5%;
+}
+
+.indexbox-container-box a {
+  text-decoration: none;
+  position: absolute;
+  bottom: 2rem;
+  left: 10%;
+  right: 10%;
+  border: black 2px solid;
+  color: black;
+  border-radius: 10px;
+}
+
+.indexbox-container-box a:hover {
+  background-color: #cacaca;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+}
+/*# sourceMappingURL=index.css.map */

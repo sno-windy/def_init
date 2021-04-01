@@ -1,0 +1,29 @@
+.like-outer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.like-outer p {
+  margin: 0%;
+  padding: 0 0 0 1rem;
+}
+
+.like-outer #like {
+  border: 0;
+  padding: 0%;
+}
+
+.like-outer i {
+  font-size: 1rem;
+}
+
+.article-contents {
+  background-color: white;
+  padding: 1rem;
+}
+/*# sourceMappingURL=article_detail.css.map */
