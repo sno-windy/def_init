@@ -3,8 +3,10 @@
 {% block extra_style %}
 <link rel="stylesheet" href="{% static 'def_i/css/article_post.css' %}">
 {% endblock extra_style %}
+{% block menubar %}{% endblock menubar %}
 {% block contents %}
-<h2>投稿</h2>
+<h1>投稿</h1>
+<p>*試験的にMarkdownを採用しています*</p>
 <form action = "" method = "POST">
 {% csrf_token %}
 {{form}}

@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
 
 User = get_user_model()
 
@@ -9,10 +11,16 @@ User = get_user_model()
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
     title = models.CharField(max_length=30)
-    content = models.TextField(null=True)
+    # content = models.TextField(null=True)
+    content = MarkdownxField()
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
+    def __str__(self):
+        return self.title
+
+    def formatted_markdown(self):
+        return markdownify(self.content)
 
 class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")

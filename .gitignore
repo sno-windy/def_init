@@ -74,7 +74,9 @@ pytestdebug.log
 *.mo
 
 # Django stuff:
-
+static/admin/
+static/markdownx/
+static/debug_toolbar/
 # Flask stuff:
 instance/
 .webassets-cache

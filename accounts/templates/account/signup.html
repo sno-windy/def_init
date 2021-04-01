@@ -1,31 +1,42 @@
-{% extends "def_i/base.html" %}
 {% load static %}
-{% block extra_style %}
-<link rel="stylesheet" href="{% static 'accounts/css/signup.css' %}">
-{% endblock %}
-{% block header %}
-{% endblock %}
-{% block menubar %}
-{% endblock menubar %}
-{% block contents %}
-<div class="signup-container">
-    <div class="signup-header">
-        <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
-        <p class="header-container__title">Def init</p>
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
+    <link rel="stylesheet" href="{% sass_src 'accounts/css/signup.scss' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <title>DefInit</title>
+</head>
+
+<body>
+    <div class="signup">
+        <div class="signup-container">
+            <div class="signup-container__icon">
+                <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
+            </div>
+            <form class="signup-container__form" action="{% url 'account_signup' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p class="normal_box">名前 {{ form.username }}</p>
+                <p class="image_box">画像 <br>
+                    <label for="">
+                        {{ form.user_image }}
+                    </label></p>
+                <p class="normal_box">肩書き {{ form.position }}</p>
+                <p class="normal_box">メールアドレス {{ form.email }}</p>
+                <p class="normal_box">パスワード {{ form.password1 }}</p>
+                <p class="normal_box">パスワード(確認用) {{ form.password2 }}</p>
+                <p class="normal_box"><input class="button" type="submit" value="登録完了"></p>
+            </form>
+        </div>
     </div>
-     #def initとアイコンは白いだけであります
-     <div class="signup-form">
-        <form action="{% url 'account_signup' %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <p>名前 {{ form.username }}</p>
-            <p>画像 {{ form.user_image }}</p>
-            <p>肩書き {{ form.position }}</p>
-            <p>メールアドレス {{ form.email }}</p>
-            <p>パスワード {{ form.password1 }}</p>
-            <p>パスワード2 {{ form.password2 }}</p>
-            <p><input type="submit" value="登録完了"></p>
-        </form>
-     </div>
     
-</div>
-{% endblock contents %}
+</body>
+
+</html>
+

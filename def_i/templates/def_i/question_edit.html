@@ -1,0 +1,14 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/question_post.css' %}">
+{% endblock extra_style %}
+{% block menubar %}{% endblock menubar %}
+{% block contents %}
+<h1>編集</h1>
+<form action = "" method = "POST">
+{% csrf_token %}
+{{form}}
+<button type="submit">編集を保存する</button>
+</form>
+{% endblock contents %}

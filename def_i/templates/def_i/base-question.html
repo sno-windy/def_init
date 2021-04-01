@@ -2,7 +2,7 @@
         {% block menubar %}
             <div class="main-container__menubar">
                 <a href="{% url 'article_feed' %}" class="main-container__menubar-link">
-                    <h2>記事フィード</h2>
+                    <h1>記事フィード</h1>
                 </a>
                 <a href="{% url 'article_feed' %}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
@@ -11,7 +11,7 @@
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
                 <a href="" class="main-container__menubar-link now-here">
-                    <h2>質問フィード</h2>
+                    <h1>質問フィード</h1>
                 </a>
             {% if sort_by_new == True %}
                 <a href="{% url 'question_feed_new' %}" class="main-container__menubar-sublink now-here-sub">
@@ -30,3 +30,16 @@
             {% endif %}
             </div>
         {% endblock menubar %}
+        {% block contents %}
+        {% block member_list %}
+        <div class="main-container__member-list">
+        <p class="main-container__member-list-title">メンバー一覧</p>
+            {% for m in member %}
+            <div class="main-container__member-list-block">
+                <img src="{{m.user_image.url}}">
+                <p class="main-container__member-list-name"><a href="{% url 'user_page' m.pk %}">{{m.username}}<br><span>{{m.position}}</span></a></p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock member_list %}
+        {% endblock contents %}

@@ -1,24 +1,41 @@
-{% extends "def_i/base.html" %}
 {% load static %}
-{% block extra_style %}
-<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
-{% endblock %}
-{% block header %}
-{% endblock %}
-{% block menubar %}
-{% endblock menubar %}
-{% block contents %}
-<div class="login-container">
-    <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
-    <p class="header-container__title">Def init</p>
-    #def initとアイコンは白いだけであります
-    <form action="{% url 'account_login' %}" method="POST">
-        {% csrf_token %}
-        <p>{{ form.login }}</p>
-        <p>{{ form.password }}</p>
-        <p><input type="submit" value="ログイン"></p>
+{% load sass_tags %}
+<!DOCTYPE html>
+<html lang="ja">
 
-        <p>会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
-    </form>
-</div>
-{% endblock contents %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
+    <link rel="stylesheet" href="{% sass_src 'accounts/css/login.scss' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <title>DefInit</title>
+</head>
+
+<body>
+    <div class="login">
+        <div class="login-container">
+            <div class="login-container__icon">
+                <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
+            </div>
+            <form class="login-container__form" action="{% url 'account_login' %}" method="POST">
+                {% csrf_token %}
+                <p>{{ form.login }}</p>
+                <p>{{ form.password }}</p>
+                <p><input class="button" type="submit" value="ログイン"></p>
+            </form>
+            <p class="login-container__link">会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
+            <p class="login-container__link">パスワードを忘れた方は<a href="{% url 'password_reset' %}">こちら</a></p>
+        </div>
+    </div>
+    
+</body>
+
+</html>
+
+
+
+
+

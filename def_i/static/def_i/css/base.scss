@@ -14,7 +14,9 @@ body{
     margin: 0%;
     padding: 0%;
     background-color: #f4f4f4;
-
+}
+h1{
+    font-size: 1.5rem;
 }
 .header{
     position: fixed;
@@ -27,11 +29,29 @@ body{
     &__hover-item{
         position: fixed;
         top: 5rem;
-        right: 10%;
+        right: 8%;
         z-index: 5;
         background-color: white;
-        border-radius: 5px;
         border: 1px solid black;
+        a{
+            color: $list-hover;
+            &:hover{
+                color: $list-stay;
+            }
+        }
+        p{
+            font-weight: 700;
+            margin: 0%;
+
+        }
+        span{
+            color: $button-gray;
+            font-size: 0.6rem;
+        }
+        h1{
+            margin: 0%;
+            font-size: 1rem;
+        }
     }
     &-container{
         width: 80%;
@@ -113,7 +133,7 @@ body{
         &__menubar{
             position: fixed;
             left: 5%;
-            top: 5rem;
+            top: 7rem;
             width: 10rem;
             height: 70%;
             border-right: $button-gray 3px solid;
@@ -121,7 +141,7 @@ body{
                 text-decoration: none;
                 // display: inline-block;
             }
-            h2{
+            h1{
                 font-weight: normal;
                 margin: 0.2rem 0;
                 font-size: 1rem;
@@ -150,12 +170,12 @@ body{
             // left: 15rem;
             margin: 0%;
             padding: 5rem 0 5rem 12rem;
-            width: 50%;
+            width: 55%;
             &-article{
                 height: 10%;
                 border-top: 1px $list-stay solid;
                 background-color: #fcfcfc;
-                h2{
+                h1{
                     margin: 0%;
                     font-size: 1rem;
                 }
@@ -193,9 +213,45 @@ body{
                 }
             }
         }
+        &__member-list{
+            position: fixed;
+            top: 7rem;
+            right: 5%;
+            &-block{
+                display: flex;
+                flex-direction: row;
+                border-bottom: 1px solid $button-gray;
+                img{
+                    height: calc(3rem - 18px);
+                    width: calc(3rem - 18px);
+                    object-fit: cover;
+                    border-radius: 50%;
+                    padding: 0.4rem 0 0 0;
+                }
+            }
+            &-title{
+                border-bottom: $button-gray 1px solid;
+                margin: 0;
+            }
+            &-name{
+                margin: 0;
+                padding: 0 0 0 0.3rem;
+
+                a{
+                    color: $list-stay;
+                    &:hover{
+                        color: black;
+                    }
+                }
+                span{
+                    font-size: 0.7rem;
+                    color: $list-stay;
+                }
+            }
+        }
     }
 }
-.now-here h2{
+.now-here h1{
     color: #f4f4f4;
     background-color: $list-stay;
 }
@@ -223,4 +279,26 @@ body{
 }
 a{
     text-decoration: none;
+}
+.pagination{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    &_box{
+        padding: 0.1rem 0.4rem;
+        a{
+            color: black;
+        }
+    }
+    &_num{
+        padding: 0.1rem 0.4rem;
+        a{
+            color: black;
+        }
+    }
+    &_here{
+        padding: 0.1rem 0.4rem;
+        background-color: black;
+        color: oldlace;
+    }
 }
