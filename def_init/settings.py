@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'sass_processor',
     'taggit',
-    'markdownx'
+    'markdownx',
+    'cms_integration',
 ]
 
 SITE_ID = 1

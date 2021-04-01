@@ -17,6 +17,7 @@
 <h1>{{contents.title}}</h1>
 {% if user == contents.poster %}
     <span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
+    <span><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
 {% endif %}
 <div class="like-outer">
 {% include 'def_i/like.html' %}
