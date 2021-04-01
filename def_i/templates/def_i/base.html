@@ -29,7 +29,11 @@
             <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
             <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>
             <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
-            <p class="header-container__usericon" id="icon"><img src="{{ user.user_image.url }}" alt=""></p>
+            <p class="header-container__usericon" id="icon">
+                {% if user.user_image %}
+                <img src="{{ user.user_image.url }}" alt="">
+                {% endif %}
+            </p>
         </div>
         <div class="header__hover-item hidden_class" id="hover_item">
         <p>{{ user.username }}</p>

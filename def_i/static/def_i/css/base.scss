@@ -173,7 +173,7 @@ h1{
             &-article{
                 height: 10%;
                 border-top: 1px $list-stay solid;
-                background-color: #fcfcfc;
+                // background-color: #fcfcfc;
                 h1{
                     margin: 0%;
                     font-size: 1rem;
@@ -219,7 +219,8 @@ h1{
             &-block{
                 display: flex;
                 flex-direction: row;
-                border-bottom: 1px solid $button-gray;
+                margin-bottom: 10px;
+                // border-bottom: 1px solid $button-gray;
                 img{
                     height: calc(3rem - 18px);
                     width: calc(3rem - 18px);
@@ -231,6 +232,8 @@ h1{
             &-title{
                 border-bottom: $button-gray 1px solid;
                 margin: 0;
+                text-align: center;
+                font-size: 1.2rem;
             }
             &-name{
                 margin: 0;
