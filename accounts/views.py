@@ -6,10 +6,10 @@ from django.views.generic import FormView, DetailView, UpdateView
 from allauth.account.views import LoginView, SignupView, LogoutView, login, logout, signup,PasswordChangeView
 from django.views.generic.edit import UpdateView
 from .models import User
-from .forms import MyCustomSignupForm
+from .forms import MyCustomSignupForm, UserChangeForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import ( PasswordChangeView,  PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView)
-from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm,PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm,PasswordResetForm, SetPasswordForm
 
 
 class MySignupView(SignupView):

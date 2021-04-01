@@ -21,6 +21,15 @@
                 <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
             </div>
             <form class="signup-container__form" action="{% url 'account_signup' %}" method="POST" enctype="multipart/form-data">
+                {% if form.non_field_errors %}
+                <ul class="alert alert-danger list-unstyled">
+                <ul class="alert alert-danger list-unstyled">{% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                </ul>
+                </ul>
+                {% endfor %}
+
+                {% endif %}
                 {% csrf_token %}
                 <p class="normal_box">名前 {{ form.username }}</p>
                 <p class="image_box">画像 <br>
