@@ -24,9 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '_(9#o643xi-wm8kmqch@ffnh7mwg6fnhu46g2!b1b5fh)5%(@t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['def-init.tk']
+# ALLOWED_HOSTS = ['def-init.tk']
+ALLOWED_HOSTS = ['localhost']
+
 
 
 # Application definition
@@ -172,6 +174,13 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static/')
 # STATICFILES_DIRS = (
 # os.path.join(BASE_DIR, 'static'),
 # )
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
+
 
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
