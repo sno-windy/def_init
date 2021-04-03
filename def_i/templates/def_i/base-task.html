@@ -4,20 +4,41 @@
 {% endblock extra_style %}
 {% block contents %}
 <h1>課題</h1>
-<a href="">
-    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題１</p><p class="main-container__contents-taskbox-descript">説明１</p></div>
-</a>
-<a href="">
-    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題２</p><p class="main-container__contents-taskbox-descript">説明２</p></div>
-</a>
-<a href="">
-    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題３</p><p class="main-container__contents-taskbox-descript">説明３</p></div>
-</a>
-<a href="">
-    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題４</p><p class="main-container__contents-taskbox-descript">説明４</p></div>
-</a>
-<a href="">
-    <div class ="main-container__contents-taskbox"><p class="main-container__contents-taskbox-tag">課題５</p><p class="main-container__contents-taskbox-descript">説明５</p></div>
-</a>
+{% block menubar %}
+{% endblock menubar %}
+<div class="main-container__contents-taskboxies">
+<div class ="main-container__contents-taskbox js-accordion-title">
+    <p class="main-container__contents-taskbox-tag ">課題１</p><p class="main-container__contents-taskbox-descript">説明１</p>
+</div>
+<div class="main-container__contents-taskbox-details accordion__content">
+    <a href="">
+        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題１-1</p><p class="main-container__contents-taskbox-detail-descript">説明１</p></div>
+    </a>
+    <a href="">
+        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題１-2</p><p class="main-container__contents-taskbox-detail-descript">説明2</p></div>     
+    </a>
+    <a href="">
+        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題１-3</p><p class="main-container__contents-taskbox-detail-descript">説明3</p></div>
+    </a>
+</div>
+
 <a href="{% url 'index' %}" class="button"><p>ひとつ前に戻る</p></a>
+</div>
 {% endblock contents %}
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded",() => {
+  const title = document.querySelectorAll('.js-accordion-title');
+  
+  for (let i = 0; i < title.length; i++){
+    let titleEach = title[i];
+    let content = titleEach.nextElementSibling;
+    titleEach.addEventListener('click', () => {
+      titleEach.classList.toggle('is-active');
+      content.classList.toggle('is-open');
+    });
+  }
+
+});
+</script>
+{% endblock javascript %}
