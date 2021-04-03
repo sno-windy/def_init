@@ -10,7 +10,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
 from django.urls import reverse_lazy
 from django.db.models import Q, OuterRef, Subquery
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(login_url ='accounts/login/')
 def index(request):
     return render(request,"def_i/index.html")
 
