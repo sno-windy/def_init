@@ -24,11 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '_(9#o643xi-wm8kmqch@ffnh7mwg6fnhu46g2!b1b5fh)5%(@t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-# ALLOWED_HOSTS = ['def-init.tk']
-ALLOWED_HOSTS = ['localhost']
-
+ALLOWED_HOSTS = ['def-init.tk']
 
 
 # Application definition
@@ -168,19 +166,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static/')
-# STATICFILES_DIRS = (
-# os.path.join(BASE_DIR, 'static'),
-# )
-
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
 
+STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+# STATICFILES_DIRS = (
+# os.path.join(BASE_DIR, 'static'),
+# )
 
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
@@ -192,3 +188,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 INTERNAL_IPS = ['127.0.0.1', '192.168.33.1']
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
