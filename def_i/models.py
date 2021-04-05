@@ -39,7 +39,7 @@ class Question(models.Model):
             'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
             'included_segments': ['All'],
             'contents': {'en': self.title},
-            'headings': {'en': 'Def init'},
+            'headings': {'en': '新しい質問が投稿されました！質問に答えましょう．'},
             'url': resolve_url('question_feed_new'),
         }
         requests.post(

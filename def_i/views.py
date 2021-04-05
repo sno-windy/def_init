@@ -242,6 +242,8 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question = form.save(commit=False)
         question.poster = self.request.user
         question.save()
+        #push通知
+        question.browser_push(self.request)
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
