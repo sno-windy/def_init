@@ -242,6 +242,8 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question = form.save(commit=False)
         question.poster = self.request.user
         question.save()
+        #push通知
+        question.browser_push(self.request)
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
@@ -287,51 +289,7 @@ class MessageNotification(LoginRequiredMixin,ListView):
     template_name = 'def_i/message_notification.html'
     def get(self,request):
         messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
-        print(messages)
         return render(request,self.template_name,{"messages":messages})
-
-# class LikeView(TemplateView):
-#     def post(self,request,pk):
-#         article = Article.objects.get(pk=pk)
-#         print(article)
-#         user = request.user
-#         liked = False
-#         like = Like.objects.filter(article=article,user=user)
-#         if like.exists():
-#             like.delete()
-#         else:
-#             like.create(article=article,user=user)
-#             liked = True
-#         params={
-#             'article_id':article.id,
-#             'liked':liked,
-#             'count':article.like_set.count(),
-#             # 'pk':pk,
-#         }
-#         if request.is_ajax():
-#             return JsonResponse(params)
-def LikeView(request,pk):
-    if request.method =="GET":
-        article = Article.objects.get(pk=pk)
-        user = request.user
-        liked = False
-        like = Like.objects.filter(article=article, user=user)
-        if like.exists():
-            like.delete()
-        else:
-            like.create(article=article, user=user)
-            liked = True
-
-        params={
-            'article_id': article.id,
-            'liked': liked,
-            'count': article.like_set.count(),
-        }
-
-    # if request.is_ajax():
-    #     return JsonResponse(params)
-    # else:
-        return JsonResponse(params)
 
 class UserPageView(LoginRequiredMixin,ListView):
     model = Article
@@ -345,7 +303,7 @@ class UserPageView(LoginRequiredMixin,ListView):
         user.like_count = sum(article_like_count)
         user.save()
         context["user_data"] = user
-        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
+        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:10]
         return context
 
     def get_queryset(self,**kwargs):
@@ -364,9 +322,27 @@ class MyPageView(LoginRequiredMixin,ListView):
         like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
         article_list = Article.objects.filter(pk__in = like_article)
         context["articles_like"] = article_list #いいねした記事リスト
-        # context["articles"] = Article.objects.filter(poster=user)
         return context
 
     def get_queryset(self,**kwargs):
         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
         return articles
+
+def LikeView(request,pk):
+    if request.method =="GET":
+        article = Article.objects.get(pk=pk)
+        user = request.user
+        liked = False
+        like = Like.objects.filter(article=article, user=user)
+        if like.exists():
+            like.delete()
+        else:
+            like.create(article=article, user=user)
+            liked = True
+
+        params={
+            'article_id': article.id,
+            'liked': liked,
+            'count': article.like_set.count(),
+        }
+        return JsonResponse(params)
