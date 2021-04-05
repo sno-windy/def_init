@@ -4,7 +4,8 @@ from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
-
+from django.shortcuts import resolve_url
+import requests
 User = get_user_model()
 
 
@@ -41,7 +42,7 @@ class Question(models.Model):
             'headings': {'en': 'Def init'},
             'url': resolve_url('question_feed_new'),
         }
-        request.post(
+        requests.post(
             "https://onesignal.com/api/v1/notifications",
             headers={'Authorization': 'Basic MWY3ZjM5M2EtMmU2Ny00YjRiLWFhYzgtZDYwMjQyZTQ5NzI1'},
             json=data,
