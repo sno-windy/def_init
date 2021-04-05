@@ -36,7 +36,7 @@
         <p class="main-container__member-list-title">メンバー</p>
             {% for m in member %}
             <div class="main-container__member-list-block">
-                <img src="{{m.user_image.url}}">
+                <img src="{{m.user_image_thumbnail.url}}">
                 <p class="main-container__member-list-name"><a href="{% url 'user_page' m.pk %}">{{m.username}}<br><span>{{m.position}}</span></a></p>
             </div>
             {% endfor %}
