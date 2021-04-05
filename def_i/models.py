@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
+from django.shortcuts import resolve_url
+import requests
 
 User = get_user_model()
 
@@ -32,6 +34,7 @@ class Task_Sub(models.Model):
     def __str__(self):
         return str(self.title)
 
+
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
     article_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_article", default=get_task)
@@ -57,6 +60,22 @@ class Question(models.Model):
 
     def __str__(self):
         return str(self.title)+" by "+str(self.poster)
+
+    def browser_push(self,request):
+        data = {
+            'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
+            'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",
+            'included_segments': ['All'],
+            'contents': {'en': self.title},
+            'headings': {'en': '新しい質問が投稿されました！質問に答えましょう．'},
+            'url': resolve_url('question_feed_new'),
+        }
+        requests.post(
+            "https://onesignal.com/api/v1/notifications",
+            headers={'Authorization': 'Basic MWY3ZjM5M2EtMmU2Ny00YjRiLWFhYzgtZDYwMjQyZTQ5NzI1'},
+            json=data,
+        )
+
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
