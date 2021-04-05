@@ -33,6 +33,21 @@ class Question(models.Model):
     def __str__(self):
         return str(self.title)+" by "+str(self.poster)
 
+    def browser_push(self,request):
+        data = {
+            'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
+            'included_segments': ['All'],
+            'contents': {'en': self.title},
+            'headings': {'en': 'Def init'},
+            'url': resolve_url('question_feed_new'),
+        }
+        request.post(
+            "https://onesignal.com/api/v1/notifications",
+            headers={'Authorization': 'Basic MWY3ZjM5M2EtMmU2Ny00YjRiLWFhYzgtZDYwMjQyZTQ5NzI1'},
+            json=data,
+        )
+
+
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
