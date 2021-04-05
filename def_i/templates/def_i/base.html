@@ -43,7 +43,7 @@
             <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
             <p class="header-container__usericon" id="icon">
                 {% if user.user_image %}
-                <img src="{{ user.user_image.url }}" alt="">
+                <img src="{{ user.user_image_thumbnail.url }}" alt="">
                 {% endif %}
             </p>
         </div>

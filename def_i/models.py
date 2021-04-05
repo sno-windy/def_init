@@ -6,8 +6,8 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from django.shortcuts import resolve_url
 import requests
-User = get_user_model()
 
+User = get_user_model()
 
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")

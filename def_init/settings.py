@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'taggit',
     'markdownx',
     'cms_integration',
-
+    'imagekit'
 ]
 
 SITE_ID = 1
