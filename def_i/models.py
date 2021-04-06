@@ -44,11 +44,11 @@ class Article(models.Model):
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
-    article_image = models.ImageField(upload_to="def_i/img",null=True)
-    article_image_resize = ImageSpecField(source='user_image',
-    processors=[ResizeToFill(250,250)],
-    format='JPEG',
-    options={'quality':60})
+    # article_image = models.ImageField(upload_to="def_i/img",null=True)
+    # article_image_resize = ImageSpecField(source='user_image',
+    # processors=[ResizeToFill(250,250)],
+    # format='JPEG',
+    # options={'quality':60})
     def __str__(self):
         return self.title
 
