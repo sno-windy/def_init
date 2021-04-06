@@ -27,7 +27,7 @@ class Task(models.Model):
 class Task_Sub(models.Model):
     title = models.CharField(max_length=30)
     number = models.PositiveSmallIntegerField(default=0)
-    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub")
+    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub",default=1)
     clear = models.BooleanField(default=False)
 
 

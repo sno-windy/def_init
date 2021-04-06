@@ -10,11 +10,10 @@
 	{% endfor %}
 {% endif %}
 <form action="" method="GET">
-    <input name="query" value="{{request.GET.query}}" type="text">
+    {{form}}
     <button type="submit">検索する</button>
 </form>
-
-    {% for a in object_list %}
+    {% for a in articles %}
     <article class="main-container__contents-article">
         <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
         <a href="{% url 'article_detail' a.pk %}">
