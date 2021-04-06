@@ -44,6 +44,7 @@
             <p class="header-container__usericon" id="icon">
                 {% if user.user_image %}
                 <img src="{{ user.user_image_thumbnail.url }}" alt="">
+                {% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">
                 {% endif %}
             </p>
         </div>

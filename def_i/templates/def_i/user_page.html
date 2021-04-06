@@ -7,7 +7,8 @@
 {% block menubar %}
 <div class="main-container__userinfo">
 <div class="main-container__userinfo-user">
-<p><img src="{{user_data.user_image_thumbnail.url}}" alt=""></p>
+<p>{% if user_data.user_image %}<img src="{{ user_data.user_image_thumbnail.url }}" alt="">
+{% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">{% endif %}</p>
 <div>
     <h1>{{user_data.username}}</h1>
     <p>{{user_data.position}}</p>
