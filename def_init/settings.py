@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'taggit',
     'markdownx',
     'cms_integration',
-    'imagekit'
+    'imagekit',
+    'storages',
 ]
 
 SITE_ID = 1
@@ -193,3 +194,8 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+#AWS_S3
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+AWS_STORAGE_BUCKET_NAME = 'def-init'
