@@ -5,6 +5,7 @@ from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from django.shortcuts import resolve_url
+from def_init.secret_settings import *
 import requests
 
 User = get_user_model()
@@ -43,6 +44,11 @@ class Article(models.Model):
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
+    # article_image = models.ImageField(upload_to="def_i/img",null=True)
+    # article_image_resize = ImageSpecField(source='user_image',
+    # processors=[ResizeToFill(250,250)],
+    # format='JPEG',
+    # options={'quality':60})
     def __str__(self):
         return self.title
 
@@ -72,7 +78,7 @@ class Question(models.Model):
         }
         requests.post(
             "https://onesignal.com/api/v1/notifications",
-            headers={'Authorization': 'Basic MWY3ZjM5M2EtMmU2Ny00YjRiLWFhYzgtZDYwMjQyZTQ5NzI1'},
+            headers={'Authorization': ONESIGNAL_SECRET_KEY},
             json=data,
         )
 
