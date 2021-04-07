@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from .secret_settings import *
 from pathlib import Path
 import os
 
@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_(9#o643xi-wm8kmqch@ffnh7mwg6fnhu46g2!b1b5fh)5%(@t'
+SECRET_KEY = SETTINGS_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'taggit',
     'markdownx',
     'cms_integration',
-    'imagekit'
+    'imagekit',
+    'storages',
 ]
 
 SITE_ID = 1
@@ -172,7 +173,7 @@ USE_TZ = True
 #     'sass_processor.finders.CssFinder',
 # ]
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles/')
 # STATICFILES_DIRS = (
 # os.path.join(BASE_DIR, 'static'),
@@ -193,3 +194,15 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+#AWS_S3
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+DEFAULT_FILE_STORAGE = 'def_init.storage_backends.MediaStorage'
+AWS_STORAGE_BUCKET_NAME = 'def-init'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
