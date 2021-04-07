@@ -96,7 +96,6 @@ class Talk(models.Model):
     def __str__(self):
         return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
 
-#add
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
 

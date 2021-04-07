@@ -39,7 +39,7 @@
             {% for m in member %}
             <div class="main-container__member-list-block">
                 {% if m.user_image %}
-                <img src="{{ m.user_image_thumbnail.url }}" alt="">
+                <img src="{{ m.user_image.url }}" alt="">
                 {% else %}
                 <img src="{% static 'def_i/img/default.png' %}" alt="">
                 {% endif %}
