@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm
-from .models import User,Task,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
+from .models import User,Task,Task_Sub,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
@@ -205,7 +205,6 @@ class QuestionDetail(LoginRequiredMixin,DetailView):
 
 class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtQuestion
-    context_object_name = "messages"
     form_class = QuestionTalkForm #いらんかも
     template_name = 'def_i/question_talk.html'
     def get(self,request,pk):
@@ -271,8 +270,49 @@ class QuestionDeleteView(LoginRequiredMixin,DeleteView):
         return super().delete(request,*args,**kwargs)
 
 class BackendTaskList(LoginRequiredMixin,ListView):
+    context_object_name = 'task_list'
+    queryset = Task.objects.order_by('f_number').prefetch_related('task_sub')
     model = Task
     template_name = "def_i/base-task.html"
+
+
+    def get_context_data(self , *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['task_sub_list'] = Task_Sub.objects.all()
+
+
+        return context
+
+class TaskDetail(LoginRequiredMixin, DetailView):
+    model = Task_Sub
+    context_object_name = 'task_sub'
+    fields = ['title','contents',]
+    template_name = 'def_i/task_detail.html'
+
+
+# class Memo(LoginRequiredMixin, CreateView):
+#     model = Memo
+#     context_object_name = 'task_memo'
+#     form_class = MemoForm
+#     template_name = 'def_i/task_memo_form.html'
+
+#     def get_context_data(self,**kwargs):
+#         context = super().get_context_data(**kwargs)
+        
+#         return context
+
+def MemoView(request, pk):
+    memo = get_object_or_404(Memo, pk=pk)
+    if request.method == "POST":
+        form = MemoForm(request.POST, instance=memo)
+        if form.is_valid():
+            form.save()
+            return redirect('task_memo')
+    else:
+        form = MemoForm(instance=memo)
+
+    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo })
+
 
 class FrontendTaskList(LoginRequiredMixin,ListView):
     model = Task
