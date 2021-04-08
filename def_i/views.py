@@ -118,10 +118,7 @@ class ArticlePost(LoginRequiredMixin,CreateView):
     form_class = ArticlePostForm
     template_name = 'def_i/article_post.html'
     success_url = reverse_lazy('article_feed')
-    # def get_initial(self): #form_validを使わない場合
-    #     initial = super().get_initial()
-    #     initial['poster']=self.request.user
-    #     return initial
+    #form_valid()を使わない場合，get_initial()で初期値をユーザーにすればよい
 
     def form_valid(self,form):
         article = form.save(commit=False)

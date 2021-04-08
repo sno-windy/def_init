@@ -37,33 +37,46 @@
     {% endfor %}
 <a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
 <a href="{% url 'article_feed' %}"><p>記事フィードに戻る</p></a>
+{% if contents.article_image %}
+<button id="popup-btn">画像を表示する</button>
+<div class="popup" id="popup">
+  <div class="popup-inner">
+    <div class="close-btn" id="close-btn"><i class="fas fa-times"></i></div>
+    <a href="#"><img src="./img/popup.jpg" alt="ポップアップ画像"></a>
+  </div>
+  <div class="black-background" id="black-bg"></div>
+</div>
+
+{% endif %}
 {% endblock contents %}
 {% block javascript %}
 <script>
-    $(document).ready(function(e){
-        $(document).on('click','#like',function(e){
-            e.preventDefault(); //button&POSTに対しては効きません．．．．
-            $.ajax({
-                type:'GET',
-                url:"{% url 'like' contents.pk %}",
-                // data:{
-                //     'article_id':$this.attr('name'),
-                //     'csrfmiddlewaretoken':'{{ csrf_token }}',
-                // }
-                // dataType:'json',
-                success:function(response){
-                    selector = document.getElementById('like')
-                    if(response.liked){
-                        $(selector).html("<i class='fas fa-lg fa-heart'></i>")
-                    }
-                    else{
-                        $(selector).html("<i class='far fa-lg fa-heart'></i>")
-                    }
-                    selector2 = document.getElementById('count')
-                    $(selector2).text(response.count)
+//jQueryあんまりよくないと知る前に作ったので使っています．．．
+$(document).ready(function(e){
+    $(document).on('click','#like',function(e){
+        e.preventDefault(); //button&POSTに対しては効きません．．．．
+        $.ajax({
+            type:'GET',
+            url:"{% url 'like' contents.pk %}",
+            success:function(response){
+                heartMark = document.getElementById('like')
+                if(response.liked){
+                    $(heartMark).html("<i class='fas fa-lg fa-heart'></i>")
                 }
-            })
+                else{
+                    $(heartMark).html("<i class='far fa-lg fa-heart'></i>")
+                }
+                likeCount = document.getElementById('count')
+                $(likeCount).text(response.count)
+            }
         })
     })
+})
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('popup-btn').addEventListener('click',()=>{
+
+    })
+})
+
 </script>
 {% endblock javascript %}
