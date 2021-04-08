@@ -49,37 +49,10 @@
     {% endblock header %}
     <main class="main">
         <div class="main-container">
-            {% block menubar %}
-            <div class="main-container__menubar">
-                <a href="" class="main-container__menubar-link">
-                    <h1>機能</h1>
-                </a>
-                <a href="" class="main-container__menubar-link">
-                    <h1>課題内容</h1>
-                </a>
-                <!--<div class="">box</div>-->
-                <a href="" class="main-container__menubar-sublink">
-                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
-                </a>
-                <a href="" class="main-container__menubar-sublink">
-                    <p><span style="color:#f4f4f4;">──</span>──未回答</p>
-                </a>
-                <a href="" class="main-container__menubar-link">
-                    <h1>過去のまとめ</h1>
-                </a>
-                <a href="" class="main-container__menubar-sublink">
-                    <p><span style="color:#f4f4f4;">──</span>──新着順</p>
-                </a>
-                <a href="" class="main-container__menubar-sublink">
-                    <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
-                </a>
-                <a href="" class="main-container__menubar-link">
-                    <h1>メモ帳</h1>
-                </a>
-            </div>
-            {% endblock menubar %}
             <div class="main-container__contents">
                 {% block contents %}
+                {% block menubar %}
+                {% endblock menubar %}
                 {% endblock contents %}
             {% block member_list %}{% endblock member_list %}
             </div>
