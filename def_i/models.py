@@ -18,8 +18,7 @@ def get_task():
 
 class Task(models.Model):
     title = models.CharField(max_length=30)
-    number = models.PositiveSmallIntegerField(default=0)
-    contents = models.TextField(max_length=1000)
+    f_number = models.PositiveSmallIntegerField(default=0)
     clear = models.BooleanField(default=False)
 
     def __str__(self):
@@ -27,8 +26,10 @@ class Task(models.Model):
 
 class Task_Sub(models.Model):
     title = models.CharField(max_length=30)
-    number = models.PositiveSmallIntegerField(default=0)
-    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub",default=1)
+
+    contents = models.TextField(max_length=1000, null=True)
+    s_number = models.PositiveSmallIntegerField(default=0)
+    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub")
     clear = models.BooleanField(default=False)
 
 
@@ -108,5 +109,5 @@ class TalkAtQuestion(Talk):
 
 
 class Memo(models.Model):
-    relate = models.OneToOneField(Task,on_delete=models.CASCADE, related_name="task_memo")
+    relate = models.OneToOneField(Task_Sub, on_delete=models.CASCADE, related_name="task_memo")
     contents = models.TextField(null=True)
