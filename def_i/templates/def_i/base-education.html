@@ -1,4 +1,5 @@
 {% extends 'def_i/base.html' %}
+{% load static %}
         {% block menubar %}
             <div class="main-container__menubar">
                 <a href="{% url 'article_feed' %}" class="main-container__menubar-link now-here">
@@ -37,7 +38,11 @@
         <p class="main-container__member-list-title">メンバー</p>
             {% for m in member %}
             <div class="main-container__member-list-block">
-                <img src="{{m.user_image_thumbnail.url}}">
+                {% if m.user_image %}
+                <img src="{{ m.user_image.url }}" alt="">
+                {% else %}
+                <img src="{% static 'def_i/img/default.png' %}" alt="">
+                {% endif %}
                 <p class="main-container__member-list-name"><a href="{% url 'user_page' m.pk %}">{{m.username}}<br><span>{{m.position}}</span></a></p>
             </div>
             {% endfor %}

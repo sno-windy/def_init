@@ -381,7 +381,7 @@ a{
     display: flex;
     flex-direction: row;
     justify-content: center;
-    border-top: $list-stay 1px;
+    border-top: $list-stay 1px solid;
     &_box{
         padding: 0.1rem 0.4rem;
         a{

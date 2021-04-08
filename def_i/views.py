@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, MemoForm
-from .models import User,Task, Task_Sub, Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
+from .models import User,Task,Task_Sub,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
@@ -12,22 +12,31 @@ from django.urls import reverse_lazy
 from django.db.models import Q, OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
 
-
 @login_required(login_url ='accounts/login/')
 def index(request):
     return render(request,"def_i/index.html")
 
-class ArticleFeed(LoginRequiredMixin,ListView):
+class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     model = Article
+    form_class = ArticleSearchForm
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
     paginate_by = 5
+
+    def get_initial(self):
+        return self.request.GET.copy() #検索の値の保持
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
         for a in articles:
             a.like_count = Like.objects.filter(article = a.pk).count()
             a.save()
+        #検索
+        query_word =self.request.GET.get('keyword')
+        if query_word:
+            articles = articles.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
         return articles
 
     def get_context_data(self,**kwargs):
@@ -36,40 +45,28 @@ class ArticleFeed(LoginRequiredMixin,ListView):
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
-        #以下検索
-        query_word =self.request.GET.get('query')
-        if query_word:
-            articles_list = Article.objects.filter(
-                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
-        else:
-            articles_list = Article.objects.order_by('-created_at')
-        context['articles'] = articles_list
         return context
 
 class ArticleFeedLike(ArticleFeed):
-    def get_queryset(self): #queryset=だけでいいことが判明
-        article = Article.objects.all()
-        for a in article:
+    def get_queryset(self):
+        articles = Article.objects.order_by('-created_at')
+        for a in articles:
             a.like_count = Like.objects.filter(article = a.pk).count()
-        articles = article.order_by('-like_count')
+            a.save()
+        articles = articles.order_by('-like_count')
+        #検索
+        query_word =self.request.GET.get('keyword')
+        if query_word:
+            articles = articles.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
         return articles
-
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = False
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30]
-        #検索
-        query_word =self.request.GET.get('query')
-        if query_word:
-            objects_list = Article.objects.filter(
-                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
-        else:
-            objects_list = Article.objects.order_by('-like_count')
-        context['articles'] = objects_list
         return context
 
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる

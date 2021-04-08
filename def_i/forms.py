@@ -28,7 +28,12 @@ class QuestionPostForm(forms.ModelForm):
         model = Question
         fields = ['title','content',]
 
+
 class MemoForm(forms.ModelForm):
     class Meta:
         model = Memo
         fields = ['contents',]
+
+class ArticleSearchForm(forms.Form):
+    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+
