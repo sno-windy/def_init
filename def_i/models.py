@@ -131,5 +131,6 @@ class TalkAtQuestion(Talk):
     #     self.category = '質問'
 
 class Memo(models.Model):
-    relate = models.OneToOneField(Task_Sub, on_delete=models.CASCADE, related_name="task_memo")
+    relate_task = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_memo", null=True)
+    relate_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_memo", null=True)
     contents = models.TextField(null=True)

@@ -1,14 +1,12 @@
-{% extends 'def_i/base-task.html' %}
+{% extends 'def_i/base.html' %}
 {% load static %}
-{% block extra_style %}
-{% endblock extra_style %}
+{% load sass_tags %}
 {% block contents %}
-{% block menubar %}
 <div class="main-container__menubar">
-    <a href="{% url 'task_detail' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="" class="main-container__menubar-link">
         <h1>機能</h1>
     </a>
-    <a href="{% url 'task_question' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="" class="main-container__menubar-link">
         <h1>過去の質問</h1>
     </a>
     <!--<div class="">box</div>-->
@@ -18,7 +16,7 @@
     <a href="" class="main-container__menubar-sublink">
         <p><span style="color:#f4f4f4;">──</span>──未回答</p>
     </a>
-    <a href="{% url 'task_article' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="" class="main-container__menubar-link">
         <h1>過去のまとめ</h1>
     </a>
     <a href="" class="main-container__menubar-sublink">
@@ -27,15 +25,10 @@
     <a href="" class="main-container__menubar-sublink">
         <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
     </a>
-    <a href="{% url 'task_memo' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="" class="main-container__menubar-link">
         <h1>メモ帳</h1>
     </a>
 </div>
-{% endblock menubar %}
-<h1>{{ task_sub.title }}</h1>
-<p>{{ task_sub.contents }}</p>
-<a href="{% url 'article_post' %}">まとめる</a>
-<a href="{% url 'question_post' %}">質問する</a>
+
+
 {% endblock contents %}
-
-

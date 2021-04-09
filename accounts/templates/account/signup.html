@@ -22,11 +22,11 @@
             </div>
             <form class="signup-container__form" action="{% url 'account_signup' %}" method="POST" enctype="multipart/form-data">
                 {% if form.non_field_errors %}
-                <ul class="alert alert-danger list-unstyled">
+                <!-- <ul class="alert alert-danger list-unstyled">
                 <ul class="alert alert-danger list-unstyled">{% for error in form.non_field_errors %}
                     <li>{{ error }}</li>
                 </ul>
-                </ul>
+                </ul> -->
                 {% endfor %}
 
                 {% endif %}
@@ -40,6 +40,11 @@
                 <p class="normal_box">メールアドレス {{ form.email }}</p>
                 <p class="normal_box">パスワード {{ form.password1 }}</p>
                 <p class="normal_box">パスワード(確認用) {{ form.password2 }}</p>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p class="alert alert-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
                 <p class="normal_box"><input class="button" type="submit" value="登録完了"></p>
             </form>
         </div>

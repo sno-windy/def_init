@@ -4,13 +4,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User,Task,Task_Sub,Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
+from .models import User,Task, Task_Sub, Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
 from django.urls import reverse_lazy
 from django.db.models import Q, OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
+
 
 @login_required(login_url ='accounts/login/')
 def index(request):
@@ -19,13 +20,9 @@ def index(request):
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     model = Article
-    form_class = ArticleSearchForm
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
     paginate_by = 5
-
-    def get_initial(self):
-        return self.request.GET.copy() #検索の値の保持
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
@@ -47,6 +44,15 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
             latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
+        #以下検索
+        query_word =self.request.GET.get('query')
+        if query_word:
+            articles_list = Article.objects.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
+        else:
+            articles_list = Article.objects.order_by('-created_at')
+        context['articles'] = articles_list
         return context
 
 
@@ -64,6 +70,7 @@ class ArticleFeedLike(ArticleFeed):
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
             )
         return articles
+
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = False
@@ -255,8 +262,6 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question = form.save(commit=False)
         question.poster = self.request.user
         question.save()
-        #push通知
-        question.browser_push(self.request)
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
@@ -319,16 +324,26 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 #         return context
 
 def MemoView(request, pk):
-    memo = get_object_or_404(Memo, pk=pk)
+    task_pk = Task_Sub.objects.get(pk=pk)
+    memo, created = Memo.objects.get_or_create(relate_user=request.user, relate_task=task_pk)
     if request.method == "POST":
         form = MemoForm(request.POST, instance=memo)
         if form.is_valid():
             form.save()
-            return redirect('task_memo')
+            return redirect('task_memo', pk=pk)
     else:
         form = MemoForm(instance=memo)
 
-    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo })
+    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':task_pk })
+
+class TaskQuestion(LoginRequiredMixin, ListView):
+    model = Question
+    template_name = 'def_i/task_question.html'
+
+
+class TaskArticle(LoginRequiredMixin, ListView):
+    model = Article
+    template_name = 'def_i/task_article.html'
 
 
 class FrontendTaskList(LoginRequiredMixin,ListView):
@@ -359,6 +374,49 @@ class MessageNotification(LoginRequiredMixin,TemplateView):
         # messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
         # return render(request,self.template_name,{"messages":messages})
 
+# class LikeView(TemplateView):
+#     def post(self,request,pk):
+#         article = Article.objects.get(pk=pk)
+#         print(article)
+#         user = request.user
+#         liked = False
+#         like = Like.objects.filter(article=article,user=user)
+#         if like.exists():
+#             like.delete()
+#         else:
+#             like.create(article=article,user=user)
+#             liked = True
+#         params={
+#             'article_id':article.id,
+#             'liked':liked,
+#             'count':article.like_set.count(),
+#             # 'pk':pk,
+#         }
+#         if request.is_ajax():
+#             return JsonResponse(params)
+def LikeView(request,pk):
+    if request.method =="GET":
+        article = Article.objects.get(pk=pk)
+        user = request.user
+        liked = False
+        like = Like.objects.filter(article=article, user=user)
+        if like.exists():
+            like.delete()
+        else:
+            like.create(article=article, user=user)
+            liked = True
+
+        params={
+            'article_id': article.id,
+            'liked': liked,
+            'count': article.like_set.count(),
+        }
+
+    # if request.is_ajax():
+    #     return JsonResponse(params)
+    # else:
+        return JsonResponse(params)
+
 class UserPageView(LoginRequiredMixin,ListView):
     model = Article
     context_object_name = "articles"
@@ -371,7 +429,7 @@ class UserPageView(LoginRequiredMixin,ListView):
         user.like_count = sum(article_like_count)
         user.save()
         context["user_data"] = user
-        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:10]
+        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
         return context
 
     def get_queryset(self,**kwargs):
@@ -397,22 +455,3 @@ class MyPageView(LoginRequiredMixin,ListView):
     def get_queryset(self,**kwargs):
         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
         return articles
-
-def LikeView(request,pk):
-    if request.method =="GET":
-        article = Article.objects.get(pk=pk)
-        user = request.user
-        liked = False
-        like = Like.objects.filter(article=article, user=user)
-        if like.exists():
-            like.delete()
-        else:
-            like.create(article=article, user=user)
-            liked = True
-
-        params={
-            'article_id': article.id,
-            'liked': liked,
-            'count': article.like_set.count(),
-        }
-        return JsonResponse(params)
