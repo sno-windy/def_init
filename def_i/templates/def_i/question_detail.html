@@ -17,7 +17,7 @@
     <span><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
 {% endif %}
 <p>質問者：{{contents.poster}}</p>
-<p class="article-contents">{{contents.content}}</p>
+<div class="article-contents">{{contents.formatted_markdown|safe}}</div>
 <a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments}})</span></p></a>
 <a href="{% url 'question_feed_new' %}"><p>質問フィードに戻る</p></a>
 {% endblock contents %}

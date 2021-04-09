@@ -7,13 +7,22 @@ from .models import User
 class MyCustomSignupForm(SignupForm):
     position = forms.CharField()
     user_image = forms.ImageField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # django-allauthのフィールドを上書き
+        self.fields['position'].widget.attrs['placeholder'] = '15文字以下'
+        self.fields['email'].widget.attrs['placeholder'] = 'メールアドレス'
+        self.fields['password1'].widget.attrs['placeholder'] = '8文字以上の十分に複雑なもの'
+        self.fields['password2'].widget.attrs['placeholder'] = '8文字以上の十分に複雑なもの'
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2', 'position', 'user_image']
 
 
     def save(self, request):
-    
+
         # Ensure you call the parent class's save.
         # .save() returns a User object.
         user = super(MyCustomSignupForm, self).save(request)
@@ -28,7 +37,7 @@ class MyCustomSignupForm(SignupForm):
 
 class MyCustomLoginForm(LoginForm):
 
-    
+
     def login(self, *args, **kwargs):
 
         # Add your own processing here.
@@ -47,10 +56,3 @@ class UserChangeForm(forms.ModelForm):
         user.position = self.cleaned_data['position']
         user.user_image = self.cleaned_data['user_image']
         user.save()
-
-
-
-
-
-
-
