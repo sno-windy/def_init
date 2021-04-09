@@ -36,6 +36,7 @@
         {% empty %}
         <p>記事がありません．</p>
         {% endfor %}
+        <div class="pagination">{% include 'def_i/pagination.html' %}</div>
     </div>
     <div id="like-articles" class="hidden">
         {% for a in articles_like %}
@@ -50,7 +51,6 @@
         <p>記事がありません．</p>
         {% endfor %}
     </div>
-<div class="pagination">{% include 'def_i/pagination.html' %}</div>
 
 
 {% endblock contents %}

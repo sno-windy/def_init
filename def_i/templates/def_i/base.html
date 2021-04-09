@@ -63,11 +63,12 @@
     <main class="main">
         <div class="main-container">
             <div class="main-container__contents">
-                {% block contents %}
                 {% block menubar %}
                 {% endblock menubar %}
+                {% block contents %}
                 {% endblock contents %}
-            {% block member_list %}{% endblock member_list %}
+                {% block member_list %}
+                {% endblock member_list %}
             </div>
         </div>
     </main>

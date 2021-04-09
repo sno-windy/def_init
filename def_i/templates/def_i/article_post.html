@@ -5,11 +5,10 @@
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
-<h1>投稿</h1>
-<p>*試験的にMarkdownを採用しています*</p>
-<form action = "" method = "POST">
+<h1 class="postform-title">記事投稿フォーム</h1>
+<form action = "" method = "POST" class="postform-form">
 {% csrf_token %}
 {{form}}
-<button type="submit">投稿する</button>
+<button type="submit" class="postform-btn">投稿</button>
 </form>
 {% endblock contents %}

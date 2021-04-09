@@ -1,1 +1,103 @@
-{% extends 'def_i/user_page.html' %}
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% load sass_tags %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/user_page.scss' %}">
+{% endblock extra_style %}
+{% block menubar %}
+<div class="main-container__userinfo">
+<div class="main-container__userinfo-user">
+<p>{% if user_data.user_image %}<img src="{{ user_data.user_image.url }}" alt="">
+{% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">{% endif %}</p>
+<div>
+    <h1>{{user_data.username}}</h1>
+    <p>{{user_data.position}}</p>
+</div>
+</div>
+<h2>総いいね数：<span>{{user_data.like_count}}</span></h2>
+<p><a href="{% url 'article_feed' %}">検索に戻る</a></p>
+</div>
+{% endblock menubar %}
+{% block contents %}
+<h1>マイページ</h1>
+<div class="choice-button">
+<p id="art-new" class="here">自分の記事</p>
+<p id="like">いいねした記事</p>
+<p id="quest-new">自分の質問</p>
+</div>
+    <div id="new-articles">
+        {% for a in articles %}
+            <article class="main-container__contents-article">
+                <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+                <a href="{% url 'article_detail' a.pk %}">
+                    <h1>{{a.title}}</h1>
+                </a>
+                <p>{{a.like_count}}いいね</p>
+            </article>
+        {% empty %}
+        <p>記事がありません．</p>
+        {% endfor %}
+        <div class="pagination">{% include 'def_i/pagination.html' %}</div>
+    </div>
+    <div id="like-articles" class="hidden">
+        {% for a in articles_like %}
+        <article class="main-container__contents-article like-articles">
+            <p><a href="">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+            <a href="{% url 'article_detail' a.pk %}">
+                <h1>{{a.title}}</h1>
+            </a>
+            <p>{{a.like_count}}いいね</p>
+        </article>
+        {% empty %}
+        <p>記事がありません．</p>
+        {% endfor %}
+    </div>
+    <div id="questions" class="hidden">
+    {% for q in questions %}
+        <article class="main-container__contents-article questions">
+            <p><a href="">{{q.poster}}</a>が{{q.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
+            <a href="{% url 'question_detail' q.pk %}">
+                <h1>{{q.title}}</h1>
+            </a>
+        </article>
+    {% endfor %}
+    </div>
+
+{% endblock contents %}
+{% block member_list %}{% endblock member_list %}
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+    const artBtn = document.getElementById('art-new')
+    const likeBtn = document.getElementById('like')
+    const questBtn = document.getElementById('quest-new')
+    const artList = document.getElementById('new-articles')
+    const likeList = document.getElementById('like-articles')
+    const questList = document.getElementById('questions')
+    artBtn.addEventListener('click',()=>{
+        artList.classList.remove('hidden')
+        likeList.classList.add('hidden')
+        questList.classList.add('hidden')
+        artBtn.classList.add('here')
+        likeBtn.classList.remove('here')
+        questBtn.classList.remove('here')
+    })
+    likeBtn.addEventListener('click',()=>{
+        likeList.classList.remove('hidden')
+        artList.classList.add('hidden')
+        questList.classList.add('hidden')
+        artBtn.classList.remove('here')
+        likeBtn.classList.add('here')
+        questBtn.classList.remove('here')
+    })
+    questBtn.addEventListener('click',()=>{
+        artList.classList.add('hidden')
+        likeList.classList.add('hidden')
+        questList.classList.remove('hidden')
+        artBtn.classList.remove('here')
+        likeBtn.classList.remove('here')
+        questBtn.classList.add('here')
+    })
+})
+</script>
+{% endblock javascript %}
