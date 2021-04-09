@@ -32,11 +32,11 @@
     <header class="header">
         <div class="header-container">
             <a href="{% url 'index' %}">
-                <p class="header-container__icon"><img src="{% static 'def_i/img/icon_white_transparent.png' %}"></p>
+                <p class="header-container__icon"><img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}"></p>
             </a>
-            <a href="{% url 'index' %}">
+            {% comment %} <a href="{% url 'index' %}">
                 <h1 class="header-container__title">Def init</h1>
-            </a>
+            </a> {% endcomment %}
             <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
             <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}">学ぶ</a></p>
             <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>

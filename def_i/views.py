@@ -139,6 +139,9 @@ class ArticlePost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         article = form.save(commit=False)
         article.poster = self.request.user
+        task,created = Task.objects.get_or_create(title='public')
+        article_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
+        article.article_at = article_at
         article.save()
         messages.success(self.request,'記事を投稿しました．')
         return super().form_valid(form)
@@ -255,6 +258,9 @@ class QuestionPost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
+        task,created = Task.objects.get_or_create(title='public')
+        question_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
+        question.question_at = question_at
         question.save()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
