@@ -20,9 +20,13 @@ def index(request):
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     model = Article
+    form_class = ArticleSearchForm
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
     paginate_by = 5
+
+    def get_initial(self):
+        return self.request.GET.copy() #検索の値の保持
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
@@ -44,15 +48,6 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
             latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
-        #以下検索
-        query_word =self.request.GET.get('query')
-        if query_word:
-            articles_list = Article.objects.filter(
-                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
-        else:
-            articles_list = Article.objects.order_by('-created_at')
-        context['articles'] = articles_list
         return context
 
 
@@ -78,7 +73,6 @@ class ArticleFeedLike(ArticleFeed):
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30]
         return context
-
 
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
     model = Article
