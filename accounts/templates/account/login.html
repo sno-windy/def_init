@@ -25,6 +25,11 @@
                 <p>{{ form.login }}</p>
                 <p>{{ form.password }}</p>
                 <p><input class="button" type="submit" value="ログイン"></p>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p class="alert alert-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
             </form>
             <p class="login-container__link">会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
             <p class="login-container__link">パスワードを忘れた方は<a href="{% url 'password_reset' %}">こちら</a></p>

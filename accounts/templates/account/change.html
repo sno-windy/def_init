@@ -25,6 +25,11 @@
                     <label for="">{{ form.user_image }}</label></p>
                 <p class="normal_box">肩書き {{ form.position }}</p>
                 <p class="normal_box">メールアドレス {{ form.email }}</p>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                    <p class="alert alert-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
                 <p class="normal_box"><input class="button" type="submit" value="変更完了"></p>
             </form> 
        </div>

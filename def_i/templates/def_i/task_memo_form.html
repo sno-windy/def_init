@@ -2,5 +2,37 @@
 {% load static %}
 {% load sass_tags %}
 {% block contents %}
-{% include 'def_i/task_detail.html' %}
+<div class="main-container__menubar">
+    <a href="{% url 'task_detail' pk.pk %}" class="main-container__menubar-link">
+        <h1>機能</h1>
+    </a>
+    <a href="{% url 'task_question' pk.pk %}" class="main-container__menubar-link">
+        <h1>過去の質問</h1>
+    </a>
+    <!--<div class="">box</div>-->
+    <a href="" class="main-container__menubar-sublink">
+        <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+    </a>
+    <a href="" class="main-container__menubar-sublink">
+        <p><span style="color:#f4f4f4;">──</span>──未回答</p>
+    </a>
+    <a href="{% url 'task_article' pk.pk %}" class="main-container__menubar-link">
+        <h1>過去のまとめ</h1>
+    </a>
+    <a href="" class="main-container__menubar-sublink">
+        <p><span style="color:#f4f4f4;">──</span>──新着順</p>
+    </a>
+    <a href="" class="main-container__menubar-sublink">
+        <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
+    </a>
+    <a href="" class="main-container__menubar-link">
+        <h1>メモ帳</h1>
+    </a>
+</div>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form.contents}}
+    <input type="submit" value="保存する" >
+</form>
+
 {% endblock contents %}
