@@ -61,6 +61,7 @@ class Question(models.Model):
     question_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_question", default=get_task)
     title = models.CharField(max_length=30)
     content = models.TextField(null=True)
+    # content = MarkdownxField()
     if_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -88,6 +89,10 @@ class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+CATEGORY_CHOICE = (
+    ('記事','記事'),
+    ('質問','質問'),
+)
 
 class Talk(models.Model):
     msg = models.TextField(max_length=1000)
@@ -99,14 +104,28 @@ class Talk(models.Model):
 
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
+    category = models.CharField(max_length=10,
+        choices=CATEGORY_CHOICE, default='記事')
 
     def __str__(self):
         return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
+
+    # initがUnion時に走ってしまうため，使えない
+    # def __init__(self,*args,**kwargs):
+    #     super(TalkAtArticle,self).__init__(*args,**kwargs)
+    #     self.category = '記事'
+
 class TalkAtQuestion(Talk):
     msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
+    category = models.CharField(max_length=10,
+        choices=CATEGORY_CHOICE, default='質問')
+
     def __str__(self):
         return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
 
+    # def __init__(self,*args,**kwargs):
+    #     super(TalkAtQuestion,self).__init__(*args,**kwargs)
+    #     self.category = '質問'
 
 class Memo(models.Model):
     relate = models.OneToOneField(Task_Sub, on_delete=models.CASCADE, related_name="task_memo")

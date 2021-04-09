@@ -275,12 +275,9 @@ class BackendTaskList(LoginRequiredMixin,ListView):
     model = Task
     template_name = "def_i/base-task.html"
 
-
     def get_context_data(self , *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['task_sub_list'] = Task_Sub.objects.all()
-
-
         return context
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -298,7 +295,7 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 
 #     def get_context_data(self,**kwargs):
 #         context = super().get_context_data(**kwargs)
-        
+
 #         return context
 
 def MemoView(request, pk):
@@ -318,12 +315,29 @@ class FrontendTaskList(LoginRequiredMixin,ListView):
     model = Task
     template_name = "def_i/base-task.html"
 
-class MessageNotification(LoginRequiredMixin,ListView):
-    model = Talk
+class MessageNotification(LoginRequiredMixin,TemplateView):
     template_name = 'def_i/message_notification.html'
-    def get(self,request):
-        messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
-        return render(request,self.template_name,{"messages":messages})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        msg_article = TalkAtArticle.objects.annotate(
+            msg_at_title=Subquery(
+                Article.objects.filter(pk=OuterRef('msg_at')).values('title')[:1]
+            )
+        ).filter(msg_to=self.request.user.id)
+
+        msg_question = TalkAtQuestion.objects.annotate(
+            msg_at_title=Subquery(
+                Question.objects.filter(pk=OuterRef('msg_at')).values('title')[:1]
+            )
+        ).filter(msg_to=self.request.user.id)
+        msg_union = msg_article.union(msg_question).order_by('-time')
+
+        context["messages"] = msg_union
+        return context
+
+
+        # messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
+        # return render(request,self.template_name,{"messages":messages})
 
 class UserPageView(LoginRequiredMixin,ListView):
     model = Article
@@ -354,8 +368,10 @@ class MyPageView(LoginRequiredMixin,ListView):
         user = self.request.user
         context["user_data"] = User.objects.get(username=user)
         like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
-        article_list = Article.objects.filter(pk__in = like_article)
+        article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
         context["articles_like"] = article_list #いいねした記事リスト
+        question_list = Question.objects.filter(poster=user).order_by('-created_at')
+        context["questions"] = question_list
         return context
 
     def get_queryset(self,**kwargs):
