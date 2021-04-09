@@ -13,7 +13,15 @@
 {% block contents %}
 {% for m in messages %}
 <article class="main-container__contents-article">
-        <p>{{m.msg_from}}があなたの{{m.category}}【{{m.msg_at_title}}】でコメントしました！{{m.time|date:"Y年 M j日 H:i:s"}}</p>
+    {% ifequal m.category '記事' %}
+        <a href="{% url 'article_detail' m.msg_at.pk %}">
+            <p>{{m.msg_from}}があなたの{{m.category}}【{{m.msg_at_title}}】でコメントしました！{{m.time|date:"Y年 M j日 H:i:s"}}</p>
+        </a>
+    {% else %}
+        <a href="{% url 'question_detail' m.msg_at.pk %}">
+            <p>{{m.msg_from}}があなたの{{m.category}}【{{m.msg_at_title}}】でコメントしました！{{m.time|date:"Y年 M j日 H:i:s"}}</p>
+        </a>
+    {% endifequal %}
 </article>
 {% endfor %}
 {% endblock contents %}

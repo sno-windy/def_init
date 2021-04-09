@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request,"def_i/index.html")
 
+
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     model = Article
     form_class = ArticleSearchForm
@@ -31,7 +32,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         for a in articles:
             a.like_count = Like.objects.filter(article = a.pk).count()
             a.save()
-        #検索
+        #以下検索
         query_word =self.request.GET.get('keyword')
         if query_word:
             articles = articles.filter(
@@ -42,18 +43,20 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = True #新着順かどうか
-        context['member'] = User.objects.annotate(latest_post_time=Subquery(
+        context['member'] = User.objects.annotate(
+            latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
         return context
 
+
 class ArticleFeedLike(ArticleFeed):
     def get_queryset(self):
-        articles = Article.objects.order_by('-created_at')
+        articles = Article.objects.all()
         for a in articles:
             a.like_count = Like.objects.filter(article = a.pk).count()
             a.save()
-        articles = articles.order_by('-like_count')
+        articles = articles.order_by('-like_count','-created_at')
         #検索
         query_word =self.request.GET.get('keyword')
         if query_word:
@@ -69,11 +72,13 @@ class ArticleFeedLike(ArticleFeed):
         )).order_by('-latest_post_time')[:30]
         return context
 
+
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
     model = Article
     template_name = "def_i/article_detail.html"
     def get(self,request,pk):
         articles = Article.objects.all()
+        #Userがlikeしてるかどうかの判別
         liked_list = []
         for a in articles:
             liked = a.like_set.filter(user=request.user)
@@ -89,16 +94,24 @@ class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すれ
         }
         return render(request,self.template_name,params)
 
+
 class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtArticle
     context_object_name = "messages"
     form_class = ArticleTalkForm #いらんかも
     template_name = 'def_i/article_talk.html'
+
     def get(self,request,pk):
         form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
         messages = TalkAtArticle.objects.filter(msg_at=article).order_by('time')
-        return render(request,self.template_name,{"messages":messages,"form":form,'pk':pk})
+        return render(request,self.template_name,
+            {
+                "messages":messages,
+                "form":form,
+                'pk':pk
+            })
+
     def post(self,request,pk,*args,**kwargs):
         form = ArticleTalkForm(request.POST)
         if form.is_valid():
@@ -109,10 +122,12 @@ class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
             msg.save()
             return redirect("article_talk_suc",pk=pk)
 
+#投稿完了画面を作ったが，すぐ元の画面に遷移するので活用できていない
 class ArticleTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "article_talk_suc.html"
     def get(self,request,pk):
         return redirect("article_talk",pk=pk)
+
 
 class ArticlePost(LoginRequiredMixin,CreateView):
     form_class = ArticlePostForm
@@ -174,6 +189,7 @@ class QuestionFeed(LoginRequiredMixin,ListView):
 class QuestionFeedUnanswered(QuestionFeed):
     def get_queryset(self):
         question = Question.objects.all()
+        #その質問にTalkが存在していなければ，未回答フォルダに含める
         for q in question:
             talk = TalkAtQuestion.objects.filter(msg_at=q)
             if len(talk) == 0:
@@ -189,6 +205,7 @@ class QuestionFeedUnanswered(QuestionFeed):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['sort_by_new'] = False
+        #メンバー一覧で，投稿した時間が新しい順に並べている
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
@@ -198,6 +215,7 @@ class QuestionDetail(LoginRequiredMixin,DetailView):
     model = Question
     context_object_name = "contents"
     template_name = "def_i/question_detail.html"
+
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
@@ -207,11 +225,13 @@ class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtQuestion
     form_class = QuestionTalkForm #いらんかも
     template_name = 'def_i/question_talk.html'
+
     def get(self,request,pk):
         form = QuestionTalkForm()
         question = Question.objects.get(pk=pk)
         messages = TalkAtQuestion.objects.filter(msg_at=question).order_by('time')
         return render(request,self.template_name,{"messages":messages,"form":form,'pk':pk})
+
     def post(self,request,pk,*args,**kwargs):
         form = QuestionTalkForm(request.POST)
         if form.is_valid():

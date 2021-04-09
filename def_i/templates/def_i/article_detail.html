@@ -33,10 +33,10 @@
     </article>
     {% empty %}
         <p>コメントがありません．</p>
-
     {% endfor %}
 <a href="{% url 'article_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
 <a href="{% url 'article_feed' %}"><p>記事フィードに戻る</p></a>
+<!-- 画像を挿入する場合
 {% if contents.article_image %}
 <button id="popup-btn">画像を表示する</button>
 <div class="popup" id="popup">
@@ -46,8 +46,8 @@
   </div>
   <div class="black-background" id="black-bg"></div>
 </div>
-
 {% endif %}
+-->
 {% endblock contents %}
 {% block javascript %}
 <script>

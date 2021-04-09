@@ -14,9 +14,18 @@ class ArticlePostForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['title','content',]
-        # widgets = {
-        #     'poster':forms.HiddenInput
-        # } #フォームバリッド関数を使わない場合
+        labels = {
+            'title':'',
+            'content':'',
+        }
+        widgets = {
+            'title': forms.TextInput(
+                attrs={'placeholder':'記事タイトル：30文字以内'}
+            ),
+            'content': forms.Textarea(
+                attrs={'placeholder':'マークダウンで書くことができます！'}
+            )
+        }
 
 class QuestionTalkForm(forms.ModelForm):
     class Meta:
@@ -27,9 +36,16 @@ class QuestionPostForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = ['title','content',]
+        labels = {
+            'title':'',
+            'content':'',
+        }
         widgets = {
             'title': forms.TextInput(
-                attrs={'placeholder':'30文字以内'}
+                attrs={'placeholder':'質問タイトル：30文字以内'}
+            ),
+            'content': forms.Textarea(
+                attrs={'placeholder':'マークダウンで書くことができます！'}
             )
         }
 

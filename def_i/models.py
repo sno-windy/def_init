@@ -45,6 +45,7 @@ class Article(models.Model):
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
+    # 画像を添付する場合
     # article_image = models.ImageField(upload_to="def_i/img",null=True)
     # article_image_resize = ImageSpecField(source='user_image',
     # processors=[ResizeToFill(250,250)],
@@ -60,8 +61,8 @@ class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
     question_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_question", default=get_task)
     title = models.CharField(max_length=30)
-    content = models.TextField(null=True)
-    # content = MarkdownxField()
+    # content = models.TextField(null=True)
+    content = MarkdownxField()
     if_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -84,6 +85,8 @@ class Question(models.Model):
             json=data,
         )
 
+    def formatted_markdown(self):
+        return markdownify(self.content)
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)

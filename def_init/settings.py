@@ -203,6 +203,13 @@ AWS_STORAGE_BUCKET_NAME = 'def-init'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'fenced_code', # コードブロック
+    'tables', # テーブル
+    'toc', # 目次
+    'nl2br', # 改行
+]
+
 try:
     from .local_settings import *
 except ImportError:
