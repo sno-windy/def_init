@@ -10,12 +10,6 @@ import requests
 
 User = get_user_model()
 
-def get_task():
-    category = Task_Sub.objects.get(title='public')
-    category_id = category.pk
-
-    return category_id
-
 class Task(models.Model):
     title = models.CharField(max_length=30)
     f_number = models.PositiveSmallIntegerField(default=0)
@@ -39,7 +33,7 @@ class Task_Sub(models.Model):
 
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
-    article_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_article", default=get_task)
+    article_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_article")
     title = models.CharField(max_length=30)
     content = MarkdownxField()
     like_count = models.PositiveIntegerField(default=0)
@@ -59,7 +53,7 @@ class Article(models.Model):
 
 class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
-    question_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_question", default=get_task)
+    question_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_question")
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
