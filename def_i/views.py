@@ -307,6 +307,31 @@ class QuestionDeleteView(LoginRequiredMixin,DeleteView):
         messages.success(self.request,'質問を削除しました．')
         return super().delete(request,*args,**kwargs)
 
+<<<<<<< HEAD
+=======
+class TaskQuestionPost(LoginRequiredMixin,CreateView):
+    form_class = QuestionPostForm
+    template_name = 'def_i/question_post.html'
+
+    def form_valid(self, form, **kwargs):
+        pk = self.kwargs['pk']
+        question_at = Task_Sub.objects.get(pk=pk)
+        question = form.save(commit=False)
+        question.poster = self.request.user
+        question.question_at = question_at
+        print(question.question_at)
+        question.save()
+        messages.success(self.request,'質問を投稿しました．')
+        return super().form_valid(form)
+
+    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+        messages.error(self.request,'質問作成に失敗しました．')
+        return super().form_invalid(form)
+
+    def get_success_url(self,**kwargs):
+        return reverse_lazy('task_question',kwargs={"pk":self.kwargs['pk']})
+
+>>>>>>> 0b1843b973c4fdce93aebaf4b0501eda9b9e0e4d
 
 class BackendTaskList(LoginRequiredMixin,ListView):
     context_object_name = 'task_list'
@@ -342,7 +367,22 @@ def MemoView(request, pk):
 
 class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question
+    context_object_name = 'task_question'
     template_name = 'def_i/task_question.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        user = self.request.user
+        pk = self.kwargs['pk']
+        task = Task_Sub.objects.get(pk=pk)
+        question_list = Question.objects.filter(question_at=task).order_by('-created_at')
+        my_question_list = Question.objects.filter(question_at=task, poster=user).order_by('-created_at')
+        context['question_list'] = question_list
+        context['my_question_list'] = my_question_list
+
+        return context
+
+
 
 
 class TaskArticle(LoginRequiredMixin, ListView):
