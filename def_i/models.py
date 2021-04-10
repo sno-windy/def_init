@@ -45,8 +45,8 @@ class Article(models.Model):
     # processors=[ResizeToFill(250,250)],
     # format='JPEG',
     # options={'quality':60})
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -61,8 +61,8 @@ class Question(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
 
-    def __str__(self):
-        return str(self.title)+" by "+str(self.poster)
+    # def __str__(self):
+    #     return str(self.title)+" by "+str(self.poster)
 
     def browser_push(self,request):
         data = {
@@ -96,16 +96,16 @@ class Talk(models.Model):
     msg_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_form")
     msg_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_to")
     time = models.DateTimeField(auto_now_add=True)
-    def __str__(self):
-        return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
+    # def __str__(self):
+    #     return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
 
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
     category = models.CharField(max_length=10,
         choices=CATEGORY_CHOICE, default='記事')
 
-    def __str__(self):
-        return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
+    # def __str__(self):
+    #     return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
 
     # initがUnion時に走ってしまうため，使えない
     # def __init__(self,*args,**kwargs):

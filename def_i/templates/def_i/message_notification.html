@@ -17,8 +17,9 @@
         <a href="{% url 'article_detail' m.msg_at.pk %}">
             <p>{{m.msg_from}}があなたの{{m.category}}【{{m.msg_at_title}}】でコメントしました！確認してみましょう！{{m.time|date:"Y年 M j日 H:i:s"}}</p>
         </a>
-    {% else %}
-        <a href="{% url 'question_detail' m.msg_at.pk %}">
+    {% endifequal %}
+    {% ifequal m.category '質問' %}
+        <a href="{% url 'question_detail' m.msg_at_pk %}">
             <p>{{m.msg_from}}があなたの{{m.category}}【{{m.msg_at_title}}】でコメントしました！確認してみましょう！{{m.time|date:"Y年 M j日 H:i:s"}}</p>
         </a>
     {% endifequal %}

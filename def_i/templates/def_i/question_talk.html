@@ -7,7 +7,7 @@
 {% block contents %}
     {% for m in messages %}
     <article class="main-container__contents-article">
-        <p>{{m.msg_from}}></p>
+        <a href="{% url 'user_page' m.msg_from.pk %}"><p>{{m.msg_from}}></p></a>
         <h1>{{m.msg}}</h1>
         <p>{{m.time|date:"Y年 M j日 H:i:s"}}</p>
     </article>
