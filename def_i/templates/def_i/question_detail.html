@@ -18,6 +18,16 @@
 {% endif %}
 <p>質問者：{{contents.poster}}</p>
 <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-<a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments}})</span></p></a>
+<p>最新のコメント</p>
+    {% for c in comments %}
+    <article class="main-container__contents-article">
+        <a href="{% url 'user_page' c.msg_from.pk %}"><p>{{c.msg_from}}></p></a>
+        <h1>{{c.msg}}</h1>
+        <p>{{c.time|date:"Y年 M j日 H:i:s"}}</p>
+    </article>
+    {% empty %}
+        <p>コメントがありません．</p>
+    {% endfor %}
+<a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
 <a href="{% url 'question_feed_new' %}"><p>質問フィードに戻る</p></a>
 {% endblock contents %}

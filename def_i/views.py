@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q, OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
 
+#反省 Controllerに処理を書きすぎない
 
 @login_required(login_url ='accounts/login/')
 def index(request):
@@ -73,6 +74,7 @@ class ArticleFeedLike(ArticleFeed):
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30]
         return context
+
 
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
     model = Article
@@ -150,6 +152,7 @@ class ArticlePost(LoginRequiredMixin,CreateView):
         messages.error(self.request,'記事作成に失敗しました．')
         return super().form_invalid(form)
 
+
 class ArticleUpdateView(LoginRequiredMixin,UpdateView):
     model = Article
     form_class = ArticlePostForm
@@ -166,6 +169,7 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
         messages.error(self.request,'記事更新に失敗しました．')
         return super().form_invalid(form)
 
+
 class ArticleDeleteView(LoginRequiredMixin,DeleteView):
     model = Article
     template_name = 'def_i/article_delete.html'
@@ -174,6 +178,7 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
     def delete(self,request,*args,**kwargs):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
+
 
 class QuestionFeed(LoginRequiredMixin,ListView):
     model = Question
@@ -189,6 +194,7 @@ class QuestionFeed(LoginRequiredMixin,ListView):
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
         return context
+
 
 class QuestionFeedUnanswered(QuestionFeed):
     def get_queryset(self):
@@ -215,6 +221,7 @@ class QuestionFeedUnanswered(QuestionFeed):
         )).order_by('-latest_post_time')
         return context
 
+
 class QuestionDetail(LoginRequiredMixin,DetailView):
     model = Question
     context_object_name = "contents"
@@ -222,8 +229,10 @@ class QuestionDetail(LoginRequiredMixin,DetailView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
+        context['comments_count'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
+        context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).order_by('-time')[:3]
         return context
+
 
 class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     model =TalkAtQuestion
@@ -246,10 +255,12 @@ class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
             msg.save()
             return redirect("question_talk_suc",pk=pk)
 
+
 class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "question_talk_suc.html"
     def get(self,request,pk):
         return redirect("question_talk",pk=pk)
+
 
 class QuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
@@ -269,6 +280,7 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         messages.error(self.request,'質問作成に失敗しました．')
         return super().form_invalid(form)
 
+
 class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     model = Question
     form_class = QuestionPostForm
@@ -284,6 +296,7 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     def form_invalid(self,form):
         messages.error(self.request,'質問更新に失敗しました．')
         return super().form_invalid(form)
+
 
 class QuestionDeleteView(LoginRequiredMixin,DeleteView):
     model = Question
@@ -328,23 +341,13 @@ class BackendTaskList(LoginRequiredMixin,ListView):
         context['task_sub_list'] = Task_Sub.objects.all()
         return context
 
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task_Sub
     context_object_name = 'task_sub'
     fields = ['title','contents',]
     template_name = 'def_i/task_detail.html'
 
-
-# class Memo(LoginRequiredMixin, CreateView):
-#     model = Memo
-#     context_object_name = 'task_memo'
-#     form_class = MemoForm
-#     template_name = 'def_i/task_memo_form.html'
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-
-#         return context
 
 def MemoView(request, pk):
     task_pk = Task_Sub.objects.get(pk=pk)
@@ -392,46 +395,29 @@ class MessageNotification(LoginRequiredMixin,TemplateView):
     template_name = 'def_i/message_notification.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+    ####記事と質問のTalkを回収して，Unionさせている．Unionによって消えてしまう情報(Title,pk)をannotateしている
         msg_article = TalkAtArticle.objects.annotate(
             msg_at_title=Subquery(
                 Article.objects.filter(pk=OuterRef('msg_at')).values('title')[:1]
+            ),
+            msg_at_pk=Subquery(
+                Article.objects.filter(pk=OuterRef('msg_at')).values('pk')[:1]
             )
         ).filter(msg_to=self.request.user.id)
 
         msg_question = TalkAtQuestion.objects.annotate(
             msg_at_title=Subquery(
                 Question.objects.filter(pk=OuterRef('msg_at')).values('title')[:1]
+            ),
+            msg_at_pk=Subquery(
+                Question.objects.filter(pk=OuterRef('msg_at')).values('pk')[:1]
             )
         ).filter(msg_to=self.request.user.id)
         msg_union = msg_article.union(msg_question).order_by('-time')
-
         context["messages"] = msg_union
         return context
 
 
-        # messages = Talk.objects.filter(msg_to=request.user.id).order_by('-time')
-        # return render(request,self.template_name,{"messages":messages})
-
-# class LikeView(TemplateView):
-#     def post(self,request,pk):
-#         article = Article.objects.get(pk=pk)
-#         print(article)
-#         user = request.user
-#         liked = False
-#         like = Like.objects.filter(article=article,user=user)
-#         if like.exists():
-#             like.delete()
-#         else:
-#             like.create(article=article,user=user)
-#             liked = True
-#         params={
-#             'article_id':article.id,
-#             'liked':liked,
-#             'count':article.like_set.count(),
-#             # 'pk':pk,
-#         }
-#         if request.is_ajax():
-#             return JsonResponse(params)
 def LikeView(request,pk):
     if request.method =="GET":
         article = Article.objects.get(pk=pk)
@@ -450,9 +436,6 @@ def LikeView(request,pk):
             'count': article.like_set.count(),
         }
 
-    # if request.is_ajax():
-    #     return JsonResponse(params)
-    # else:
         return JsonResponse(params)
 
 class UserPageView(LoginRequiredMixin,ListView):

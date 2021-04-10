@@ -27,7 +27,7 @@
 <p>最新のコメント</p>
     {% for c in comments %}
     <article class="main-container__contents-article">
-        <p>{{c.msg_from}}></p>
+        <a href="{% url 'user_page' c.msg_from.pk %}"><p>{{c.msg_from}}></p></a>
         <h1>{{c.msg}}</h1>
         <p>{{c.time|date:"Y年 M j日 H:i:s"}}</p>
     </article>
@@ -72,11 +72,12 @@ $(document).ready(function(e){
         })
     })
 })
-document.addEventListener('DOMContentLoaded',()=>{
+//画像が存在する場合にpopupする物を作りたかった残骸
+{% comment %} document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('popup-btn').addEventListener('click',()=>{
 
     })
-})
+}) {% endcomment %}
 
 </script>
 {% endblock javascript %}
