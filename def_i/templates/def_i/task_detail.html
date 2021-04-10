@@ -34,8 +34,8 @@
 {% endblock menubar %}
 <h1>{{ task_sub.title }}</h1>
 <p>{{ task_sub.contents }}</p>
-<a href="{% url 'article_post' %}">まとめる</a>
-<a href="{% url 'question_post' %}">質問する</a>
+<a href="{% url 'article_post'  %}">まとめる</a>
+<a href="{% url 'task_question_post' task_sub.pk %}">質問する</a>
 {% endblock contents %}
 
 
