@@ -307,8 +307,6 @@ class QuestionDeleteView(LoginRequiredMixin,DeleteView):
         messages.success(self.request,'質問を削除しました．')
         return super().delete(request,*args,**kwargs)
 
-<<<<<<< HEAD
-=======
 class TaskQuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
@@ -331,7 +329,6 @@ class TaskQuestionPost(LoginRequiredMixin,CreateView):
     def get_success_url(self,**kwargs):
         return reverse_lazy('task_question',kwargs={"pk":self.kwargs['pk']})
 
->>>>>>> 0b1843b973c4fdce93aebaf4b0501eda9b9e0e4d
 
 class BackendTaskList(LoginRequiredMixin,ListView):
     context_object_name = 'task_list'
