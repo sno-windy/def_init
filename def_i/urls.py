@@ -24,6 +24,7 @@ urlpatterns = [
     path('task_backend/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
     path('task_backend/<int:pk>/memo', views.MemoView, name='task_memo'),
     path('task_backend/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),
+    path('task_backend/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_backend/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
     path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
     path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
