@@ -23,16 +23,12 @@ class MyCustomSignupForm(SignupForm):
 
     def save(self, request):
 
-        # Ensure you call the parent class's save.
-        # .save() returns a User object.
         user = super(MyCustomSignupForm, self).save(request)
 
-        # Add your own processing here.
         user.position = request.POST.get('position')
         user.user_image = request.FILES.get('user_image')
         user.save()
 
-        # You must return the original result.
         return user
 
 class MyCustomLoginForm(LoginForm):
@@ -40,9 +36,6 @@ class MyCustomLoginForm(LoginForm):
 
     def login(self, *args, **kwargs):
 
-        # Add your own processing here.
-
-        # You must return the original result.
         return super(MyCustomLoginForm, self).login(*args, **kwargs)
 
 class UserChangeForm(forms.ModelForm):
@@ -50,9 +43,3 @@ class UserChangeForm(forms.ModelForm):
         model = User
         fields = ['username', 'email',  'position', 'user_image']
 
-    def update(self):
-        user.email = self.cleaned_data['email']
-        user.username = self.cleaned_data['username']
-        user.position = self.cleaned_data['position']
-        user.user_image = self.cleaned_data['user_image']
-        user.save()
