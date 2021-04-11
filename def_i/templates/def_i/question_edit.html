@@ -6,9 +6,9 @@
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
 <h1>編集</h1>
-<form action = "" method = "POST">
+<form action = "" method = "POST" class="postform-form">
 {% csrf_token %}
 {{form}}
-<button type="submit">編集を保存する</button>
+<button type="submit" class="postform-btn">編集を保存する</button>
 </form>
 {% endblock contents %}

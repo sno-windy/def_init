@@ -5,10 +5,10 @@
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
-<h1>編集</h1>
-<form action = "" method = "POST">
+<h1>記事編集</h1>
+<form action = "" method = "POST" class="postform-form">
 {% csrf_token %}
 {{form}}
-<button type="submit">編集を保存する</button>
+<button type="submit" class="postform-btn">保存</button>
 </form>
 {% endblock contents %}
