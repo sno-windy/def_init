@@ -355,21 +355,42 @@ h1{
 .hidden_class{
     visibility: hidden;
 }
-.button{
-    text-decoration: none;
-    p{
-        background-color: white;
-        border-radius: 0.75rem;
-        height: 1.5rem;
-        border:1px solid black;
-        width: 6rem;
-        font-size: 0.75rem;
-        text-align: center;
-        line-height: 1.5rem;
-        color: black;
-        margin: 2rem auto;
+
+.detail{
+    width: 100%;
+    h1{
+        width: 200%;
     }
+    .buttons{
+        display: flex;
+        justify-content:flex-end;
+        .button{
+            text-decoration: none;
+            margin: 0px 50px;
+            p{
+                background-color: white;
+                border-radius: 0.75rem;
+                height: 1.5rem;
+                border:1px solid black;
+                width: 6rem;
+                font-size: 0.75rem;
+                text-align: center;
+                line-height: 1.5rem;
+                color: black;
+                margin: 2rem auto;
+            }
+        }
+    }
+    .task_contents{
+        display: inline-block;
+        width: 100%;
+        background-color: white;
+        padding: 100px;
+    }
+
 }
+
+
 a{
     text-decoration: none;
 }
@@ -402,3 +423,5 @@ a{
     margin-bottom: 0px;
     color: white;
 }
+
+

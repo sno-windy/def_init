@@ -108,7 +108,12 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'apptest'
+EMAIL_HOST_PASSWORD = 'xxxxxxxx'
+EMAIL_USE_TLS = False
 
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = 'index'

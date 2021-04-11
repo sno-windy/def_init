@@ -406,7 +406,7 @@ class TaskQuestionUnanswered(TaskQuestion):
 
     def get_context_data(self,*args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['sort_by_new'] = True
+        context['sort_by_new'] = False
         user = self.request.user
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
@@ -459,7 +459,7 @@ class TaskArticleLike(TaskArticle):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = True
+        context['sort_by_new'] = False
         user = self.request.user
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
