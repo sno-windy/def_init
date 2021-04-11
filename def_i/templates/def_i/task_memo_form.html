@@ -2,6 +2,8 @@
 {% load static %}
 {% load sass_tags %}
 {% block contents %}
+{% block menubar %}
+{% endblock menubar %}
 <div class="main-container__menubar">
     <a href="{% url 'task_detail' pk.pk %}" class="main-container__menubar-link">
         <h1>機能</h1>
@@ -25,10 +27,11 @@
     <a href="" class="main-container__menubar-sublink">
         <p><span style="color:#f4f4f4;">──</span>──いいね順</p>
     </a>
-    <a href="" class="main-container__menubar-link">
+    <a href="{% url 'task_memo' pk.pk %}" class="now-here">
         <h1>メモ帳</h1>
     </a>
 </div>
+<h1>メモ</h1>
 <form action="" method="POST">
     {% csrf_token %}
     {{form.contents}}

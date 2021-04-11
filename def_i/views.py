@@ -317,7 +317,6 @@ class TaskQuestionPost(LoginRequiredMixin,CreateView):
         question = form.save(commit=False)
         question.poster = self.request.user
         question.question_at = question_at
-        print(question.question_at)
         question.save()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -328,6 +327,27 @@ class TaskQuestionPost(LoginRequiredMixin,CreateView):
 
     def get_success_url(self,**kwargs):
         return reverse_lazy('task_question',kwargs={"pk":self.kwargs['pk']})
+
+class TaskArticlePost(LoginRequiredMixin, CreateView):
+    form_class = ArticlePostForm
+    template_name = 'def_i/article_post.html'
+
+    def form_valid(self, form, **kwargs):
+        pk = self.kwargs['pk']
+        article_at = Task_Sub.objects.get(pk=pk)
+        article = form.save(commit=False)
+        article.poster = self.request.user
+        article.article_at = article_at
+        article.save()
+        messages.success(self.request,'記事を投稿しました．')
+        return super().form_valid(form)
+
+    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+        messages.error(self.request,'記事作成に失敗しました．')
+        return super().form_invalid(form)
+
+    def get_success_url(self,**kwargs):
+        return reverse_lazy('task_article',kwargs={"pk":self.kwargs['pk']})
 
 
 class BackendTaskList(LoginRequiredMixin,ListView):
@@ -366,14 +386,45 @@ class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question
     context_object_name = 'task_question'
     template_name = 'def_i/task_question.html'
+    queryset = Question.objects.order_by('-created_at')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        context['sort_by_new'] = True
         user = self.request.user
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
         question_list = Question.objects.filter(question_at=task).order_by('-created_at')
         my_question_list = Question.objects.filter(question_at=task, poster=user).order_by('-created_at')
+        context['task'] = task
+        context['question_list'] = question_list
+        context['my_question_list'] = my_question_list
+
+        return context
+
+class TaskQuestionUnanswered(TaskQuestion):
+
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['sort_by_new'] = True
+        user = self.request.user
+        pk = self.kwargs['pk']
+        task = Task_Sub.objects.get(pk=pk)
+        question= Question.objects.all()
+        
+
+        for q in question:
+            talk = TalkAtQuestion.objects.filter(msg_at=q)
+            if len(talk) == 0:
+                q.if_answered = False
+                q.save()
+            else:
+                q.if_answered = True
+                q.save()
+
+        question_list = Question.objects.filter(if_answered=False, question_at=task).order_by('-created_at')
+        my_question_list = Question.objects.filter(if_answered=False,question_at=task, poster=user).order_by('-created_at')
+        context['task'] = task
         context['question_list'] = question_list
         context['my_question_list'] = my_question_list
 
@@ -382,9 +433,50 @@ class TaskQuestion(LoginRequiredMixin, ListView):
 
 
 
+
 class TaskArticle(LoginRequiredMixin, ListView):
     model = Article
-    template_name = 'def_i/task_article.html'
+    template_name = "def_i/task_article.html"
+    paginate_by = 5
+    context_object_name = 'task_article'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['sort_by_new'] = True
+        user = self.request.user
+        pk = self.kwargs['pk']
+        task = Task_Sub.objects.get(pk=pk)
+        article_list = Article.objects.filter(article_at=task).order_by('-created_at')
+        my_article_list = Article.objects.filter(article_at=task, poster=user).order_by('-created_at')
+        context['task'] = task
+        context['article_list'] = article_list
+        context['my_article_list'] = my_article_list
+
+        return context
+
+class TaskArticleLike(TaskArticle):
+    context_object_name = 'task_article'
+
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sort_by_new'] = True
+        user = self.request.user
+        pk = self.kwargs['pk']
+        task = Task_Sub.objects.get(pk=pk)
+        articles = Article.objects.all()
+        for a in articles:
+            a.like_count = Like.objects.filter(article = a.pk).count()
+            a.save()
+        article_list = articles.filter(article_at=task).order_by('-like_count','-created_at')
+        my_article_list = articles.filter(article_at=task, poster=user).order_by('-like_count','-created_at')
+        context['task'] = task
+        context['article_list'] = article_list
+        context['my_article_list'] = my_article_list
+
+        return context
+
+
+
 
 
 class FrontendTaskList(LoginRequiredMixin,ListView):

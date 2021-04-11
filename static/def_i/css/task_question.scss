@@ -5,11 +5,15 @@ $next-page:rgba(10, 10, 10, 0.1);
 $next-hover:rgba(5, 5, 5, 0.5);
 $header-contents:rgba(250, 247, 247, 0.5);
 
+.hidden{
+    display:none;
+}
 .choice-button{
     display: flex;
     flex-direction: row;
     p{
         text-align: center;
+        cursor: pointer;
         width: 6rem;
         margin: 0 0.5rem -1px 0;
         padding: 0.1rem;
