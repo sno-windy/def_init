@@ -5,7 +5,7 @@ from allauth.account.forms import SignupForm, LoginForm
 from .models import User
 
 class MyCustomSignupForm(SignupForm):
-    position = forms.CharField()
+    position = forms.CharField(max_length=15)
     user_image = forms.ImageField(required=False)
 
     def __init__(self, *args, **kwargs):
