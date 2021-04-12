@@ -65,22 +65,16 @@ h1{
             text-decoration: none;
         }
         &__icon{
-            height: 3rem;
-            width: 3rem;
-            margin: 0.6rem 0 0 0;
-
+            width: 10rem;
             img{
-                max-height: 100%;
+                width: 150px;
+                height: 35px;
                 max-width: 100%;
+                object-fit: cover;
+                zoom: 2;
+                margin: 0 auto;
+                margin: -0.3rem 0 0 0;
             }
-        }
-        &__title{
-            color: white;
-            font-size: 2rem;
-            font-weight: normal;
-            margin: auto 0;
-            padding: 0.6rem 0 0 0;
-            white-space:nowrap;
         }
         &__contents{
             margin: 0 2%;
@@ -123,7 +117,6 @@ h1{
 }
 .main{
     background-color: #f4f4f4;
-    height: 1000px;
     width: 100%;
     &-container{
         height: 100%;
@@ -186,6 +179,9 @@ h1{
                 a{
                     color: $list-stay;
                     &:hover{
+                        color: black;
+                    }
+                    p:hover{
                         color: black;
                     }
                 }
@@ -359,21 +355,42 @@ h1{
 .hidden_class{
     visibility: hidden;
 }
-.button{
-    text-decoration: none;
-    p{
-        background-color: white;
-        border-radius: 0.75rem;
-        height: 1.5rem;
-        border:1px solid black;
-        width: 6rem;
-        font-size: 0.75rem;
-        text-align: center;
-        line-height: 1.5rem;
-        color: black;
-        margin: 2rem auto;
+
+.detail{
+    width: 100%;
+    h1{
+        width: 200%;
     }
+    .buttons{
+        display: flex;
+        justify-content:flex-end;
+        .button{
+            text-decoration: none;
+            margin: 0px 50px;
+            p{
+                background-color: white;
+                border-radius: 0.75rem;
+                height: 1.5rem;
+                border:1px solid black;
+                width: 6rem;
+                font-size: 0.75rem;
+                text-align: center;
+                line-height: 1.5rem;
+                color: black;
+                margin: 2rem auto;
+            }
+        }
+    }
+    .task_contents{
+        display: inline-block;
+        width: 100%;
+        background-color: white;
+        padding: 100px;
+    }
+
 }
+
+
 a{
     text-decoration: none;
 }
@@ -400,3 +417,11 @@ a{
         color: oldlace;
     }
 }
+
+.alert{
+    font-size: 0.8rem;
+    margin-bottom: 0px;
+    color: white;
+}
+
+

@@ -11,6 +11,7 @@ class MyCustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # django-allauthのフィールドを上書き
+        self.fields['username'].widget.attrs['placeholder'] = '8文字以下'
         self.fields['position'].widget.attrs['placeholder'] = '15文字以下'
         self.fields['email'].widget.attrs['placeholder'] = 'メールアドレス'
         self.fields['password1'].widget.attrs['placeholder'] = '8文字以上の十分に複雑なもの'
@@ -42,4 +43,3 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email',  'position', 'user_image']
-

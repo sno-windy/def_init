@@ -27,7 +27,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     paginate_by = 5
 
     def get_initial(self):
-        return self.request.GET.copy() #検索の値の保持
+        return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
@@ -81,14 +81,14 @@ class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すれ
     template_name = "def_i/article_detail.html"
     def get(self,request,pk):
         articles = Article.objects.all()
-        #Userがlikeしてるかどうかの判別
+        #Userがlikeしてるかどうかの判別 Like.objects.filter()
         liked_list = []
         for a in articles:
             liked = a.like_set.filter(user=request.user)
             if liked.exists():
                 liked_list.append(a.pk)
         comments = TalkAtArticle.objects.filter(msg_at=pk).order_by('-time')[:3]
-        comments_count = TalkAtArticle.objects.filter(msg_at=pk).count()
+        comments_count = TalkAtArticle.objects.filter(msg_at=pk).count() #lenにしてQuerysetが走っている回数を数える．
         params ={
             'contents':Article.objects.get(pk=pk),
             'liked_list':liked_list,
@@ -273,6 +273,9 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
         question.question_at = question_at
         question.save()
+        #push通知
+        question.browser_push(self.request)
+
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
@@ -411,7 +414,7 @@ class TaskQuestionUnanswered(TaskQuestion):
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
         question= Question.objects.all()
-        
+
 
         for q in question:
             talk = TalkAtQuestion.objects.filter(msg_at=q)
