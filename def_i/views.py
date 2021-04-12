@@ -273,6 +273,9 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
         question.question_at = question_at
         question.save()
+        #push通知
+        question.browser_push(self.request)
+
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
