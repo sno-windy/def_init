@@ -10,20 +10,20 @@ import requests
 
 User = get_user_model()
 
-class Task(models.Model):
+class Task(models.Model): #lesson
     title = models.CharField(max_length=30)
-    f_number = models.PositiveSmallIntegerField(default=0)
-    clear = models.BooleanField(default=False)
+    f_number = models.PositiveSmallIntegerField(default=0) #first_num
+    clear = models.BooleanField(default=False) #is_clear
 
     def __str__(self):
         return str(self.title)
 
-class Task_Sub(models.Model):
+class Task_Sub(models.Model): #task
     title = models.CharField(max_length=30)
 
     contents = models.TextField(max_length=1000, null=True)
-    s_number = models.PositiveSmallIntegerField(default=0)
-    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub")
+    s_number = models.PositiveSmallIntegerField(default=0) #second_num
+    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub") #task
     clear = models.BooleanField(default=False)
 
 
@@ -57,7 +57,7 @@ class Question(models.Model):
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
-    if_answered = models.BooleanField(default=False)
+    if_answered = models.BooleanField(default=False) #->is_answered
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
 

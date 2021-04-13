@@ -35,8 +35,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
             a.like_count = Like.objects.filter(article = a.pk).count()
             a.save()
         #以下検索
-        query_word =self.request.GET.get('keyword')
-        if query_word:
+        if (query_word := self.request.GET.get('keyword')): #代入式
             articles = articles.filter(
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
             )
@@ -44,7 +43,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = True #新着順かどうか
+        context['sort_by_new'] = True #新着順かどうか=>クエリパラメーターで扱う
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
@@ -60,8 +59,7 @@ class ArticleFeedLike(ArticleFeed):
             a.save()
         articles = articles.order_by('-like_count','-created_at')
         #検索
-        query_word =self.request.GET.get('keyword')
-        if query_word:
+        if (query_word:=self.request.GET.get('keyword')):
             articles = articles.filter(
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
             )
@@ -122,7 +120,6 @@ class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
             article = Article.objects.get(pk=pk)
             article_poster = User.objects.get(pk=article.poster.id)
             msg = self.model.objects.create(msg=messages,msg_from = request.user,msg_to = article_poster,msg_at=article)
-            msg.save()
             return redirect("article_talk_suc",pk=pk)
 
 #投稿完了画面を作ったが，すぐ元の画面に遷移するので活用できていない

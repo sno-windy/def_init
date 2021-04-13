@@ -37,14 +37,16 @@
         <div class="main-container__member-list">
         <p class="main-container__member-list-title">メンバー</p>
             {% for m in member %}
-            <div class="main-container__member-list-block">
-                {% if m.user_image %}
-                <img src="{{ m.user_image.url }}" alt="">
-                {% else %}
-                <img src="{% static 'def_i/img/default.png' %}" alt="">
-                {% endif %}
-                <p class="main-container__member-list-name"><a href="{% url 'user_page' m.pk %}">{{m.username}}<br><span>{{m.position}}</span></a></p>
-            </div>
+            <a href="{% url 'user_page' m.pk %}">
+                <div class="main-container__member-list-block">
+                    {% if m.user_image %}
+                    <img src="{{ m.user_image.url }}" alt="">
+                    {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}" alt="">
+                    {% endif %}
+                    <p class="main-container__member-list-name">{{m.username}}<br><span>{{m.position}}</span></p>
+                </div>
+            </a>
             {% endfor %}
         </div>
         {% endblock member_list %}

@@ -311,6 +311,12 @@ h1{
             overflow: scroll;
             height: 20rem;
             width: 20%;
+            a{
+                color: $list-stay;
+                &:hover{
+                    color: black;
+                }
+            }
             &-block{
                 display: flex;
                 flex-direction: row;
@@ -333,13 +339,6 @@ h1{
             &-name{
                 margin: 0;
                 padding: 0 0 0 0.3rem;
-
-                a{
-                    color: $list-stay;
-                    &:hover{
-                        color: black;
-                    }
-                }
                 span{
                     font-size: 0.7rem;
                     color: $list-stay;
