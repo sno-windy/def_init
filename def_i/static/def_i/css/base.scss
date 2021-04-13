@@ -307,7 +307,10 @@ h1{
         &__member-list{
             position: fixed;
             top: 7rem;
-            right: 5%;
+            right: 1rem;
+            overflow: scroll;
+            height: 20rem;
+            width: 20%;
             &-block{
                 display: flex;
                 flex-direction: row;
