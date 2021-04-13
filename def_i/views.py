@@ -31,9 +31,9 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
 
     def get_queryset(self):
         articles = Article.objects.order_by('-created_at')
-        for a in articles:
-            a.like_count = Like.objects.filter(article = a.pk).count()
-            a.save()
+        # for a in articles:
+        #     a.like_count = Like.objects.filter(article = a.pk).count()
+        #     a.save()
         #以下検索
         if (query_word := self.request.GET.get('keyword')): #代入式
             articles = articles.filter(
@@ -54,9 +54,9 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
 class ArticleFeedLike(ArticleFeed):
     def get_queryset(self):
         articles = Article.objects.all()
-        for a in articles:
-            a.like_count = Like.objects.filter(article = a.pk).count()
-            a.save()
+        # for a in articles:
+        #     a.like_count = Like.objects.filter(article = a.pk).count()
+        #     a.save()
         articles = articles.order_by('-like_count','-created_at')
         #検索
         if (query_word:=self.request.GET.get('keyword')):
@@ -80,16 +80,13 @@ class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すれ
     def get(self,request,pk):
         articles = Article.objects.all()
         #Userがlikeしてるかどうかの判別 Like.objects.filter()
-        liked_list = []
-        for a in articles:
-            liked = a.like_set.filter(user=request.user)
-            if liked.exists():
-                liked_list.append(a.pk)
-        comments = TalkAtArticle.objects.filter(msg_at=pk).order_by('-time')[:3]
-        comments_count = TalkAtArticle.objects.filter(msg_at=pk).count() #lenにしてQuerysetが走っている回数を数える．
+        liked_set = Like.objects.filter(user=request.user).values_list('article',flat=True)
+        cm = TalkAtArticle.objects.filter(msg_at=pk)
+        comments = cm.order_by('-time')[:3]
+        comments_count = cm.count() #lenにしてQuerysetが走っている回数を数える．
         params ={
             'contents':Article.objects.get(pk=pk),
-            'liked_list':liked_list,
+            'liked_set':liked_set,
             'comments_count':comments_count,
             'comments':comments,
         }
@@ -195,17 +192,16 @@ class QuestionFeed(LoginRequiredMixin,ListView):
 
 class QuestionFeedUnanswered(QuestionFeed):
     def get_queryset(self):
-        question = Question.objects.all()
-        #その質問にTalkが存在していなければ，未回答フォルダに含める
-        for q in question:
-            talk = TalkAtQuestion.objects.filter(msg_at=q)
-            if len(talk) == 0:
-                q.if_answered = False
-                q.save()
-            else:
-                q.if_answered = True
-                q.save()
-
+        # question = Question.objects.all()
+        # #その質問にTalkが存在していなければ，未回答フォルダに含める
+        # for q in question:
+        #     talk = TalkAtQuestion.objects.filter(msg_at=q)
+        #     if len(talk) == 0:
+        #         q.if_answered = False
+        #         q.save()
+        #     else:
+        #         q.if_answered = True
+        #         q.save()
         articles = Question.objects.filter(if_answered=False)
         return articles
 
@@ -226,8 +222,9 @@ class QuestionDetail(LoginRequiredMixin,DetailView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['comments_count'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).count()
-        context['comments'] = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk']).order_by('-time')[:3]
+        comments = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk'])
+        context['comments_count'] = comments.count()
+        context['comments'] = comments.order_by('-time')[:3]
         return context
 
 
@@ -250,6 +247,10 @@ class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
             question_poster = User.objects.get(pk=question.poster.id)
             msg = self.model.objects.create(msg=messages,msg_from = request.user,msg_to = question_poster,msg_at=question)
             msg.save()
+            if not question.if_answered: #コメントの時にブール値を編集する
+                question.if_answered = True
+                question.save()
+
             return redirect("question_talk_suc",pk=pk)
 
 
@@ -410,20 +411,20 @@ class TaskQuestionUnanswered(TaskQuestion):
         user = self.request.user
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
-        question= Question.objects.all()
+        # question= Question.objects.all() 消去BYひがき
 
 
-        for q in question:
-            talk = TalkAtQuestion.objects.filter(msg_at=q)
-            if len(talk) == 0:
-                q.if_answered = False
-                q.save()
-            else:
-                q.if_answered = True
-                q.save()
+        # for q in question:
+        #     talk = TalkAtQuestion.objects.filter(msg_at=q)
+        #     if len(talk) == 0:
+        #         q.if_answered = False
+        #         q.save()
+        #     else:
+        #         q.if_answered = True
+        #         q.save()
 
         question_list = Question.objects.filter(if_answered=False, question_at=task).order_by('-created_at')
-        my_question_list = Question.objects.filter(if_answered=False,question_at=task, poster=user).order_by('-created_at')
+        my_question_list = question_list.filter(poster=user).order_by('-created_at')
         context['task'] = task
         context['question_list'] = question_list
         context['my_question_list'] = my_question_list
@@ -464,9 +465,9 @@ class TaskArticleLike(TaskArticle):
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
         articles = Article.objects.all()
-        for a in articles:
-            a.like_count = Like.objects.filter(article = a.pk).count()
-            a.save()
+        # for a in articles: 消去BYひがき
+        #     a.like_count = Like.objects.filter(article = a.pk).count()
+        #     a.save()
         article_list = articles.filter(article_at=task).order_by('-like_count','-created_at')
         my_article_list = articles.filter(article_at=task, poster=user).order_by('-like_count','-created_at')
         context['task'] = task
@@ -518,10 +519,15 @@ def LikeView(request,pk):
         like = Like.objects.filter(article=article, user=user)
         if like.exists():
             like.delete()
+            article.like_count -= 1
+            user.like_count -= 1
         else:
             like.create(article=article, user=user)
+            article.like_count += 1
+            user.like_count += 1
             liked = True
-
+        article.save()
+        user.save()
         params={
             'article_id': article.id,
             'liked': liked,
@@ -538,9 +544,6 @@ class UserPageView(LoginRequiredMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['pk'])
-        article_like_count = Article.objects.filter(poster=user).values_list('like_count',flat=True)
-        user.like_count = sum(article_like_count)
-        user.save()
         context["user_data"] = user
         context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
         return context
@@ -557,7 +560,6 @@ class MyPageView(LoginRequiredMixin,ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context["user_data"] = User.objects.get(username=user)
         like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
         article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
         context["articles_like"] = article_list #いいねした記事リスト

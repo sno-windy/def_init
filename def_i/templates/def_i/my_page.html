@@ -7,14 +7,14 @@
 {% block menubar %}
 <div class="main-container__userinfo">
 <div class="main-container__userinfo-user">
-<p>{% if user_data.user_image %}<img src="{{ user_data.user_image.url }}" alt="">
+<p>{% if user.user_image %}<img src="{{ user.user_image.url }}" alt="">
 {% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">{% endif %}</p>
 <div>
-    <h1>{{user_data.username}}</h1>
-    <p>{{user_data.position}}</p>
+    <h1>{{user.username}}</h1>
+    <p>{{user.position}}</p>
 </div>
 </div>
-<h2>総いいね数：<span>{{user_data.like_count}}</span></h2>
+<h2>総いいね数：<span>{{user.like_count}}</span></h2>
 <p><a href="{% url 'article_feed' %}">検索に戻る</a></p>
 </div>
 {% endblock menubar %}
