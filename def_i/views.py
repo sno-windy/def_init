@@ -79,7 +79,7 @@ class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すれ
     template_name = "def_i/article_detail.html"
     def get(self,request,pk):
         articles = Article.objects.all()
-        #Userがlikeしてるかどうかの判別 Like.objects.filter()
+        #Userがlikeしてるかどうかの判別
         liked_set = Like.objects.filter(user=request.user).values_list('article',flat=True)
         cm = TalkAtArticle.objects.filter(msg_at=pk)
         comments = cm.order_by('-time')[:3]
