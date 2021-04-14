@@ -17,8 +17,14 @@
     &-contents{
         background-color: white;
         padding: 1rem;
+        word-wrap:break-word;
     }
 }
 code{
     background-color: oldlace;
+    display: inline-block;
+    white-space: normal;
+    max-width:100%;
+    word-break:break-all;
+    word-wrap:break-word;
 }

@@ -24,5 +24,7 @@
         </a>
     {% endifequal %}
 </article>
+    {% empty %}
+        <p>メッセージがありません．記事や質問を投稿して，それにコメントが付いた場合にコメントの通知が届きます！<a href="{% url 'question_post' %}">早速投稿してみよう！</a></p>
 {% endfor %}
 {% endblock contents %}

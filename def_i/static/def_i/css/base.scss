@@ -170,6 +170,7 @@ h1{
                 h1{
                     margin: 0%;
                     font-size: 1rem;
+                    word-break: break-all;
                 }
                 p{
                     margin: 0%;
@@ -306,7 +307,16 @@ h1{
         &__member-list{
             position: fixed;
             top: 7rem;
-            right: 5%;
+            right: 1rem;
+            overflow: scroll;
+            height: 20rem;
+            width: 20%;
+            a{
+                color: $list-stay;
+                &:hover{
+                    color: black;
+                }
+            }
             &-block{
                 display: flex;
                 flex-direction: row;
@@ -329,13 +339,6 @@ h1{
             &-name{
                 margin: 0;
                 padding: 0 0 0 0.3rem;
-
-                a{
-                    color: $list-stay;
-                    &:hover{
-                        color: black;
-                    }
-                }
                 span{
                     font-size: 0.7rem;
                     color: $list-stay;
@@ -386,6 +389,8 @@ h1{
         width: 100%;
         background-color: white;
         padding: 100px;
+        word-break: break-all;
+
     }
 
 }
@@ -423,5 +428,3 @@ a{
     margin-bottom: 0px;
     color: white;
 }
-
-
