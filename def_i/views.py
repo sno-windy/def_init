@@ -514,23 +514,24 @@ class MessageNotification(LoginRequiredMixin,TemplateView):
 def LikeView(request,pk):
     if request.method =="GET":
         article = Article.objects.get(pk=pk)
+        article_poster = article.poster
         user = request.user
-        liked = False
+        is_liked = False
         like = Like.objects.filter(article=article, user=user)
         if like.exists():
             like.delete()
             article.like_count -= 1
-            user.like_count -= 1
+            article_poster.like_count -= 1
         else:
             like.create(article=article, user=user)
             article.like_count += 1
-            user.like_count += 1
-            liked = True
+            article_poster.like_count += 1
+            is_liked = True
         article.save()
-        user.save()
+        article_poster.save()
         params={
             'article_id': article.id,
-            'liked': liked,
+            'liked': is_liked,
             'count': article.like_set.count(),
         }
 
