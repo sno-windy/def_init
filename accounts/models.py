@@ -4,7 +4,7 @@ from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 class User(AbstractUser):
-    username = models.CharField(max_length=8)
+    username = models.CharField(max_length=8, unique=True)
     position = models.CharField(max_length=15)
     like_count = models.PositiveIntegerField(default=0)
     user_image = ProcessedImageField(upload_to="accounts/img",
