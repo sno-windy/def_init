@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
 from django.urls import reverse_lazy
-from django.db.models import Q, OuterRef, Subquery
+from django.db.models import F, Q, OuterRef, Subquery
 from django.contrib.auth.decorators import login_required
 
 #反省 Controllerに処理を書きすぎない
@@ -30,48 +30,54 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
-        articles = Article.objects.order_by('-created_at')
-        # for a in articles:
-        #     a.like_count = Like.objects.filter(article = a.pk).count()
-        #     a.save()
-        #以下検索
+        articles = Article.objects.all()
+        order_by = self.request.GET.get('orderby')
+
+        if order_by == 'new':
+            articles = Article.objects.order_by('-created_at')
+
+        elif order_by == 'like':
+            articles = articles.order_by('-like_count','-created_at')
+
         if (query_word := self.request.GET.get('keyword')): #代入式
             articles = articles.filter(
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
             )
+
         return articles
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = True #新着順かどうか=>クエリパラメーターで扱う
+        # context['sort_by_new'] = True #新着順かどうか=>クエリパラメーターで扱う
+        context['orderby'] = self.request.GET.get('orderby')
+
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
+
         return context
 
 
-class ArticleFeedLike(ArticleFeed):
-    def get_queryset(self):
-        articles = Article.objects.all()
-        # for a in articles:
-        #     a.like_count = Like.objects.filter(article = a.pk).count()
-        #     a.save()
-        articles = articles.order_by('-like_count','-created_at')
-        #検索
-        if (query_word:=self.request.GET.get('keyword')):
-            articles = articles.filter(
-                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
-        return articles
+#Queryparamで扱えるようになったので産廃
+# class ArticleFeedLike(ArticleFeed):
+#     def get_queryset(self):
+#         articles = Article.objects.all()
+#         articles = articles.order_by('-like_count','-created_at')
+#         #検索
+#         if (query_word:=self.request.GET.get('keyword')):
+#             articles = articles.filter(
+#                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+#             )
+#         return articles
 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = False
-        context['member'] = User.objects.annotate(latest_post_time=Subquery(
-            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-        )).order_by('-latest_post_time')[:30]
-        return context
+#     def get_context_data(self,**kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # context['sort_by_new'] = False
+#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
+#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+#         )).order_by('-latest_post_time')[:30]
+#         return context
 
 
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
@@ -181,38 +187,41 @@ class QuestionFeed(LoginRequiredMixin,ListView):
     paginate_by = 10
     queryset = Question.objects.order_by('-created_at')
 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = True
-        context['member'] = User.objects.annotate(latest_post_time=Subquery(
-            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-        )).order_by('-latest_post_time')
-        return context
-
-
-class QuestionFeedUnanswered(QuestionFeed):
     def get_queryset(self):
-        # question = Question.objects.all()
-        # #その質問にTalkが存在していなければ，未回答フォルダに含める
-        # for q in question:
-        #     talk = TalkAtQuestion.objects.filter(msg_at=q)
-        #     if len(talk) == 0:
-        #         q.if_answered = False
-        #         q.save()
-        #     else:
-        #         q.if_answered = True
-        #         q.save()
-        articles = Question.objects.filter(if_answered=False)
-        return articles
+        order_by = self.request.GET.get('orderby')
+        questions = Question.objects.all()
+
+        if order_by == 'new':
+            questions = questions.order_by('-created_at')
+
+        elif order_by == 'unanswered':
+            questions = questions.filter(if_answered=False)
+
+        return questions
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = False
-        #メンバー一覧で，投稿した時間が新しい順に並べている
+        context['orderby'] = self.request.GET.get('orderby')
         context['member'] = User.objects.annotate(latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
         return context
+
+
+#Queryparamで扱えるようになったので産廃
+# class QuestionFeedUnanswered(QuestionFeed):
+#     def get_queryset(self):
+#         articles = Question.objects.filter(if_answered=False)
+#         return articles
+
+#     def get_context_data(self,**kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['sort_by_new'] = False
+#         #メンバー一覧で，投稿した時間が新しい順に並べている
+#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
+#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
+#         )).order_by('-latest_post_time')
+#         return context
 
 
 class QuestionDetail(LoginRequiredMixin,DetailView):
@@ -396,7 +405,7 @@ class TaskQuestion(LoginRequiredMixin, ListView):
         pk = self.kwargs['pk']
         task = Task_Sub.objects.get(pk=pk)
         question_list = Question.objects.filter(question_at=task).order_by('-created_at')
-        my_question_list = Question.objects.filter(question_at=task, poster=user).order_by('-created_at')
+        my_question_list = question_list.filter(poster=user).order_by('-created_at')
         context['task'] = task
         context['question_list'] = question_list
         context['my_question_list'] = my_question_list
@@ -513,24 +522,28 @@ class MessageNotification(LoginRequiredMixin,TemplateView):
 
 def LikeView(request,pk):
     if request.method =="GET":
-        article = Article.objects.get(pk=pk)
+        article = Article.objects.get(pk=pk) #filterでないとF&updateが使えにゃい
+        article_poster = article.poster
         user = request.user
-        liked = False
+        is_liked = False
         like = Like.objects.filter(article=article, user=user)
+
         if like.exists():
             like.delete()
-            article.like_count -= 1
-            user.like_count -= 1
+            article.like_count=F('like_count')-1
+            article_poster.like_count=F('like_count')-1
+
         else:
             like.create(article=article, user=user)
-            article.like_count += 1
-            user.like_count += 1
-            liked = True
+            article.like_count=F('like_count')+1
+            article_poster.like_count=F('like_count')+1
+            is_liked = True
+
         article.save()
-        user.save()
+        article_poster.save()
         params={
             'article_id': article.id,
-            'liked': liked,
+            'liked': is_liked,
             'count': article.like_set.count(),
         }
 
@@ -541,6 +554,7 @@ class UserPageView(LoginRequiredMixin,ListView):
     context_object_name = "articles"
     template_name = 'def_i/user_page.html'
     paginate_by = 5
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['pk'])
@@ -557,6 +571,7 @@ class MyPageView(LoginRequiredMixin,ListView):
     context_object_name = "articles"
     template_name = 'def_i/my_page.html'
     paginate_by = 5 #標準ではobject_listをうけとる
+
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user

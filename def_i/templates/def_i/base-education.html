@@ -2,32 +2,32 @@
 {% load static %}
         {% block menubar %}
             <div class="main-container__menubar">
-                <a href="{% url 'article_feed' %}" class="main-container__menubar-link now-here">
+                <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link now-here">
                     <h1>記事フィード</h1>
                 </a>
                 <!--<div class="">box</div>-->
-            {% if sort_by_new == True %}
-                <a href="{% url 'article_feed' %}" class="main-container__menubar-sublink now-here-sub">
+            {% if orderby == 'new' %}
+                <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
                 </a>
-                <a href="{% url 'article_feed_like' %}" class="main-container__menubar-sublink">
+                <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
-            {% else %}
-                <a href="{% url 'article_feed' %}" class="main-container__menubar-sublink">
+            {% elif orderby == 'like' %}
+                <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
                 </a>
-                <a href="{% url 'article_feed_like' %}" class="main-container__menubar-sublink now-here-sub">
+                <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
             {% endif %}
-                <a href="{% url 'question_feed_new' %}" class="main-container__menubar-link">
+                <a href="{% url 'question_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
                     <h1>質問フィード</h1>
                 </a>
-                <a href="{% url 'question_feed_new' %}" class="main-container__menubar-sublink">
+                <a href="{% url 'question_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
                 </a>
-                <a href="{% url 'question_feed_unanswered' %}" class="main-container__menubar-sublink">
+                <a href="{% url 'question_feed' %}?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──未回答</p>
                 </a>
             </div>
