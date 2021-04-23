@@ -29,5 +29,5 @@
         <p>コメントがありません．</p>
     {% endfor %}
 <a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
-<a href="{% url 'question_feed_new' %}"><p>質問フィードに戻る</p></a>
+<a href="{% url 'question_feed' %}?orderby=new"><p>質問フィードに戻る</p></a>
 {% endblock contents %}

@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "task_memo_form.css",
+	"sources": [
+		"task_memo_form.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,AAEI,IAFA,CAEA,QAAQ,AAAA,CACJ,KAAK,CAAE,IAAI,CACX,MAAM,CAAE,KAAK,CAEhB"
+}

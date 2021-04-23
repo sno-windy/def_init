@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Article, Question, Like, Task, Talk, TalkAtArticle, TalkAtQuestion, Task, Task_Sub, Memo
+from .models import User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course, Memo
 from django.contrib.auth.forms import (
     AuthenticationForm
 )

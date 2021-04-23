@@ -10,20 +10,19 @@ import requests
 
 User = get_user_model()
 
-class Task(models.Model): #lesson
+class Course(models.Model): #lesson
     title = models.CharField(max_length=30)
-    f_number = models.PositiveSmallIntegerField(default=0) #first_num
-    clear = models.BooleanField(default=False) #is_clear
+    course_num = models.PositiveSmallIntegerField(default=0)
+    is_clear = models.BooleanField(default=False) #is_clear
 
     def __str__(self):
         return str(self.title)
 
-class Task_Sub(models.Model): #task
+class Lesson(models.Model):
     title = models.CharField(max_length=30)
-
     contents = models.TextField(max_length=1000, null=True)
-    s_number = models.PositiveSmallIntegerField(default=0) #second_num
-    task_belong = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="task_sub") #task
+    lesson_num = models.PositiveSmallIntegerField(default=0)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lesson") #lesson
     clear = models.BooleanField(default=False)
 
 
@@ -33,7 +32,7 @@ class Task_Sub(models.Model): #task
 
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
-    article_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_article")
+    article_at = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_article")
     title = models.CharField(max_length=30)
     content = MarkdownxField()
     like_count = models.PositiveIntegerField(default=0)
@@ -53,7 +52,7 @@ class Article(models.Model):
 
 class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
-    question_at = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_question")
+    question_at = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_question")
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
@@ -125,6 +124,6 @@ class TalkAtQuestion(Talk):
     #     self.category = '質問'
 
 class Memo(models.Model):
-    relate_task = models.ForeignKey(Task_Sub, on_delete=models.CASCADE, related_name="task_memo", null=True)
+    relate_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_memo", null=True)
     relate_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_memo", null=True)
     contents = models.TextField(null=True)

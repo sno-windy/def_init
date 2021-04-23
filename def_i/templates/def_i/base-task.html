@@ -5,16 +5,16 @@
 {% block contents %}
 <h1>課題</h1>
 <div class="main-container__contents-taskboxies">
-{% for task in task_list %}
-{% if task.title == 'public' %}
+{% for course in course_list %}
+{% if course.title == 'public' %}
 {% else %}
 <div class ="main-container__contents-taskbox js-accordion-title">
-    <p class="main-container__contents-taskbox-tag ">課題{{ task.f_number}}</p><p class="main-container__contents-taskbox-descript">{{ task.title }}</p>
+    <p class="main-container__contents-taskbox-tag ">課題{{ course.course_num}}</p><p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
 </div>
 <div class="main-container__contents-taskbox-details accordion__content">
-    {% for task_sub in task.task_sub.all %}
-    <a href="{% url 'task_detail' task_sub.pk %}">
-        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題{{ task.f_number }}-{{ task_sub.s_number }}</p><p class="main-container__contents-taskbox-detail-descript">{{ task_sub.title }}</p></div>
+    {% for lesson in course.lesson.all %}
+    <a href="{% url 'task_detail' lesson.pk %}">
+        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題{{ course.course_num }}-{{ lesson.lesson_num }}</p><p class="main-container__contents-taskbox-detail-descript">{{ lesson.title }}</p></div>
     </a>
     {% endfor %}
 </div>
@@ -27,7 +27,7 @@
 <script>
 document.addEventListener("DOMContentLoaded",() => {
   const title = document.querySelectorAll('.js-accordion-title');
-  
+
   for (let i = 0; i < title.length; i++){
     let titleEach = title[i];
     let content = titleEach.nextElementSibling;
