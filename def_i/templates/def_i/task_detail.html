@@ -5,39 +5,38 @@
 {% block contents %}
 {% block menubar %}
 <div class="main-container__menubar">
-    <a href="{% url 'task_detail' task_sub.pk %}" class="main-container__menubar-link now-here">
+    <a href="{% url 'task_detail' lesson.pk %}" class="main-container__menubar-link now-here">
         <h1>機能</h1>
     </a>
-    <a href="{% url 'task_question' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="{% url 'task_question' lesson.pk %}" class="main-container__menubar-link">
         <h1>過去の質問</h1>
     </a>
-    <!--<div class="">box</div>-->
-    <a href="{% url 'task_question' task_sub.pk %}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;"">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_question_unanswered' task_sub.pk %}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──未回答</p>
-    </a>
-    <a href="{% url 'task_article' task_sub.pk %}" class="main-container__menubar-link">
-        <h1>過去のまとめ</h1>
-    </a>
-    <a href="{% url 'task_article' task_sub.pk %}" class="main-container__menubar-sublink">
+    <a href="{% url 'task_question' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
         <p><span style="visibility:hidden;">──</span>──新着順</p>
     </a>
-    <a href="{% url 'task_article_like' task_sub.pk %}" class="main-container__menubar-sublink">
+    <a href="{% url 'task_question' lesson.pk %}?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
+        <p><span style="visibility:hidden;">──</span>──未回答</p>
+    </a>
+    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
+        <h1>過去のまとめ</h1>
+    </a>
+    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
+        <p><span style="visibility:hidden;">──</span>──新着順</p>
+    </a>
+    <a href="{% url 'task_article' lesson.pk %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
         <p><span style="visibility:hidden;">──</span>──いいね順</p>
     </a>
-    <a href="{% url 'task_memo' task_sub.pk %}" class="main-container__menubar-link">
+    <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
         <h1>メモ帳</h1>
     </a>
 </div>
 {% endblock menubar %}
 <div class="detail">
-    <h1>{{ task_sub.title }}</h1>
-    <p class="task_contents">{{ task_sub.contents }}</p>
+    <h1>{{ lesson.title }}</h1>
+    <p class="task_contents">{{ lesson.contents }}</p>
     <div class="buttons">
-        <a class="button"  href="{% url 'task_article_post'  task_sub.pk %}"><p>まとめる</p></a>
-        <a class="button" href="{% url 'task_question_post' task_sub.pk %}"><p>質問する</p></a>
+        <a class="button"  href="{% url 'task_article_post'  lesson.pk %}"><p>まとめる</p></a>
+        <a class="button" href="{% url 'task_question_post' lesson.pk %}"><p>質問する</p></a>
     </div>
 </div>
 
@@ -46,5 +45,3 @@
 
 
 {% endblock contents %}
-
-

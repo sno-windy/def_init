@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User,Task, Task_Sub, Talk,Like,Article,TalkAtArticle,Question,TalkAtQuestion,Memo
+from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse,HttpResponse
@@ -141,8 +141,8 @@ class ArticlePost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         article = form.save(commit=False)
         article.poster = self.request.user
-        task,created = Task.objects.get_or_create(title='public')
-        article_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
+        course,_ = Course.objects.get_or_create(title='public')
+        article_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
         article.article_at = article_at
         article.save()
         messages.success(self.request,'記事を投稿しました．')
@@ -276,8 +276,8 @@ class QuestionPost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
-        task,created = Task.objects.get_or_create(title='public')
-        question_at,created2 = Task_Sub.objects.get_or_create(title='public',contents='',task_belong=task)
+        course,_ = Course.objects.get_or_create(title='public')
+        question_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
         question.question_at = question_at
         question.save()
         #push通知
@@ -323,7 +323,7 @@ class TaskQuestionPost(LoginRequiredMixin,CreateView):
 
     def form_valid(self, form, **kwargs):
         pk = self.kwargs['pk']
-        question_at = Task_Sub.objects.get(pk=pk)
+        question_at = Lesson.objects.get(pk=pk)
         question = form.save(commit=False)
         question.poster = self.request.user
         question.question_at = question_at
@@ -344,7 +344,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, **kwargs):
         pk = self.kwargs['pk']
-        article_at = Task_Sub.objects.get(pk=pk)
+        article_at = Lesson.objects.get(pk=pk)
         article = form.save(commit=False)
         article.poster = self.request.user
         article.article_at = article_at
@@ -361,27 +361,27 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
 
 class BackendTaskList(LoginRequiredMixin,ListView):
-    context_object_name = 'task_list'
-    queryset = Task.objects.order_by('f_number').prefetch_related('task_sub')
-    model = Task
+    context_object_name = 'course_list'
+    queryset = Course.objects.order_by('course_num').prefetch_related('lesson')
+    model = Course
     template_name = "def_i/base-task.html"
 
     def get_context_data(self , *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['task_sub_list'] = Task_Sub.objects.all()
+        context['lesson_list'] = Lesson.objects.all()
         return context
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
-    model = Task_Sub
-    context_object_name = 'task_sub'
+    model = Lesson
+    context_object_name = 'lesson'
     fields = ['title','contents',]
     template_name = 'def_i/task_detail.html'
 
 
 def MemoView(request, pk):
-    task_pk = Task_Sub.objects.get(pk=pk)
-    memo, created = Memo.objects.get_or_create(relate_user=request.user, relate_task=task_pk)
+    lesson_pk = Lesson.objects.get(pk=pk)
+    memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
     if request.method == "POST":
         form = MemoForm(request.POST, instance=memo)
         if form.is_valid():
@@ -390,107 +390,74 @@ def MemoView(request, pk):
     else:
         form = MemoForm(instance=memo)
 
-    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':task_pk })
+    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
 
 class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question
-    context_object_name = 'task_question'
     template_name = 'def_i/task_question.html'
-    queryset = Question.objects.order_by('-created_at')
+
+    def get_queryset(self):
+        order_by = self.request.GET.get('orderby')
+        lesson = Lesson.objects.get(pk=self.kwargs['pk'])
+        questions = Question.objects.filter(question_at=lesson)
+        if order_by == 'new':
+            questions = questions.order_by('-created_at')
+
+        elif order_by == 'unanswered':
+            questions = questions.filter(if_answered=False)
+
+        return questions
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['sort_by_new'] = True
+        context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
-        pk = self.kwargs['pk']
-        task = Task_Sub.objects.get(pk=pk)
-        question_list = Question.objects.filter(question_at=task).order_by('-created_at')
-        my_question_list = question_list.filter(poster=user).order_by('-created_at')
-        context['task'] = task
-        context['question_list'] = question_list
+        lesson = Lesson.objects.get(pk=self.kwargs['pk'])
+        my_question_list = Question.objects.filter(poster=user).order_by('-created_at')
+        context['lesson'] = lesson
         context['my_question_list'] = my_question_list
 
         return context
-
-class TaskQuestionUnanswered(TaskQuestion):
-
-    def get_context_data(self,*args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['sort_by_new'] = False
-        user = self.request.user
-        pk = self.kwargs['pk']
-        task = Task_Sub.objects.get(pk=pk)
-        # question= Question.objects.all() 消去BYひがき
-
-
-        # for q in question:
-        #     talk = TalkAtQuestion.objects.filter(msg_at=q)
-        #     if len(talk) == 0:
-        #         q.if_answered = False
-        #         q.save()
-        #     else:
-        #         q.if_answered = True
-        #         q.save()
-
-        question_list = Question.objects.filter(if_answered=False, question_at=task).order_by('-created_at')
-        my_question_list = question_list.filter(poster=user).order_by('-created_at')
-        context['task'] = task
-        context['question_list'] = question_list
-        context['my_question_list'] = my_question_list
-
-        return context
-
-
-
 
 
 class TaskArticle(LoginRequiredMixin, ListView):
     model = Article
     template_name = "def_i/task_article.html"
     paginate_by = 5
-    context_object_name = 'task_article'
+
+    def get_queryset(self):
+        order_by = self.request.GET.get('orderby')
+        questions = Question.objects.all()
+        lesson = Lesson.objects.get(pk=self.kwargs['pk'])
+        articles = Article.objects.filter(article_at=lesson)
+        if order_by == 'new':
+            articles = articles.order_by('-created_at')
+
+        elif order_by == 'like':
+            articles = articles.order_by('-like_count','-created_at')
+
+        if (query_word := self.request.GET.get('keyword')): #代入式
+            articles = articles.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            )
+
+        return articles
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['sort_by_new'] = True
+        context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
         pk = self.kwargs['pk']
-        task = Task_Sub.objects.get(pk=pk)
-        article_list = Article.objects.filter(article_at=task).order_by('-created_at')
-        my_article_list = Article.objects.filter(article_at=task, poster=user).order_by('-created_at')
-        context['task'] = task
-        context['article_list'] = article_list
+        lesson = Lesson.objects.get(pk=pk)
+        my_article_list = Article.objects.filter(article_at=lesson, poster=user).order_by('-created_at')
+        context['lesson'] = lesson
         context['my_article_list'] = my_article_list
 
         return context
-
-class TaskArticleLike(TaskArticle):
-    context_object_name = 'task_article'
-
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sort_by_new'] = False
-        user = self.request.user
-        pk = self.kwargs['pk']
-        task = Task_Sub.objects.get(pk=pk)
-        articles = Article.objects.all()
-        # for a in articles: 消去BYひがき
-        #     a.like_count = Like.objects.filter(article = a.pk).count()
-        #     a.save()
-        article_list = articles.filter(article_at=task).order_by('-like_count','-created_at')
-        my_article_list = articles.filter(article_at=task, poster=user).order_by('-like_count','-created_at')
-        context['task'] = task
-        context['article_list'] = article_list
-        context['my_article_list'] = my_article_list
-
-        return context
-
-
-
 
 
 class FrontendTaskList(LoginRequiredMixin,ListView):
-    model = Task
+    model = Course
     template_name = "def_i/base-task.html"
 
 class MessageNotification(LoginRequiredMixin,TemplateView):

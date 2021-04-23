@@ -6,38 +6,39 @@
 {% endblock extra_style %}
 {% block contents %}
 <div class="main-container__menubar">
-    <a href="{% url 'task_detail' task.pk %}" class="main-container__menubar-link">
+    <a href="{% url 'task_detail' lesson.pk %}" class="main-container__menubar-link">
         <h1>機能</h1>
     </a>
-    <a href="{% url 'task_question' task.pk %}" class="main-container__menubar-link now-here">
+    <a href="{% url 'task_question' lesson.pk %}" class="main-container__menubar-link now-here">
         <h1>過去の質問</h1>
     </a>
     <!--<div class="">box</div>-->
-    {% if sort_by_new == True %}
-    <a href="{% url 'task_question' task.pk %}" class="main-container__menubar-sublink now-here-sub">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_question_unanswered' task.pk %}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──未回答</p>
-    </a>
-    {% else %}
-    <a href="{% url 'task_question' task.pk %}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_question_unanswered' task.pk %}" class="main-container__menubar-sublink now-here-sub">
-        <p><span style="visibility:hidden;">──</span>──未回答</p>
-    </a>
-    {% endif %}
-    <a href="{% url 'task_article' task.pk %}" class="main-container__menubar-link">
+            {% if orderby == 'new' %}
+                <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
+                    <p><span style="visibility:hidden;">──</span>──新着順</p>
+                </a>
+                <a href="?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
+                    <p><span style="visibility:hidden;">──</span>──未回答</p>
+                </a>
+            {% else %}
+                <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
+                    <p><span style="visibility:hidden;">──</span>──新着順</p>
+                </a>
+                <a href="?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
+                    <p><span style="visibility:hidden;">──</span>──未回答</p>
+                </a>
+            {% endif %}
+
+    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
         <h1>過去のまとめ</h1>
     </a>
-    <a href="{% url 'task_article' task.pk %}" class="main-container__menubar-sublink">
+    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
         <p><span style="visibility:hidden;">──</span>──新着順</p>
     </a>
-    <a href="{% url 'task_article_like' task.pk %}" class="main-container__menubar-sublink">
+    <a href="{% url 'task_article' lesson.pk %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
         <p><span style="visibility:hidden;">──</span>──いいね順</p>
     </a>
-    <a href="{% url 'task_memo' task.pk %}" class="main-container__menubar-link">
+    <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
         <h1>メモ帳</h1>
     </a>
 </div>
@@ -95,7 +96,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         quesBtn.classList.remove('here')
         myBtn.classList.add('here')
     })
-    
+
 })
 </script>
 {% endblock javascript %}
