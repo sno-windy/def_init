@@ -28,10 +28,16 @@
 {% endblock menubar %}
 {% block contents %}
 <h2>ユーザーのランキング</h2>
+{% for rank in ranking %}
+{{rank}}: cleared {{rank.cleared_lesson_num}}, wrote {{rank.note_num}}<br>
+{% endfor %}
 
 <h2>コース</h2>
 <div>
     <h3>進行中のコース・進捗</h3>
+    <!-- 進捗 -->
+
+
     <a href="{% url 'course' %}">
         <h3>講座一覧へ</h3>
     </a>

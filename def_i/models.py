@@ -29,6 +29,14 @@ class Lesson(models.Model):
     def __str__(self):
         return str(self.title)
 
+class ClearedLesson(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
+    lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name = "cleared_lesson", null=True)
+
+    def __str__(self):
+        text = str(self.user) + ' cleared lesson "' + str(self.lesson) + '"'
+        return text
+
 
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")

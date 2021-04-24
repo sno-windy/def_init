@@ -1,22 +1,42 @@
-from django.shortcuts import render,reverse,redirect,get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
-from django.views.generic.edit import FormMixin
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse,HttpResponse
-from django.urls import reverse_lazy
 from django.db.models import F, Q, OuterRef, Subquery
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse,HttpResponse
+from django.shortcuts import render,reverse,redirect,get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic.edit import FormMixin
+
+from . import index_info
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
+from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 
 #反省 Controllerに処理を書きすぎない
 
-@login_required(login_url ='accounts/login/')
-def index(request):
-    return render(request,"def_i/index.html")
+class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = "def_i/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 別関数・別ファイルに分ける
+
+        # ユーザーのランキング情報を取得
+        context["ranking"] = index_info.get_ranking()
+
+        # 進行中のコースを取得
+        # 進捗状況を取得
+        index_info.get_progress(self.request.user)
+
+        # 進行中のコースに関連した質問を取得
+        # 進行中のコースに関連したノートを取得
+
+        # 進捗が近いユーザーを取得
+
+        # お知らせを取得
+        return context
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):

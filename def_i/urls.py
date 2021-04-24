@@ -3,7 +3,7 @@ from . import views
 from django.contrib import admin
 
 urlpatterns = [
-    path('',views.index,name='index'),
+    path('', views.IndexView.as_view(), name='index'),
 
     # 記事系
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
