@@ -1,0 +1,24 @@
+{% extends 'def_i/base.html' %}
+{% load static %}
+{% load sass_tags %}
+{% block extra_style %}
+<!-- <link rel="stylesheet" href="{#% sass_src 'def_i/css/course.scss' %#}"> -->
+{% endblock %}
+
+{% block contents %}
+<h1>講座一覧</h1>
+<div class="indexbox-container">
+    <div class="indexbox-container-box">
+        <h1>バックエンド編</h1>
+        <img src="{% static 'def_i/img/django_three_bros.png' %}" alt="">
+        <p>Pythonのフルスタックフレームワークのdjangoを使ってバックエンドの学習を行います</p>
+        <a href="{% url 'task_backend' %}">バックエンド編をはじめる</a>
+    </div>
+    <div class="indexbox-container-box">
+        <h1>フロントエンド編</h1>
+        <img src="{% static 'def_i/img/front_three_bros.jpeg' %}" alt="">
+        <p>HTML, CSS, JavaScriptを使ってフロントエンドの学習を行います</p>
+        <a href="{% url 'task_frontend' %}">フロントエンド編をはじめる</a>
+    </div>
+</div>
+{% endblock contents %}

@@ -360,6 +360,10 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return reverse_lazy('task_article',kwargs={"pk":self.kwargs['pk']})
 
 
+def course(request):
+    return render(request, "def_i/course.html")
+
+
 class BackendTaskList(LoginRequiredMixin,ListView):
     context_object_name = 'course_list'
     queryset = Course.objects.order_by('course_num').prefetch_related('lesson')
@@ -459,6 +463,12 @@ class TaskArticle(LoginRequiredMixin, ListView):
 class FrontendTaskList(LoginRequiredMixin,ListView):
     model = Course
     template_name = "def_i/base-task.html"
+
+
+@login_required(login_url ='accounts/login/')
+def note_list(request):
+    return render(request,"def_i/note_list.html")
+
 
 class MessageNotification(LoginRequiredMixin,TemplateView):
     template_name = 'def_i/message_notification.html'

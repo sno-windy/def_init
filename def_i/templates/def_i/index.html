@@ -6,29 +6,69 @@
 {% endblock %}
 
 {% block menubar %}
-            <div class="main-container__menubar">
-                <a href="{% url 'index' %}" class="main-container__menubar-link now-here">
-                    <h1>講座一覧</h1>
-                </a>
-                <a href="{% url 'message_notification' %}" class="main-container__menubar-link">
-                    <h1>メッセージ</h1>
-                </a>
-            </div>
+<div class="main-container__menubar">
+    <!-- <a href="{% url 'index' %}" class="main-container__menubar-link now-here"> -->
+        <a href="{% url 'course' %}">
+            <h1>コースへ</h1>
+        </a>
+    <!-- </a> -->
+    <a href="{% url 'question_feed' %}">
+        <h1>質問へ</h1>
+    </a>
+    <a href="{% url 'article_feed' %}">
+        <h1>記事へ</h1>
+    </a>
+    <a href="{% url 'my_page' %}">
+        <h1>マイページ</h1>
+    </a>
+    <!-- <a href="{% url 'message_notification' %}" class="main-container__menubar-link">
+        <h1>メッセージ</h1>
+    </a> -->
+</div>
 {% endblock menubar %}
 {% block contents %}
-<h1>講座一覧</h1>
-<div class="indexbox-container">
-    <div class="indexbox-container-box">
-        <h1>バックエンド編</h1>
-        <img src="{% static 'def_i/img/django_three_bros.png' %}" alt="">
-        <p>Pythonのフルスタックフレームワークのdjangoを使ってバックエンドの学習を行います</p>
-        <a href="{% url 'task_backend' %}">バックエンド編をはじめる</a>
-    </div>
-    <div class="indexbox-container-box">
-        <h1>フロントエンド編</h1>
-        <img src="{% static 'def_i/img/front_three_bros.jpeg' %}" alt="">
-        <p>HTML, CSS, JavaScriptを使ってフロントエンドの学習を行います</p>
-        <a href="{% url 'task_frontend' %}">フロントエンド編をはじめる</a>
-    </div>
+<h2>ユーザーのランキング</h2>
+
+<h2>コース</h2>
+<div>
+    <h3>進行中のコース・進捗</h3>
+    <a href="{% url 'course' %}">
+        <h3>講座一覧へ</h3>
+    </a>
 </div>
+
+<h2>質問</h2>
+<div>
+    <h3>進行中のコースに関連した質問</h3>
+    <a href="{% url 'question_feed' %}">
+        <h3>質問一覧へ</h3>
+    </a>
+    <a href="{% url 'question_post' %}">
+        <h3>質問する</h3>
+    </a>
+</div>
+
+<h2>ノート</h2>
+<div>
+    <h3>進行中のコースに関連したノート</h3>
+    <a href="{% url 'note_list' %}">
+        <h3>公開ノート一覧へ</h3>
+    </a>
+    <h3>ノートを書く</h3>
+</div>
+
+<h2>進捗が近いユーザー</h2>
+<div>
+    <h3>ユーザー</h3>
+    <!-- <a href="{% url 'user_page' user.pk %}"> -->
+        <!-- <img src="{% static '' %}" alt="ユーザーの写真"> -->
+    <!-- </a> -->
+    <h3>ユーザーの進捗</h3>
+</div>
+
+<a href="{% url 'message_notification' %}">
+    <h2>お知らせ</h2>
+</a>
+
+<h2>チュートリアル</h2>
 {% endblock contents %}

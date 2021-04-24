@@ -4,6 +4,8 @@ from django.contrib import admin
 
 urlpatterns = [
     path('',views.index,name='index'),
+
+    # 記事系
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
     # path('article_feed_like/',views.ArticleFeedLike.as_view(), name='article_feed_like'),
     path('article_detail/<int:pk>/',views.ArticleDetail.as_view(),name="article_detail"),
@@ -12,6 +14,8 @@ urlpatterns = [
     path('article_post/',views.ArticlePost.as_view(),name='article_post'),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
+
+    # 質問系
     path('question_feed/',views.QuestionFeed.as_view(),name='question_feed'),
     # path('question_feed_unanswered/',views.QuestionFeedUnanswered.as_view(),name='question_feed_unanswered'),
     path('question_detail/<int:pk>/',views.QuestionDetail.as_view(),name='question_detail'),
@@ -20,6 +24,9 @@ urlpatterns = [
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
     path('question_edit/<int:pk>/',views.QuestionUpdateView.as_view(),name='question_edit'),
     path('question_delete/<int:pk>/',views.QuestionDeleteView.as_view(),name='question_delete'),
+
+    # コース系
+    path('course/', views.course, name="course"),
     path('task_backend/',views.BackendTaskList.as_view(),name='task_backend'),
     path('task_backend/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
     path('task_backend/<int:pk>/memo', views.MemoView, name='task_memo'),
@@ -30,6 +37,9 @@ urlpatterns = [
     path('task_backend/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
     # path('task_backend/<int:pk>/article_like', views.TaskArticleLike.as_view(), name='task_article_like'),
     path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
+    path('note_list/', views.note_list, name = 'note_list'),
+
+    # マイページ系
     path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
     path('like/<int:pk>/',views.LikeView,name='like'),
     path('user_page/<int:pk>/',views.UserPageView.as_view(),name='user_page'),
