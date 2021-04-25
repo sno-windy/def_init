@@ -25,21 +25,18 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
         info = GetIndexInfo(self.request.user)
 
-        # ユーザーのランキング情報を取得
         context["ranking"] = info.get_ranking()
-        # 進行中のコースを取得
         context["learning_lesson"] = info.learning_lesson
-        # 進捗状況を取得
         context["progress"] = info.get_progress(self.request.user)
 
-        # 進行中のコースに関連した質問を取得
         context["questions"] = info.get_related_questions()
-        # 進行中のコースに関連したノートを取得
         context["articles"] = info.get_related_articles()
-        # 進捗が近いユーザーを取得
         context["colleagues"] = info.get_colleagues(self.request.user)
 
-        # お知らせを取得
+        new_likes, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
         return context
 
 

@@ -87,6 +87,18 @@
 <a href="{% url 'message_notification' %}">
     <h2>お知らせ</h2>
 </a>
+{% for like in new_likes %}
+    <p>{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p>
+{% endfor %}
+
+{% for comment in article_talk %}
+    <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
+{% endfor %}
+
+{% for comment in question_talk %}
+    <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
+{% endfor %}
+
 
 <h2>チュートリアル</h2>
 {% endblock contents %}

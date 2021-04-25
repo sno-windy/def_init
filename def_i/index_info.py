@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count, OuterRef, Subquery
 
-from .models import Article, Lesson, ClearedLesson, User, Memo, Question
+from .models import *
 
 
 class GetIndexInfo:
@@ -11,7 +11,6 @@ class GetIndexInfo:
         self.last_cleared_lesson = self.cleared_lesson[0]
         next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
         self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num)
-        print(self.learning_lesson, "!!!")
 
 
     # ユーザーのランキング情報を取得
@@ -63,9 +62,25 @@ class GetIndexInfo:
 
 
 # お知らせを取得
-# def get_notification():
-    # 記事へのいいね
-    # 記事へのコメント
-    # 質問へのコメント
+    def get_notification(self, user):
+        # 記事へのいいね
+        new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
+        print(new_likes)
+        # 記事へのコメント
+        article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
+        # 質問へのコメント
+        question_talk = TalkAtQuestion.objects.filter(msg_to=user, has_noticed=False).order_by('time')
 
-    # return new_notifications
+        for like in new_likes:
+            like.has_noticed = True
+            like.save()
+        for talk in article_talk:
+            talk.has_noticed = True
+            talk.save()
+        for talk in question_talk:
+            talk.has_noticed = True
+            talk.save()
+
+        return new_likes, article_talk, question_talk
+
+        # return new_notifications

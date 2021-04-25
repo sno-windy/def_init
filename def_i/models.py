@@ -93,6 +93,7 @@ class Question(models.Model):
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    has_noticed = models.BooleanField(default=False)
 
 CATEGORY_CHOICE = (
     ('記事','記事'),
@@ -104,6 +105,7 @@ class Talk(models.Model):
     msg_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_form")
     msg_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_to")
     time = models.DateTimeField(auto_now_add=True)
+    has_noticed = models.BooleanField(default=False)
     # def __str__(self):
     #     return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
 
