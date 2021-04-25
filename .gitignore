@@ -77,6 +77,8 @@ pytestdebug.log
 static/admin/
 static/markdownx/
 static/debug_toolbar/
+static/accounts/
+static/def_i/
 # Flask stuff:
 instance/
 .webassets-cache
