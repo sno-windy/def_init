@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
 
-from . import index_info
+from .index_info import GetIndexInfo
 from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
 from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 
@@ -23,17 +23,21 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         # 別関数・別ファイルに分ける
 
-        # ユーザーのランキング情報を取得
-        context["ranking"] = index_info.get_ranking()
+        info = GetIndexInfo(self.request.user)
 
+        # ユーザーのランキング情報を取得
+        context["ranking"] = info.get_ranking()
         # 進行中のコースを取得
+        context["learning_lesson"] = info.learning_lesson
         # 進捗状況を取得
-        index_info.get_progress(self.request.user)
+        context["progress"] = info.get_progress(self.request.user)
 
         # 進行中のコースに関連した質問を取得
+        context["questions"] = info.get_related_questions()
         # 進行中のコースに関連したノートを取得
-
+        context["articles"] = info.get_related_articles()
         # 進捗が近いユーザーを取得
+        context["colleagues"] = info.get_colleagues(self.request.user)
 
         # お知らせを取得
         return context

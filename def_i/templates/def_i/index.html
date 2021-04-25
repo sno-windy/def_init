@@ -29,47 +29,59 @@
 {% block contents %}
 <h2>ユーザーのランキング</h2>
 {% for rank in ranking %}
-{{rank}}: cleared {{rank.cleared_lesson_num}}, wrote {{rank.note_num}}<br>
+<p>{{forloop.counter}}位：{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s), wrote {{rank.note_num}} note(s)</p>
 {% endfor %}
 
 <h2>コース</h2>
 <div>
     <h3>進行中のコース・進捗</h3>
     <!-- 進捗 -->
+    <p>完了率：{{progress|floatformat}}%</p>
+    <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
 
 
     <a href="{% url 'course' %}">
-        <h3>講座一覧へ</h3>
+        <p>講座一覧へ</p>
     </a>
 </div>
 
 <h2>質問</h2>
 <div>
     <h3>進行中のコースに関連した質問</h3>
+    {% for question in questions %}
+        <a href="{% url 'question_detail' question.pk %}">
+            <p>・{{question.title}}</p>
+        </a>
+    {% endfor %}
     <a href="{% url 'question_feed' %}">
-        <h3>質問一覧へ</h3>
+        <p>質問一覧へ</p>
     </a>
     <a href="{% url 'question_post' %}">
-        <h3>質問する</h3>
+        <p>質問する</p>
     </a>
 </div>
 
 <h2>ノート</h2>
 <div>
     <h3>進行中のコースに関連したノート</h3>
+    {% for article in articles %}
+        <a href="{% url 'article_detail' article.pk %}">
+            <p>・{{article.title}}</p>
+        </a>
+    {% endfor %}
     <a href="{% url 'note_list' %}">
-        <h3>公開ノート一覧へ</h3>
+        <p>公開ノート一覧へ</p>
     </a>
-    <h3>ノートを書く</h3>
+    <p>ノートを書く</p>
 </div>
 
 <h2>進捗が近いユーザー</h2>
 <div>
     <h3>ユーザー</h3>
-    <!-- <a href="{% url 'user_page' user.pk %}"> -->
-        <!-- <img src="{% static '' %}" alt="ユーザーの写真"> -->
-    <!-- </a> -->
-    <h3>ユーザーの進捗</h3>
+    {% for colleague in colleagues %}
+        <a href="{% url 'user_page' colleague.user.pk %}">{{colleague.user}}</a>
+    {% endfor %}
+    <p>ユーザーの進捗</p>
 </div>
 
 <a href="{% url 'message_notification' %}">

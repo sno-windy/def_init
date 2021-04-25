@@ -32,6 +32,7 @@ class Lesson(models.Model):
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name = "cleared_lesson", null=True)
+    cleared_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         text = str(self.user) + ' cleared lesson "' + str(self.lesson) + '"'
