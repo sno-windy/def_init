@@ -1,22 +1,43 @@
-from django.shortcuts import render,reverse,redirect,get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
-from django.views.generic.edit import FormMixin
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse,HttpResponse
-from django.urls import reverse_lazy
 from django.db.models import F, Q, OuterRef, Subquery
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse,HttpResponse
+from django.shortcuts import render,reverse,redirect,get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic.edit import FormMixin
+
+from .index_info import GetIndexInfo
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
+from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
 
 #反省 Controllerに処理を書きすぎない
 
-@login_required(login_url ='accounts/login/')
-def index(request):
-    return render(request,"def_i/index.html")
+class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = "def_i/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 別関数・別ファイルに分ける
+
+        info = GetIndexInfo(self.request.user)
+
+        context["ranking"] = info.get_ranking()
+        context["learning_lesson"] = info.learning_lesson
+        context["progress"] = info.get_progress(self.request.user)
+
+        context["questions"] = info.get_related_questions()
+        context["articles"] = info.get_related_articles()
+        context["colleagues"] = info.get_colleagues(self.request.user)
+
+        new_likes, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+        return context
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
@@ -360,6 +381,10 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return reverse_lazy('task_article',kwargs={"pk":self.kwargs['pk']})
 
 
+def course(request):
+    return render(request, "def_i/course.html")
+
+
 class BackendTaskList(LoginRequiredMixin,ListView):
     context_object_name = 'course_list'
     queryset = Course.objects.order_by('course_num').prefetch_related('lesson')
@@ -459,6 +484,12 @@ class TaskArticle(LoginRequiredMixin, ListView):
 class FrontendTaskList(LoginRequiredMixin,ListView):
     model = Course
     template_name = "def_i/base-task.html"
+
+
+@login_required(login_url ='accounts/login/')
+def note_list(request):
+    return render(request,"def_i/note_list.html")
+
 
 class MessageNotification(LoginRequiredMixin,TemplateView):
     template_name = 'def_i/message_notification.html'
