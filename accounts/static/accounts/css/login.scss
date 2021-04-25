@@ -1,16 +1,14 @@
 .login{
     background-color: black;
-    display: flex; 
-        flex-direction: column; 
-        justify-content: center; 
+    display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        height: 100vh; 
+        height: 100vh;
     &-container{
         width: 320px;
-
         &__icon{
             width: 100%;
-
             img{
                 width: 150px;
                 height: 35px;
@@ -20,9 +18,6 @@
                 margin: 0 auto;
             }
         }
-
-        
-
         &__form{
             display: flex;
             flex-direction: column;
@@ -49,27 +44,21 @@
                     opacity: 1;
                     text-indent: 0rem;
                     font-weight: 600;
-                    color: rgb(184, 182, 182);
+                    color: black;
 
                     &:hover{
                         cursor: pointer;
-                        color: black;
+                        background-color: rgb(184, 182, 182);
                     }
-                    
                 }
             }
-        
         }
-
         &__link{
             margin-top: 30px;
             text-align: right;
             color: white;
             font-size: 0.9rem;
             font-weight: 400;
-
         }
-
     }
 }
-
