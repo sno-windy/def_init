@@ -21,16 +21,15 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # 別関数・別ファイルに分ける
 
         info = GetIndexInfo(self.request.user)
 
         context["ranking"] = info.get_ranking()
         context["learning_lesson"] = info.learning_lesson
         context["progress"] = info.get_progress(self.request.user)
-
         context["questions"] = info.get_related_questions()
         context["articles"] = info.get_related_articles()
+
         context["colleagues"] = info.get_colleagues(self.request.user)
 
         new_likes, article_talk, question_talk = info.get_notification(self.request.user)

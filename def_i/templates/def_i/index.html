@@ -37,8 +37,11 @@
     <h3>進行中のコース・進捗</h3>
     <!-- 進捗 -->
     <p>完了率：{{progress|floatformat}}%</p>
-    <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
-
+    {% if not learning_lesson %}
+        <p>全てのレッスンを完了しました。</p>
+    {% else %}
+        <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
+    {% endif %}
 
     <a href="{% url 'course' %}">
         <p>講座一覧へ</p>
@@ -79,7 +82,7 @@
 <div>
     <h3>ユーザー</h3>
     {% for colleague in colleagues %}
-        <a href="{% url 'user_page' colleague.user.pk %}">{{colleague.user}}</a>
+        <a href="{% url 'user_page' colleague.pk %}">{{colleague}}</a>
     {% endfor %}
     <p>ユーザーの進捗</p>
 </div>
