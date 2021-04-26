@@ -80,27 +80,6 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return context
 
 
-#Queryparamで扱えるようになったので産廃
-# class ArticleFeedLike(ArticleFeed):
-#     def get_queryset(self):
-#         articles = Article.objects.all()
-#         articles = articles.order_by('-like_count','-created_at')
-#         #検索
-#         if (query_word:=self.request.GET.get('keyword')):
-#             articles = articles.filter(
-#                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-#             )
-#         return articles
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # context['sort_by_new'] = False
-#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
-#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-#         )).order_by('-latest_post_time')[:30]
-#         return context
-
-
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
     model = Article
     template_name = "def_i/article_detail.html"
@@ -227,22 +206,6 @@ class QuestionFeed(LoginRequiredMixin,ListView):
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
         return context
-
-
-#Queryparamで扱えるようになったので産廃
-# class QuestionFeedUnanswered(QuestionFeed):
-#     def get_queryset(self):
-#         articles = Question.objects.filter(if_answered=False)
-#         return articles
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['sort_by_new'] = False
-#         #メンバー一覧で，投稿した時間が新しい順に並べている
-#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
-#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-#         )).order_by('-latest_post_time')
-#         return context
 
 
 class QuestionDetail(LoginRequiredMixin,DetailView):
