@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Count, OuterRef, Subquery
 
@@ -8,9 +9,20 @@ class GetIndexInfo:
     def __init__(self, user):
         # 他の情報取得に使うため、進行中のコースを取得
         self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
-        self.last_cleared_lesson = self.cleared_lesson[0]
-        next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
-        self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num)
+        try:
+            self.last_cleared_lesson = self.cleared_lesson[0]
+            next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+        except IndexError:
+            # まだ一つもレッスンを完了していない場合
+            self.last_cleared_lesson = None
+            next_lesson_num = 1
+
+        try:
+            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num)
+        except ObjectDoesNotExist:
+            # 全てのレッスンを完了した場合
+            self.learning_lesson = None
+
 
 
     # ユーザーのランキング情報を取得
@@ -57,15 +69,18 @@ class GetIndexInfo:
 
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
-        colleague_data = ClearedLesson.objects.filter(lesson=self.last_cleared_lesson.lesson).exclude(user=user).order_by('-cleared_at')[:6]
-        return colleague_data
+        if self.last_cleared_lesson:
+            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:6]
+            return colleague_data
+        else:
+            colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
+            return colleague_data
 
 
 # お知らせを取得
     def get_notification(self, user):
         # 記事へのいいね
         new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
-        print(new_likes)
         # 記事へのコメント
         article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント
@@ -82,5 +97,3 @@ class GetIndexInfo:
             talk.save()
 
         return new_likes, article_talk, question_talk
-
-        # return new_notifications
