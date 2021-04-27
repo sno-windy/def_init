@@ -10,10 +10,9 @@ import requests
 
 User = get_user_model()
 
-class Course(models.Model): #lesson
+class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
-    is_clear = models.BooleanField(default=False) #is_clear
 
     def __str__(self):
         return str(self.title)
@@ -22,9 +21,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=30)
     contents = models.TextField(max_length=1000, null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lesson") #lesson
-    clear = models.BooleanField(default=False)
-
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lesson")
 
     def __str__(self):
         return str(self.title)
@@ -47,14 +44,25 @@ class Article(models.Model):
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
-    # 画像を添付する場合
-    # article_image = models.ImageField(upload_to="def_i/img",null=True)
-    # article_image_resize = ImageSpecField(source='user_image',
-    # processors=[ResizeToFill(250,250)],
-    # format='JPEG',
-    # options={'quality':60})
-    # def __str__(self):
-    #     return self.title
+    is_published = models.BooleanField(default=False)
+    # 画像を添付する
+    article_image_1 = models.ImageField(upload_to="def_i/img",null=True)
+    article_image_2 = models.ImageField(upload_to="def_i/img",null=True)
+    article_image_1_resize = ImageSpecField(source='user_image_1',
+        processors=[ResizeToFill(250,250)],
+        format='JPEG',
+        options={'quality':60},
+        null=True
+        )
+    article_image_2_resize = ImageSpecField(source='user_image_2',
+        processors=[ResizeToFill(250,250)],
+        format='JPEG',
+        options={'quality':60},
+        null=True
+        )
+
+    def __str__(self):
+        return self.title
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -68,9 +76,6 @@ class Question(models.Model):
     if_answered = models.BooleanField(default=False) #->is_answered
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
-
-    # def __str__(self):
-    #     return str(self.title)+" by "+str(self.poster)
 
     def browser_push(self,request):
         data = {
@@ -114,13 +119,6 @@ class TalkAtArticle(Talk):
     category = models.CharField(max_length=10,
         choices=CATEGORY_CHOICE, default='記事')
 
-    # def __str__(self):
-    #     return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
-
-    # initがUnion時に走ってしまうため，使えない
-    # def __init__(self,*args,**kwargs):
-    #     super(TalkAtArticle,self).__init__(*args,**kwargs)
-    #     self.category = '記事'
 
 class TalkAtQuestion(Talk):
     msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -130,9 +128,6 @@ class TalkAtQuestion(Talk):
     def __str__(self):
         return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
 
-    # def __init__(self,*args,**kwargs):
-    #     super(TalkAtQuestion,self).__init__(*args,**kwargs)
-    #     self.category = '質問'
 
 class Memo(models.Model):
     relate_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_memo", null=True)
