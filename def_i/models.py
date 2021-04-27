@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
@@ -51,14 +53,12 @@ class Article(models.Model):
     article_image_1_resize = ImageSpecField(source='user_image_1',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
-        options={'quality':60},
-        null=True
+        options={'quality':60}
         )
     article_image_2_resize = ImageSpecField(source='user_image_2',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
-        options={'quality':60},
-        null=True
+        options={'quality':60}
         )
 
     def __str__(self):
@@ -129,7 +129,7 @@ class TalkAtQuestion(Talk):
         return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
 
 
-class Memo(models.Model):
-    relate_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_memo", null=True)
-    relate_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_memo", null=True)
-    contents = models.TextField(null=True)
+# class Memo(models.Model):
+#     relate_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_memo", null=True)
+#     relate_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_memo", null=True)
+#     contents = models.TextField(null=True)

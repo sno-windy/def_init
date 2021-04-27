@@ -37,9 +37,9 @@
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
             {% endif %}
-    <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
+    {% comment %} <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
         <h1>メモ帳</h1>
-    </a>
+    </a> {% endcomment %}
 </div>
 <div class="choice-button">
     <p id="art_all" class="here">全ての記事</p>

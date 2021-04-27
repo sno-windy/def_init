@@ -11,8 +11,8 @@ from django.views.generic import ListView,DetailView,FormView,TemplateView,Creat
 from django.views.generic.edit import FormMixin
 
 from .index_info import GetIndexInfo
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm
+from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion
 
 #反省 Controllerに処理を書きすぎない
 
@@ -366,18 +366,18 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     template_name = 'def_i/task_detail.html'
 
 
-def MemoView(request, pk):
-    lesson_pk = Lesson.objects.get(pk=pk)
-    memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
-    if request.method == "POST":
-        form = MemoForm(request.POST, instance=memo)
-        if form.is_valid():
-            form.save()
-            return redirect('task_memo', pk=pk)
-    else:
-        form = MemoForm(instance=memo)
+# def MemoView(request, pk):
+#     lesson_pk = Lesson.objects.get(pk=pk)
+#     memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
+#     if request.method == "POST":
+#         form = MemoForm(request.POST, instance=memo)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('task_memo', pk=pk)
+#     else:
+#         form = MemoForm(instance=memo)
 
-    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
+#     return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
 
 class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question

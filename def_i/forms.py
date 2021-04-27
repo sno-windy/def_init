@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course, Memo
+from .models import User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course
 from django.contrib.auth.forms import (
     AuthenticationForm
 )
@@ -50,10 +50,10 @@ class QuestionPostForm(forms.ModelForm):
         }
 
 
-class MemoForm(forms.ModelForm):
-    class Meta:
-        model = Memo
-        fields = ['contents',]
+# class MemoForm(forms.ModelForm):
+#     class Meta:
+#         model = Memo
+#         fields = ['contents',]
 
 class ArticleSearchForm(forms.Form):
     keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
