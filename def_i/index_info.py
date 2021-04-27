@@ -35,17 +35,17 @@ class GetIndexInfo:
                     .annotate(count = Count('pk'))
                     .values('count')
             ),
-            note_num = Subquery(
-                Memo.objects
-                    .filter(relate_user=OuterRef('pk'))
-                    .values('relate_user')
-                    .annotate(count = Count('pk'))
-                    .values('count')
-            )
+            # note_num = Subquery(
+            #     Memo.objects
+            #         .filter(relate_user=OuterRef('pk'))
+            #         .values('relate_user')
+            #         .annotate(count = Count('pk'))
+            #         .values('count')
+            # )
             # Noneのとき０にしたい
 
-        ).order_by('-cleared_lesson_num').order_by('-note_num')[:6]  # 何位まで表示する？
-        print(ranking)
+        ).order_by('-cleared_lesson_num')
+        # .order_by('-note_num')[:6]  # 何位まで表示する？
         return ranking
 
     # 進捗状況を取得

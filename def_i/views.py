@@ -11,8 +11,8 @@ from django.views.generic import ListView,DetailView,FormView,TemplateView,Creat
 from django.views.generic.edit import FormMixin
 
 from .index_info import GetIndexInfo
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm, MemoForm
-from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion, Memo
+from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm
+from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion
 
 #反省 Controllerに処理を書きすぎない
 
@@ -77,27 +77,6 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
 
         return context
-
-
-#Queryparamで扱えるようになったので産廃
-# class ArticleFeedLike(ArticleFeed):
-#     def get_queryset(self):
-#         articles = Article.objects.all()
-#         articles = articles.order_by('-like_count','-created_at')
-#         #検索
-#         if (query_word:=self.request.GET.get('keyword')):
-#             articles = articles.filter(
-#                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-#             )
-#         return articles
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         # context['sort_by_new'] = False
-#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
-#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-#         )).order_by('-latest_post_time')[:30]
-#         return context
 
 
 class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
@@ -226,22 +205,6 @@ class QuestionFeed(LoginRequiredMixin,ListView):
             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
         )).order_by('-latest_post_time')
         return context
-
-
-#Queryparamで扱えるようになったので産廃
-# class QuestionFeedUnanswered(QuestionFeed):
-#     def get_queryset(self):
-#         articles = Question.objects.filter(if_answered=False)
-#         return articles
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['sort_by_new'] = False
-#         #メンバー一覧で，投稿した時間が新しい順に並べている
-#         context['member'] = User.objects.annotate(latest_post_time=Subquery(
-#             Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-#         )).order_by('-latest_post_time')
-#         return context
 
 
 class QuestionDetail(LoginRequiredMixin,DetailView):
@@ -403,18 +366,18 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     template_name = 'def_i/task_detail.html'
 
 
-def MemoView(request, pk):
-    lesson_pk = Lesson.objects.get(pk=pk)
-    memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
-    if request.method == "POST":
-        form = MemoForm(request.POST, instance=memo)
-        if form.is_valid():
-            form.save()
-            return redirect('task_memo', pk=pk)
-    else:
-        form = MemoForm(instance=memo)
+# def MemoView(request, pk):
+#     lesson_pk = Lesson.objects.get(pk=pk)
+#     memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
+#     if request.method == "POST":
+#         form = MemoForm(request.POST, instance=memo)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('task_memo', pk=pk)
+#     else:
+#         form = MemoForm(instance=memo)
 
-    return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
+#     return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
 
 class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question

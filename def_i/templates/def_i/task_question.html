@@ -38,9 +38,9 @@
     <a href="{% url 'task_article' lesson.pk %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
         <p><span style="visibility:hidden;">──</span>──いいね順</p>
     </a>
-    <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
+    {% comment %} <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
         <h1>メモ帳</h1>
-    </a>
+    </a> {% endcomment %}
 </div>
 
 <div class="choice-button">

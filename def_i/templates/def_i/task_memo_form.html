@@ -1,5 +1,5 @@
 {% extends 'def_i/base.html' %}
-{% load static %}
+{% comment %} {% load static %}
 {% load sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/task_memo_form.scss' %}">
@@ -41,4 +41,4 @@
     <input  type="submit" value="保存する" >
 </form>
 
-{% endblock contents %}
+{% endblock contents %} {% endcomment %}
