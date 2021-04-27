@@ -37,11 +37,11 @@ class PasswordChange(PasswordChangeView):
 
 class PasswordReset(PasswordResetView):
     """パスワード変更用URLの送付ページ"""
-    subject_template_name = 'account/mail_template/password_reset/subject.txt'
     email_template_name = 'account/mail_template/password_reset/message.txt'
-    template_name = 'account/password_reset_form.html'
     form_class = PasswordResetForm
+    subject_template_name = 'account/mail_template/password_reset/subject.txt'
     success_url = reverse_lazy('password_reset_done')
+    template_name = 'account/password_reset_form.html'
 
 
 class PasswordResetDone(PasswordResetDoneView):

@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'storages',
 ]
 
-SITE_ID = 1
+SITE_ID = 2
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,11 +109,12 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'apptest'
-EMAIL_HOST_PASSWORD = 'xxxxxxxx'
-EMAIL_USE_TLS = False
+EMAIL_HOST = 'smtp.muumuu-mail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+
+# secret_settings.pyにEMAIL_HOST_USERとEMAIL_HOST_PASSWORDとDEFAULT_FROM_EMAILを設定
+# 登録済みのメールアドレスでないと送信できない
 
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = 'index'
