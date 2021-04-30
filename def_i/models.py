@@ -12,12 +12,14 @@ import requests
 
 User = get_user_model()
 
+
 class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return str(self.title)
+
 
 class Lesson(models.Model):
     title = models.CharField(max_length=30)
@@ -27,6 +29,7 @@ class Lesson(models.Model):
 
     def __str__(self):
         return str(self.title)
+
 
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
@@ -67,6 +70,7 @@ class Article(models.Model):
     def formatted_markdown(self):
         return markdownify(self.content)
 
+
 class Question(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
     question_at = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_question")
@@ -95,8 +99,15 @@ class Question(models.Model):
     def formatted_markdown(self):
         return markdownify(self.content)
 
+
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    has_noticed = models.BooleanField(default=False)
+
+
+class BookMark(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     has_noticed = models.BooleanField(default=False)
 
@@ -104,6 +115,7 @@ CATEGORY_CHOICE = (
     ('記事','記事'),
     ('質問','質問'),
 )
+
 
 class Talk(models.Model):
     msg = models.TextField(max_length=1000)
@@ -113,6 +125,7 @@ class Talk(models.Model):
     has_noticed = models.BooleanField(default=False)
     # def __str__(self):
     #     return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
+
 
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
@@ -127,9 +140,3 @@ class TalkAtQuestion(Talk):
 
     def __str__(self):
         return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
-
-
-# class Memo(models.Model):
-#     relate_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_memo", null=True)
-#     relate_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_memo", null=True)
-#     contents = models.TextField(null=True)

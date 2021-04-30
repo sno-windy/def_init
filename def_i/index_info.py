@@ -12,13 +12,15 @@ class GetIndexInfo:
         try:
             self.last_cleared_lesson = self.cleared_lesson[0]
             next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+            next_course_num = self.last_cleared_lesson.lesson.course.course_num + 1
         except IndexError:
             # まだ一つもレッスンを完了していない場合
             self.last_cleared_lesson = None
             next_lesson_num = 1
+            next_course_num = 1
 
         try:
-            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num)
+            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course_num)
         except ObjectDoesNotExist:
             # 全てのレッスンを完了した場合
             self.learning_lesson = None
