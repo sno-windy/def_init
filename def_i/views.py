@@ -1,18 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, Q, OuterRef, Subquery
-from django.http import JsonResponse,HttpResponse
-from django.shortcuts import render,reverse,redirect,get_object_or_404
+from django.core.paginator import Paginator
+from django.db.models import F, OuterRef, Q, Subquery
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
+                                  ListView, TemplateView, UpdateView)
 from django.views.generic.edit import FormMixin
 
+from .forms import (ArticlePostForm, ArticleSearchForm, ArticleTalkForm,
+                    QuestionPostForm, QuestionTalkForm)
 from .index_info import GetIndexInfo
-from .forms import ArticleTalkForm, ArticlePostForm, QuestionPostForm, QuestionTalkForm, ArticleSearchForm
-from .models import User, Course, Lesson, Talk, Like, Article, TalkAtArticle, Question, TalkAtQuestion
+from .models import (Article, Course, Lesson, Like, Question, Talk,
+                     TalkAtArticle, TalkAtQuestion, User)
 
 #反省 Controllerに処理を書きすぎない
 
@@ -519,7 +522,7 @@ class UserPageView(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['pk'])
         context["user_data"] = user
-        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')
+        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:5]
         return context
 
     def get_queryset(self,**kwargs):
@@ -535,11 +538,16 @@ class MyPageView(LoginRequiredMixin,ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
-        article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
-        context["articles_like"] = article_list #いいねした記事リスト
+        info = GetIndexInfo(user)
+        # like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
+        # article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
+        article_list = Article.objects.filter(like__user=user) #逆参照を使いましょう．
         question_list = Question.objects.filter(poster=user).order_by('-created_at')
+        learning_lesson = info.learning_lesson
+        context["learning_lesson"] = learning_lesson
+        context["articles_like"] = article_list #いいねした記事リスト
         context["questions"] = question_list
+        context["learning_course"] = Course.objects.get(lesson=learning_lesson)
         return context
 
     def get_queryset(self,**kwargs):
