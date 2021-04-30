@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.line',
     'debug_toolbar',
     'sass_processor',
     'taggit',
@@ -126,6 +127,11 @@ ACCOUNT_FORMS = {
     'signup': 'accounts.forms.MyCustomSignupForm'
     }
 
+SOCIALACCOUNT_PROVIDERS = {
+    'line': {
+        'SCOPE': ['profile','openid'],
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

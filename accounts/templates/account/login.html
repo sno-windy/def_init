@@ -31,16 +31,13 @@
                     {% endfor %}
                 {% endfor %}
             </form>
+            <a href="{% url 'line_login' %}">lineでログイン</a>
+
             <p class="login-container__link">会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
             <p class="login-container__link">パスワードを忘れた方は<a href="{% url 'password_reset' %}">こちら</a></p>
         </div>
     </div>
-    
+
 </body>
 
 </html>
-
-
-
-
-

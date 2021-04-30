@@ -31,7 +31,7 @@
 {% for rank in ranking %}
     {% ifchanged rank.cleared_lesson_num rank.note_num %}
         <p>{{forloop.counter}}位：{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s)
-        {% comment %} , wrote {{rank.note_num}} note(s) {% endcomment %}
+        , wrote {{rank.note_num}} note(s)
         </p>
     {% else %}
         <p>(同率）{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s), wrote {{rank.note_num}}</p>
