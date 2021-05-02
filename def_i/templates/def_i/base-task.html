@@ -9,7 +9,7 @@
 {% if course.title == 'public' %}
 {% else %}
 <div class ="main-container__contents-taskbox js-accordion-title">
-    <p class="main-container__contents-taskbox-tag ">課題{{ course.course_num}}</p><p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
+    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}</p><p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
 </div>
 <div class="main-container__contents-taskbox-details accordion__content">
     {% for lesson in course.lesson.all %}

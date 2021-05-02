@@ -204,9 +204,12 @@ class QuestionFeed(LoginRequiredMixin,ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['orderby'] = self.request.GET.get('orderby')
-        context['member'] = User.objects.annotate(latest_post_time=Subquery(
-            Article.objects.filter(poster=OuterRef('pk')).values('created_at')[:1],
-        )).order_by('-latest_post_time')
+        context['member'] = User.objects.annotate(
+            latest_post_time=Subquery(
+                Article.objects.filter(
+                    poster=OuterRef('pk')).values('created_at')[:1],
+                )
+        ).order_by('-latest_post_time')
         return context
 
 
@@ -352,7 +355,7 @@ def course(request):
 
 class BackendTaskList(LoginRequiredMixin,ListView):
     context_object_name = 'course_list'
-    queryset = Course.objects.order_by('course_num').prefetch_related('lesson')
+    queryset = Course.objects.order_by('course_num').prefetch_related('lesson') #ここがmodelsのrelatedと繋がってるのはわかったけどなんでこの名前がlessonじゃないとだめなのかがわからん
     model = Course
     template_name = "def_i/base-task.html"
 
@@ -368,19 +371,6 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     fields = ['title','contents',]
     template_name = 'def_i/task_detail.html'
 
-
-# def MemoView(request, pk):
-#     lesson_pk = Lesson.objects.get(pk=pk)
-#     memo,_ = Memo.objects.get_or_create(relate_user=request.user, relate_lesson=lesson_pk)
-#     if request.method == "POST":
-#         form = MemoForm(request.POST, instance=memo)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('task_memo', pk=pk)
-#     else:
-#         form = MemoForm(instance=memo)
-
-#     return render(request, 'def_i/task_memo_form.html', {'form': form, 'memo':memo, 'pk':lesson_pk })
 
 class TaskQuestion(LoginRequiredMixin, ListView):
     model = Question
