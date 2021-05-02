@@ -1,14 +1,18 @@
-from django.db import models
-from django.utils import timezone
+import requests
+
 from django.contrib.auth import get_user_model
+from django.db import models
+from django.shortcuts import resolve_url
+from django.utils import timezone
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from taggit.managers import TaggableManager
+from linebot import LineBotApi, WebhookHandler
+from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
-from django.shortcuts import resolve_url
+from taggit.managers import TaggableManager
+
 from def_init.secret_settings import *
-import requests
 
 User = get_user_model()
 
@@ -101,13 +105,20 @@ class Question(models.Model):
             'included_segments': ['All'],
             'contents': {'en': self.title},
             'headings': {'en': '新しい質問が投稿されました！質問に答えましょう．'},
-            'url': resolve_url('question_feed_new'),
+            'url': resolve_url('question_feed'),
         }
         requests.post(
             "https://onesignal.com/api/v1/notifications",
             headers={'Authorization': ONESIGNAL_SECRET_KEY},
             json=data,
         )
+
+    def notify_new_question(self):
+        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        notify_to = LineFriend.objects.filter(is_answerer=True)
+        print("to:", notify_to)
+        for push in notify_to:
+            line_bot_api.push_message(push.line_user_id, TextSendMessage(text="質問が投稿されました。回答をお願いします。"))
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -157,3 +168,17 @@ class TalkAtQuestion(Talk):
 
     def __str__(self):
         return f"FROM {self.msg_from} TO {self.msg_to} AT {self.msg_at}"
+
+
+class LineFriend(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    line_user_id = models.CharField(max_length=100)
+    is_intern = models.BooleanField(default=True)
+    is_answerer = models.BooleanField(default=False)
+
+    notify_good = models.BooleanField(default=False)
+    notify_comment = models.BooleanField(default=True)
+    notify_answer = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Line Friend: {self.user}, is_intern = {self.is_intern}"

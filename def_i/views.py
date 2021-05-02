@@ -1,21 +1,25 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+
 from django.db.models import F, OuterRef, Q, Subquery
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
                                   ListView, TemplateView, UpdateView)
+from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
 
-from .forms import (ArticlePostForm, ArticleSearchForm, ArticleTalkForm,
-                    QuestionPostForm, QuestionTalkForm)
+from .forms import *
 from .index_info import GetIndexInfo
-from .models import (Article, Course, Lesson, Like, Question, Talk,
-                     TalkAtArticle, TalkAtQuestion, User)
+from .models import *
+
 
 #反省 Controllerに処理を書きすぎない
 
@@ -261,7 +265,8 @@ class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
 class QuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
-    success_url = reverse_lazy('question_feed_new')
+    success_url = reverse_lazy('question_feed')
+
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
@@ -271,6 +276,7 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question.save()
         #push通知
         question.browser_push(self.request)
+        question.notify_new_question()
 
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -543,3 +549,18 @@ class MyPageView(LoginRequiredMixin,ListView):
     def get_queryset(self,**kwargs):
         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
         return articles
+
+
+@csrf_exempt
+def new_line_friend(request):
+    if request.method == 'POST':
+        request_json = json.loads(request.body.decode('utf-8'))
+        events = request_json['events']
+        if events:
+            line_user_id = events[0]['source']['userId']
+
+            if events[0]['type'] == 'follow':
+                a = LineFriend.objects.create(line_user_id=line_user_id)
+                print(a)
+
+    return HttpResponse()
