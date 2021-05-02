@@ -13,9 +13,15 @@ import requests
 User = get_user_model()
 
 
+COURSE_CATEGORY_CHOICE = (
+    ('BACKEND','バックエンド'),
+    ('FRONTEND','フロントエンド'),
+)
+
 class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
+    course_category = models.CharField(max_length=10, choices=COURSE_CATEGORY_CHOICE, default='BACKEND')
 
     def __str__(self):
         return str(self.title)
@@ -25,7 +31,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=30)
     contents = models.TextField(max_length=1000, null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lesson")
+    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lesson")
 
     def __str__(self):
         return str(self.title)
@@ -37,13 +43,20 @@ class ClearedLesson(models.Model):
     cleared_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        text = str(self.user) + ' cleared lesson "' + str(self.lesson) + '"'
-        return text
+        return f"{self.user} cleared lesson {self.lesson}"
+
+
+class StudyingCategory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="studying_user")
+    course_category = models.CharField(max_length=10, choices=COURSE_CATEGORY_CHOICE, default='BACKEND')
+
+    def __str__(self):
+        return f"{self.user} now studying {self.course_category}"
 
 
 class Article(models.Model):
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_article")
-    article_at = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_article")
+    poster = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="user_article",null=True)
+    article_at = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article",null=True)
     title = models.CharField(max_length=30)
     content = MarkdownxField()
     like_count = models.PositiveIntegerField(default=0)
@@ -65,15 +78,15 @@ class Article(models.Model):
         )
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     def formatted_markdown(self):
         return markdownify(self.content)
 
 
 class Question(models.Model):
-    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_question")
-    question_at = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="lesson_question")
+    poster = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="user_question",null=True)
+    question_at = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question",null=True)
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
@@ -99,6 +112,9 @@ class Question(models.Model):
     def formatted_markdown(self):
         return markdownify(self.content)
 
+    def __str__(self):
+        return str(self.title)
+
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
@@ -111,20 +127,21 @@ class BookMark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     has_noticed = models.BooleanField(default=False)
 
-CATEGORY_CHOICE = (
-    ('記事','記事'),
-    ('質問','質問'),
-)
-
 
 class Talk(models.Model):
     msg = models.TextField(max_length=1000)
-    msg_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_form")
-    msg_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="msg_to")
+    msg_from = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_form",null=True)
+    msg_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_to",null=True)
     time = models.DateTimeField(auto_now_add=True)
     has_noticed = models.BooleanField(default=False)
     # def __str__(self):
     #     return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
+
+
+CATEGORY_CHOICE = (
+    ('記事','記事'),
+    ('質問','質問'),
+)
 
 
 class TalkAtArticle(Talk):
@@ -139,4 +156,4 @@ class TalkAtQuestion(Talk):
         choices=CATEGORY_CHOICE, default='質問')
 
     def __str__(self):
-        return "FROM '{}' TO '{}' AT '{}'".format(self.msg_from,self.msg_to,self.msg_at)
+        return f"FROM {self.msg_from} TO {self.msg_to} AT {self.msg_at}"
