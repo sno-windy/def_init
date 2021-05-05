@@ -46,5 +46,5 @@ urlpatterns = [
     path('my_page/',views.MyPageView.as_view(),name="my_page"),
 
     # LINE関連
-    path('new_line_friend/', views.new_line_friend, name='new_line_friend'),
+    path('callback/', views.callback, name='callback'),
 ]

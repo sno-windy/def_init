@@ -15,10 +15,13 @@ from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
                                   ListView, TemplateView, UpdateView)
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
 from django.views.generic.edit import FormMixin
+from linebot import LineBotApi, WebhookHandler
+from linebot.models import TemplateSendMessage, TextSendMessage
 
 from .forms import *
 from .index_info import GetIndexInfo
 from .models import *
+from .line import *
 
 
 #反省 Controllerに処理を書きすぎない
@@ -111,7 +114,7 @@ class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
     form_class = ArticleTalkForm #いらんかも
     template_name = 'def_i/article_talk.html'
 
-    def get(self,request,pk):
+    def get(self, request, pk):
         form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
         messages = TalkAtArticle.objects.filter(msg_at=article).order_by('time')
@@ -122,13 +125,14 @@ class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
                 'pk':pk
             })
 
-    def post(self,request,pk,*args,**kwargs):
+    def post(self, request, pk, *args, **kwargs):
         form = ArticleTalkForm(request.POST)
         if form.is_valid():
             messages = form.cleaned_data.get('msg')
             article = Article.objects.get(pk=pk)
             article_poster = User.objects.get(pk=article.poster.id)
-            msg = self.model.objects.create(msg=messages,msg_from = request.user,msg_to = article_poster,msg_at=article)
+            msg = self.model.objects.create(msg=messages, msg_from=request.user, msg_to=article_poster, msg_at=article)
+            msg.notify_new_comment()
             return redirect("article_talk_suc",pk=pk)
 
 #投稿完了画面を作ったが，すぐ元の画面に遷移するので活用できていない
@@ -235,20 +239,28 @@ class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
     form_class = QuestionTalkForm #いらんかも
     template_name = 'def_i/question_talk.html'
 
-    def get(self,request,pk):
+    def get(self, request, pk):
         form = QuestionTalkForm()
         question = Question.objects.get(pk=pk)
-        messages = TalkAtQuestion.objects.filter(msg_at=question).order_by('time')
-        return render(request,self.template_name,{"messages":messages,"form":form,'pk':pk})
+        # question = Question.objects.prefetch_related('talkatquestion_set').get(pk=pk)
+        # messages = TalkAtQuestion.objects.filter(msg_at=question).order_by('time')
+        messages = question.talkatquestion_set.all().order_by('time')
+        return render(request, self.template_name, {
+            "messages": messages,
+            "form": form,
+            "pk": pk
+        })
 
-    def post(self,request,pk,*args,**kwargs):
+    def post(self, request,pk, *args, **kwargs):
         form = QuestionTalkForm(request.POST)
         if form.is_valid():
             messages = form.cleaned_data.get('msg')
-            question = Question.objects.get(pk=pk)
-            question_poster = User.objects.get(pk=question.poster.id)
-            msg = self.model.objects.create(msg=messages,msg_from = request.user,msg_to = question_poster,msg_at=question)
+            question = Question.objects.select_related('poster').get(pk=pk)
+            question_poster = question.poster
+            msg = self.model.objects.create(msg=messages, msg_from=request.user, msg_to=question_poster, msg_at=question)
             msg.save()
+            print('saved')
+            msg.notify_new_comment()
             if not question.if_answered: #コメントの時にブール値を編集する
                 question.if_answered = True
                 question.save()
@@ -550,17 +562,6 @@ class MyPageView(LoginRequiredMixin,ListView):
         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
         return articles
 
-
 @csrf_exempt
-def new_line_friend(request):
-    if request.method == 'POST':
-        request_json = json.loads(request.body.decode('utf-8'))
-        events = request_json['events']
-        if events:
-            line_user_id = events[0]['source']['userId']
-
-            if events[0]['type'] == 'follow':
-                a = LineFriend.objects.create(line_user_id=line_user_id)
-                print(a)
-
-    return HttpResponse()
+def callback(request):
+    return handle_callback(request)

@@ -1,7 +1,9 @@
 import requests
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from django.shortcuts import resolve_url
 from django.utils import timezone
 from imagekit.models import ImageSpecField
@@ -160,20 +162,43 @@ class TalkAtArticle(Talk):
     category = models.CharField(max_length=10,
         choices=CATEGORY_CHOICE, default='記事')
 
+    def notify_new_comment(self):
+        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        other_commenters = TalkAtArticle.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        print("to:", notify_to)
+        for push in notify_to:
+            if push.notify_comment:
+                line_bot_api.push_message(
+                    push.line_user_id,
+                    TextSendMessage(text="記事にコメントが来ました。")
+                )
+
 
 class TalkAtQuestion(Talk):
     msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
     category = models.CharField(max_length=10,
         choices=CATEGORY_CHOICE, default='質問')
 
+    def notify_new_comment(self):
+        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        other_commenters = TalkAtQuestion.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ質問にコメントした人全員に通知？
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        for push in notify_to:
+            if push.notify_answer:
+                line_bot_api.push_message(
+                    push.line_user_id,
+                    TextSendMessage(text="質問にコメントが来ました。")
+                )
+
     def __str__(self):
         return f"FROM {self.msg_from} TO {self.msg_to} AT {self.msg_at}"
 
 
 class LineFriend(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # unique=True?
     line_user_id = models.CharField(max_length=100)
-    is_intern = models.BooleanField(default=True)
+    is_intern = models.BooleanField(default=False)
     is_answerer = models.BooleanField(default=False)
 
     notify_good = models.BooleanField(default=False)
