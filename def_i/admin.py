@@ -13,6 +13,7 @@ notify.short_description = '通知を送信する'
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Like)
 admin.site.register(Course)
+admin.site.register(Category)
 admin.site.register(StudyingCategory)
 admin.site.register(Lesson)
 admin.site.register(Talk)

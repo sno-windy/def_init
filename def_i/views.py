@@ -36,7 +36,9 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
         context["ranking"] = info.get_ranking()
         context["learning_lesson"] = info.learning_lesson
-        context["progress"] = info.get_progress(self.request.user)
+        all_progress,each_progress = info.get_progress(self.request.user)
+        context["all_progress"] = all_progress
+        context["each_progress"] = each_progress
         context["questions"] = info.get_related_questions()
         context["articles"] = info.get_related_articles()
 
@@ -366,21 +368,37 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
     def get_success_url(self,**kwargs):
         return reverse_lazy('task_article',kwargs={"pk":self.kwargs['pk']})
 
-
+#courseの追加方法
+#def course のparamsに追加，course.htmlに追加，modelsのタプルに追加
 def course(request):
-    return render(request, "def_i/course.html")
+    if request.method == 'GET':
+        info = GetIndexInfo(request.user)
+        _,progress = info.get_progress(request.user)
+        params = {
+            "progress":progress,
+        }
+    return render(request, "def_i/course.html",params)
 
 
-class BackendTaskList(LoginRequiredMixin,ListView):
-    context_object_name = 'course_list'
-    queryset = Course.objects.order_by('course_num').prefetch_related('lesson') #ここがmodelsのrelatedと繋がってるのはわかったけどなんでこの名前がlessonじゃないとだめなのかがわからん
+class CourseList(LoginRequiredMixin,ListView):
+    context_object_name = 'course_and_progress'
     model = Course
     template_name = "def_i/base-task.html"
 
-    def get_context_data(self , *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['lesson_list'] = Lesson.objects.all()
-        return context
+    def get_queryset(self,**kwargs):
+        course_list = Course.objects.filter(category__title=self.kwargs['category']).order_by('course_num').prefetch_related('lessons')
+        progress_percent_list = []
+        for course in course_list:
+            lessons = course.lessons.all()
+            lesson_count = lessons.count()
+            cleared_lesson_count = ClearedLesson.objects.filter(lesson__in = lessons).count()
+            if lessons:
+                progress_percent = round(cleared_lesson_count * 100 / lesson_count,1)
+                progress_percent_list.append(progress_percent)
+        course_and_progress = [[crs,per] for crs,per in zip(course_list,progress_percent_list)]
+        print(course_and_progress)
+        return course_and_progress
+
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -555,7 +573,7 @@ class MyPageView(LoginRequiredMixin,ListView):
         context["learning_lesson"] = learning_lesson
         context["articles_like"] = article_list #いいねした記事リスト
         context["questions"] = question_list
-        context["learning_course"] = Course.objects.get(lesson=learning_lesson)
+        # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
         return context
 
     def get_queryset(self,**kwargs):

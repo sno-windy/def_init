@@ -42,7 +42,11 @@
 <div>
     <h3>進行中のコース・進捗</h3>
     <!-- 進捗 -->
-    <p>完了率：{{progress|floatformat}}%</p>
+    <p>完了率：{{all_progress|floatformat}}%</p>
+    <p>個別の完了率：{% for cat,prog in each_progress %}
+    {{cat.title}}は
+    {{prog}}%
+    {% endfor %}</p>
     {% if not learning_lesson %}
         <p>全てのレッスンを完了しました。</p>
     {% else %}

@@ -13,7 +13,7 @@ class ArticleTalkForm(forms.ModelForm):
 class ArticlePostForm(forms.ModelForm):
     class Meta:
         model = Article
-        fields = ['title','content',]
+        fields = ['title','content','article_image_1','article_image_2']
         labels = {
             'title':'',
             'content':'',
