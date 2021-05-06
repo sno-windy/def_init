@@ -381,14 +381,23 @@ def course(request):
 
 
 class CourseList(LoginRequiredMixin,ListView):
+    context_object_name = 'course_and_progress'
     model = Course
     template_name = "def_i/base-task.html"
 
-    def get_queryset(self):
+    def get_queryset(self,**kwargs):
         course_list = Course.objects.filter(category__title=self.kwargs['category']).order_by('course_num').prefetch_related('lessons')
-        a = GetIndexInfo(self.request.user)
-        b = a.get_course_list(self.request.user,self.kwargs['category'])
-        return course_list
+        progress_percent_list = []
+        for course in course_list:
+            lessons = course.lessons.all()
+            lesson_count = lessons.count()
+            cleared_lesson_count = ClearedLesson.objects.filter(lesson__in = lessons).count()
+            if lessons:
+                progress_percent = round(cleared_lesson_count * 100 / lesson_count,1)
+                progress_percent_list.append(progress_percent)
+        course_and_progress = [[crs,per] for crs,per in zip(course_list,progress_percent_list)]
+        print(course_and_progress)
+        return course_and_progress
 
 
 
@@ -564,7 +573,7 @@ class MyPageView(LoginRequiredMixin,ListView):
         context["learning_lesson"] = learning_lesson
         context["articles_like"] = article_list #いいねした記事リスト
         context["questions"] = question_list
-        context["learning_course"] = Course.objects.get(lesson=learning_lesson)
+        # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
         return context
 
     def get_queryset(self,**kwargs):

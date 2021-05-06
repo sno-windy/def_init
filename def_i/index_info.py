@@ -75,7 +75,7 @@ class GetIndexInfo:
         print(progress_zip) #[['backend', 66.7], ['frontend', 0.0], ['design', 0.0]]
         all_lesson_count = all_lesson.count()
         my_cleared_lesson_num = self.cleared_lesson.count()
-        progress_decimal = my_cleared_lesson_num / all_lesson_count if all_lesson_count else 0
+        progress_decimal = my_cleared_lesson_num / all_lesson_count if all_lesson_count else 0.0
         progress_percent = progress_decimal * 100
         return progress_percent,progress_zip
 
@@ -121,14 +121,14 @@ class GetIndexInfo:
 
         return new_likes, article_talk, question_talk
 
-    def get_course_list(self,user,category):
-        courses = Course.objects.filter(category__title=category).order_by('course_num').prefetch_related('lessons')
-        progress_percent_list = []
-        for course in courses:
-            lessons = course.lessons
-            cleared_lessons = ClearedLesson.objects.filter(user=user,lesson__in=lessons)
-            if lessons:
-                progress_percent = round(cleared_lessons * 100 / lessons,1)
-                progress_percent_list.append(progress_percent)
-        print(progress_percent_list)
-        return courses
+    # def get_course_list(self,user,category):
+    #     courses = Course.objects.filter(category__title=category).order_by('course_num')
+    #     progress_percent_list = []
+    #     for course in courses:
+    #         lessons = Lesson.objects.
+    #         cleared_lessons = ClearedLesson.objects.filter(user=user,lesson__in=lessons)
+    #         if lessons:
+    #             progress_percent = round(cleared_lessons * 100 / lessons,1)
+    #             progress_percent_list.append(progress_percent)
+    #     print(progress_percent_list)
+    #     return courses

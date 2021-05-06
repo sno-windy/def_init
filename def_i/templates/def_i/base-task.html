@@ -5,11 +5,11 @@
 {% block contents %}
 <h1>課題</h1>
 <div class="main-container__contents-taskboxies">
-{% for course in course_list %}
+{% for course,prog in course_and_progress %}
 {% if course.title == 'public' %}
 {% else %}
 <div class ="main-container__contents-taskbox js-accordion-title">
-    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}</p>
+    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}:進捗{{prog}}%</p>
     <p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
 </div>
 <div class="main-container__contents-taskbox-details accordion__content">

@@ -80,14 +80,14 @@ class Article(models.Model):
     tags = TaggableManager(blank=True)
     is_published = models.BooleanField(default=False)
     # 画像を添付する
-    article_image_1 = models.ImageField(upload_to="def_i/img",null=True)
-    article_image_2 = models.ImageField(upload_to="def_i/img",null=True)
-    article_image_1_resize = ImageSpecField(source='user_image_1',
+    article_image_1 = models.ImageField(upload_to="def_i/img",null=True,blank=True)
+    article_image_2 = models.ImageField(upload_to="def_i/img",null=True,blank=True)
+    article_image_1_resize = ImageSpecField(source='article_image_1',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
         options={'quality':60}
         )
-    article_image_2_resize = ImageSpecField(source='user_image_2',
+    article_image_2_resize = ImageSpecField(source='article_image_2',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
         options={'quality':60}
