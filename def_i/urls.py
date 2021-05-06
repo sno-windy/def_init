@@ -44,4 +44,7 @@ urlpatterns = [
     path('like/<int:pk>/',views.LikeView,name='like'),
     path('user_page/<int:pk>/',views.UserPageView.as_view(),name='user_page'),
     path('my_page/',views.MyPageView.as_view(),name="my_page"),
+
+    # LINE関連
+    path('callback/', views.callback, name='callback'),
 ]

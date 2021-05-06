@@ -1,4 +1,4 @@
-from .models import  Article, Question, Like, Category, Course, StudyingCategory, Talk, TalkAtArticle, TalkAtQuestion, Lesson, ClearedLesson
+from .models import  *
 from django.contrib import admin
 
 def notify(modeladmin,request,queryset):
@@ -20,3 +20,4 @@ admin.site.register(Talk)
 admin.site.register(TalkAtQuestion)
 admin.site.register(TalkAtArticle)
 admin.site.register(ClearedLesson)
+admin.site.register(LineFriend)
