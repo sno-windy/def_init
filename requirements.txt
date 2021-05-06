@@ -43,6 +43,7 @@ html5lib==1.1
 idna==2.10
 jmespath==0.10.0
 libsass==0.20.1
+line-bot-sdk==1.19.0
 Markdown==3.3.4
 oauthlib==3.1.0
 pilkit==2.0
