@@ -29,7 +29,9 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
         context["ranking"] = info.get_ranking()
         context["learning_lesson"] = info.learning_lesson
-        context["progress"] = info.get_progress(self.request.user)
+        all_progress,each_progress = info.get_progress(self.request.user)
+        context["all_progress"] = all_progress
+        context["each_progress"] = each_progress
         context["questions"] = info.get_related_questions()
         context["articles"] = info.get_related_articles()
 
@@ -348,21 +350,28 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
     def get_success_url(self,**kwargs):
         return reverse_lazy('task_article',kwargs={"pk":self.kwargs['pk']})
 
-
+#courseの追加方法
+#def course のparamsに追加，course.htmlに追加，modelsのタプルに追加
 def course(request):
-    return render(request, "def_i/course.html")
+    if request.method == 'GET':
+        info = GetIndexInfo(request.user)
+        _,progress = info.get_progress(request.user)
+        params = {
+            "progress":progress,
+        }
+    return render(request, "def_i/course.html",params)
 
 
-class BackendTaskList(LoginRequiredMixin,ListView):
-    context_object_name = 'course_list'
-    queryset = Course.objects.order_by('course_num').prefetch_related('lesson') #ここがmodelsのrelatedと繋がってるのはわかったけどなんでこの名前がlessonじゃないとだめなのかがわからん
+class CourseList(LoginRequiredMixin,ListView):
     model = Course
     template_name = "def_i/base-task.html"
 
-    def get_context_data(self , *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['lesson_list'] = Lesson.objects.all()
-        return context
+    def get_queryset(self):
+        course_list = Course.objects.filter(category__title=self.kwargs['category']).order_by('course_num').prefetch_related('lessons')
+        a = GetIndexInfo(self.request.user)
+        b = a.get_course_list(self.request.user,self.kwargs['category'])
+        return course_list
+
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):

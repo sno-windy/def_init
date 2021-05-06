@@ -27,7 +27,7 @@ urlpatterns = [
 
     # コース系
     path('course/', views.course, name="course"),
-    path('task_backend/',views.BackendTaskList.as_view(),name='task_backend'),
+    path('course/<str:category>/',views.CourseList.as_view(),name='course_list'),
     path('task_backend/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
     # path('task_backend/<int:pk>/memo', views.MemoView, name='task_memo'),
     path('task_backend/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),

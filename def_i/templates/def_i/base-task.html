@@ -9,14 +9,20 @@
 {% if course.title == 'public' %}
 {% else %}
 <div class ="main-container__contents-taskbox js-accordion-title">
-    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}</p><p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
+    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}</p>
+    <p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
 </div>
 <div class="main-container__contents-taskbox-details accordion__content">
-    {% for lesson in course.lesson.all %}
+    {% for lesson in course.lessons.all %}
     <a href="{% url 'task_detail' lesson.pk %}">
-        <div class="main-container__contents-taskbox-detail"><p class="main-container__contents-taskbox-detail-tag">課題{{ course.course_num }}-{{ lesson.lesson_num }}</p><p class="main-container__contents-taskbox-detail-descript">{{ lesson.title }}</p></div>
+        <div class="main-container__contents-taskbox-detail">
+          <p class="main-container__contents-taskbox-detail-tag">
+            課題{{ course.course_num }}-{{ lesson.lesson_num }}</p>
+          <p class="main-container__contents-taskbox-detail-descript">{{ lesson.title }}</p>
+        </div>
     </a>
     {% endfor %}
+    <p>{{course.}}</p>
 </div>
 {% endif %}
 {% endfor %}

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from imagekit.models import ImageSpecField
+from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 from taggit.managers import TaggableManager
 from markdownx.models import MarkdownxField
@@ -13,15 +13,25 @@ import requests
 User = get_user_model()
 
 
-COURSE_CATEGORY_CHOICE = (
-    ('BACKEND','バックエンド'),
-    ('FRONTEND','フロントエンド'),
-)
+# COURSE_CATEGORY_CHOICE = (
+#     ('backend','backend'),
+#     ('frontend','frontend'),
+#     ('design','design')
+# )
+class Category(models.Model):
+    title = models.CharField(max_length=10)
+    category_image = ProcessedImageField(upload_to="def_i/img",
+        processors=[ResizeToFill(250,250)],
+        format='JPEG',
+        options={'quality':60},
+        blank=True
+        )
+    description = models.TextField(max_length=100, null=True)
 
 class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
-    course_category = models.CharField(max_length=10, choices=COURSE_CATEGORY_CHOICE, default='BACKEND')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.title)
@@ -31,7 +41,7 @@ class Lesson(models.Model):
     title = models.CharField(max_length=30)
     contents = models.TextField(max_length=1000, null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
-    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lesson")
+    course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
 
     def __str__(self):
         return str(self.title)
@@ -47,8 +57,8 @@ class ClearedLesson(models.Model):
 
 
 class StudyingCategory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="studying_user")
-    course_category = models.CharField(max_length=10, choices=COURSE_CATEGORY_CHOICE, default='BACKEND')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_category")
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="studying_category")
 
     def __str__(self):
         return f"{self.user} now studying {self.course_category}"
@@ -130,7 +140,7 @@ class BookMark(models.Model):
 
 class Talk(models.Model):
     msg = models.TextField(max_length=1000)
-    msg_from = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_form",null=True)
+    msg_from = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_from",null=True)
     msg_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_to",null=True)
     time = models.DateTimeField(auto_now_add=True)
     has_noticed = models.BooleanField(default=False)

@@ -1,4 +1,4 @@
-from .models import  Article, Question, Like, Course, StudyingCategory, Talk, TalkAtArticle, TalkAtQuestion, Lesson, ClearedLesson
+from .models import  Article, Question, Like, Category, Course, StudyingCategory, Talk, TalkAtArticle, TalkAtQuestion, Lesson, ClearedLesson
 from django.contrib import admin
 
 def notify(modeladmin,request,queryset):
@@ -13,6 +13,7 @@ notify.short_description = '通知を送信する'
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Like)
 admin.site.register(Course)
+admin.site.register(Category)
 admin.site.register(StudyingCategory)
 admin.site.register(Lesson)
 admin.site.register(Talk)
