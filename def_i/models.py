@@ -130,6 +130,7 @@ class Question(models.Model):
         notify_to = LineFriend.objects.filter(is_answerer=True)
         print("to:", notify_to)
         for push in notify_to:
+            print(push.line_user_id)
             line_bot_api.push_message(push.line_user_id, TextSendMessage(text="質問が投稿されました。回答をお願いします。"))
 
     def formatted_markdown(self):
@@ -211,7 +212,6 @@ class LineFriend(models.Model):
     is_intern = models.BooleanField(default=False)
     is_answerer = models.BooleanField(default=False)
 
-    notify_good = models.BooleanField(default=False)
     notify_comment = models.BooleanField(default=True)
     notify_answer = models.BooleanField(default=True)
 

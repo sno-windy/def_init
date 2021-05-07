@@ -13,6 +13,9 @@
                 <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
+                <a href="?orderby=mynote&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
+                    <p><span style="visibility:hidden;">──</span>──自分のノート</p>
+                </a>
             {% elif orderby == 'like' %}
                 <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──新着順</p>
@@ -20,8 +23,11 @@
                 <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
                     <p><span style="visibility:hidden;">──</span>──いいね順</p>
                 </a>
+                <a href="?orderby=mynote&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
+                    <p><span style="visibility:hidden;">──</span>──自分のノート</p>
+                </a>
             {% endif %}
-                <a href="{% url 'question_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
+                <!-- <a href="{% url 'question_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
                     <h1>質問フィード</h1>
                 </a>
                 <a href="{% url 'question_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
@@ -29,7 +35,7 @@
                 </a>
                 <a href="{% url 'question_feed' %}?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
                     <p><span style="visibility:hidden;">──</span>──未回答</p>
-                </a>
+                </a>　-->
             </div>
         {% endblock menubar %}
         {% block contents %}

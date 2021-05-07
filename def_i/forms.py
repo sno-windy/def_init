@@ -57,3 +57,7 @@ class QuestionPostForm(forms.ModelForm):
 
 class ArticleSearchForm(forms.Form):
     keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+
+
+class QuestionSearchForm(forms.Form):
+    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
