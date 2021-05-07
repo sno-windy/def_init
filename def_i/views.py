@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import F, OuterRef, Q, Subquery
 from django.http import HttpResponse, JsonResponse
@@ -538,47 +538,127 @@ def LikeView(request,pk):
 
         return JsonResponse(params)
 
-class UserPageView(LoginRequiredMixin,ListView):
-    model = Article
-    context_object_name = "articles"
-    template_name = 'def_i/user_page.html'
-    paginate_by = 5
+# class UserPageView(LoginRequiredMixin,ListView):
+#     model = Article
+#     context_object_name = "articles"
+#     template_name = 'def_i/user_page.html'
+#     paginate_by = 5
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = User.objects.get(pk=self.kwargs['pk'])
-        context["user_data"] = user
-        context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:5]
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         user = User.objects.get(pk=self.kwargs['pk'])
+#         context["user_data"] = user
+#         context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:5]
+#         return context
 
-    def get_queryset(self,**kwargs):
-        articles = Article.objects.filter(poster=self.kwargs['pk']).order_by('-created_at')
-        return articles
+#     def get_queryset(self,**kwargs):
+#         articles = Article.objects.filter(poster=self.kwargs['pk']).order_by('-created_at')
+#         return articles
 
-class MyPageView(LoginRequiredMixin,ListView):
-    model = Article
-    context_object_name = "articles"
-    template_name = 'def_i/my_page.html'
-    paginate_by = 5 #標準ではobject_listをうけとる
+# class MyPageView(LoginRequiredMixin,ListView):
+#     model = Article
+#     context_object_name = "articles"
+#     template_name = 'def_i/my_page.html'
+#     paginate_by = 5 #標準ではobject_listをうけとる
 
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        info = GetIndexInfo(user)
-        # like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
-        # article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
-        article_list = Article.objects.filter(like__user=user) #逆参照を使いましょう．
-        question_list = Question.objects.filter(poster=user).order_by('-created_at')
-        learning_lesson = info.learning_lesson
-        context["learning_lesson"] = learning_lesson
-        context["articles_like"] = article_list #いいねした記事リスト
-        context["questions"] = question_list
-        # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
-        return context
+#     def get_context_data(self,**kwargs):
+#         context = super().get_context_data(**kwargs)
+#         user = self.request.user
+#         info = GetIndexInfo(user)
+#         # like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
+#         # article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
+#         article_list = Article.objects.filter(like__user=user) #逆参照を使いましょう．
+#         question_list = Question.objects.filter(poster=user).order_by('-created_at')
+#         learning_lesson = info.learning_lesson
+#         context["learning_lesson"] = learning_lesson
+#         context["articles_like"] = article_list #いいねした記事リスト
+#         context["questions"] = question_list
+#         # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
+#         return context
 
-    def get_queryset(self,**kwargs):
-        articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
-        return articles
+#     def get_queryset(self,**kwargs):
+#         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
+#         return articles
+
+def mypage_view(request):
+    user = request.user
+    orderby = request.GET.get('orderby')
+    question = Question.objects.order_by('created_at')
+    if orderby == 'like':
+        question_like = question.filter(bookmark__user=user)
+        paginator = Paginator(question_like,3)
+    else:
+        question = question.filter(poster=user)
+        paginator = Paginator(question,3)
+
+    page = request.GET.get('q_page')
+
+    try:
+        question = paginator.page(page)
+    except PageNotAnInteger:
+        question = paginator.page(1)
+    except EmptyPage:
+        question = paginator.page(paginator.num_pages)
+
+
+    article = Article.objects.order_by('-created_at')
+    if orderby == 'like':
+        article_like = article.filter(like__user=user)
+        paginator = Paginator(article_like,3)
+    else:
+        article = article.filter(poster=user)
+        paginator = Paginator(article, 3)
+
+    page = request.GET.get('a_page')
+
+    try:
+        article = paginator.page(page)
+    except PageNotAnInteger:
+        article = paginator.page(1)
+    except EmptyPage:
+        article = paginator.page(paginator.num_pages)
+
+    params = {
+        'question':question,
+        'article':article,
+    }
+    return render(request, 'def_i/my_page.html', params)
+
+def userpage_view(request,pk):
+    user = User.objects.get(pk=pk)
+    question = Question.objects.order_by('created_at').filter(poster=user)
+
+    paginator = Paginator(question,3)
+    page = request.GET.get('q_page')
+
+    try:
+        question = paginator.page(page)
+    except PageNotAnInteger:
+        question = paginator.page(1)
+    except EmptyPage:
+        question = paginator.page(paginator.num_pages)
+
+
+    article = Article.objects.order_by('-created_at').filter(poster=user)
+
+    paginator = Paginator(article, 3)
+    page = request.GET.get('a_page')
+
+    try:
+        article = paginator.page(page)
+    except PageNotAnInteger:
+        article = paginator.page(1)
+    except EmptyPage:
+        article = paginator.page(paginator.num_pages)
+
+    params = {
+        'question':question,
+        'article':article,
+        'user_data':user
+    }
+    return render(request, 'def_i/user_page.html', params)
+
+
 
 @csrf_exempt
 def callback(request):

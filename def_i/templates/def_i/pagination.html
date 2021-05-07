@@ -1,17 +1,17 @@
 
 
-        {% if page_obj.has_previous %}
-            <p class="pagination_box"><a href="?page={{ page_obj.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">前へ</a></p>
+        {% if article.has_previous %}
+            <p class="pagination_box"><a href="?a_page={{ article.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">前へ</a></p>
         {% endif %}
         <!-- 数字の部分 -->
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
+        {% for num in article.paginator.page_range %}
+            {% if article.number == num %}
                 <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
             {% else %}
-                <p class="pagination_num pagination_not_here"><a href="?page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+                <p class="pagination_num pagination_not_here"><a href="?a_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
             {% endif %}
         {% endfor %}
         <!-- 次へ の部分 -->
-        {% if page_obj.has_next %}
-            <p class="pagination_box"><a href="?page={{ page_obj.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">次へ</a></p>
+        {% if article.has_next %}
+            <p class="pagination_box"><a href="?a_page={{ article.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">次へ</a></p>
         {% endif %}

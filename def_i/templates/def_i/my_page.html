@@ -21,12 +21,20 @@
 {% block contents %}
 <h1>マイページ</h1>
 <div class="choice-button">
-<p id="art-new" class="here">自分の記事</p>
-<p id="like">いいねした記事</p>
-<p id="quest-new">自分の質問</p>
+
+{% if request.GET.orderby == 'new' %}
+<p id="art-new" class="here"><a href="?orderby=new&a_page={{request.GET.a_page}}">自分の記事</a></p>
+<p id="like"><a href="{% url 'my_page' %}?orderby=like&a_page={{request.GET.al_page}}">いいねした記事</a></p>
+
+{% else %}
+<p id="art-new"><a href="?orderby=new&a_page={{request.GET.a_page}}">自分の記事</a></p>
+<p id="like"  class="here"><a href="?orderby=like&a_page={{request.GET.a_page}}">いいねした記事</a></p>
+{% endif %}
 </div>
+{% if article %}
     <div id="new-articles">
-        {% for a in articles %}
+    {% if request.GET.orderby == 'new' %}
+        {% for a in article %}
             <article class="main-container__contents-article">
                 <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
                 <a href="{% url 'article_detail' a.pk %}">
@@ -39,8 +47,9 @@
         {% endfor %}
         <div class="pagination">{% include 'def_i/pagination.html' %}</div>
     </div>
-    <div id="like-articles" class="hidden">
-        {% for a in articles_like %}
+    {% else %}
+    <div id="like-articles">
+        {% for a in article %}
         <article class="main-container__contents-article like-articles">
             <p><a href="">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
             <a href="{% url 'article_detail' a.pk %}">
@@ -51,9 +60,24 @@
         {% empty %}
         <p>記事がありません．</p>
         {% endfor %}
+        <div class="pagination">{% include 'def_i/pagination.html' %}</div>
     </div>
-    <div id="questions" class="hidden">
-    {% for q in questions %}
+    {% endif %}
+{% endif %}
+{% if question %}
+<div class="choice-button">
+
+{% if request.GET.orderby == 'new' %}
+<p id="art-new" class="here"><a href="?orderby=new&a_page={{request.GET.a_page}}">自分の質問</a></p>
+<p id="like"><a href="{% url 'my_page' %}?orderby=like&a_page={{request.GET.al_page}}">いいねした質問</a></p>
+
+{% else %}
+<p id="art-new"><a href="?orderby=new&q_page={{request.GET.a_page}}">自分の質問</a></p>
+<p id="like" class="here"><a href="?orderby=like&q_page={{request.GET.q_page}}">いいねした質問</a></p>
+{% endif %}
+</div>
+    <div id="questions">
+    {% for q in question %}
         <article class="main-container__contents-article questions">
             <p><a href="">{{q.poster}}</a>が{{q.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
             <a href="{% url 'question_detail' q.pk %}">
@@ -62,7 +86,25 @@
         </article>
         {% empty %}
         <p>記事がありません．</p>
-        {% endfor %}
+    {% endfor %}
+        <div class="pagination">
+    {% if question.has_previous %}
+            <p class="pagination_box"><a href="?q_page={{ question.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">前へ</a></p>
+    {% endif %}
+    <!-- 数字の部分 -->
+    {% for num in question.paginator.page_range %}
+        {% if question.number == num %}
+            <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
+        {% else %}
+            <p class="pagination_num pagination_not_here"><a href="?q_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+        {% endif %}
+    {% endfor %}
+    <!-- 次へ の部分 -->
+    {% if question.has_next %}
+        <p class="pagination_box"><a href="?q_page={{ question.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">次へ</a></p>
+    {% endif %}
+{% endif %}
+        </div>
     </div>
 <p>{{learning_course}}</p>
 <p>{{learning_lesson}}</p>
@@ -70,7 +112,9 @@
 {% block member_list %}{% endblock member_list %}
 {% block javascript %}
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
+{% comment %} document.addEventListener('DOMContentLoaded',()=>{
+    const url = new URL(location)
+    url.searchParams.delete('orderby')
     const artBtn = document.getElementById('art-new')
     const likeBtn = document.getElementById('like')
     const questBtn = document.getElementById('quest-new')
@@ -84,6 +128,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         artBtn.classList.add('here')
         likeBtn.classList.remove('here')
         questBtn.classList.remove('here')
+        url.searchParams.set("orderby", "new")
     })
     likeBtn.addEventListener('click',()=>{
         likeList.classList.remove('hidden')
@@ -92,6 +137,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         artBtn.classList.remove('here')
         likeBtn.classList.add('here')
         questBtn.classList.remove('here')
+        url.searchParams.set("orderby", "like")
     })
     questBtn.addEventListener('click',()=>{
         artList.classList.add('hidden')
@@ -101,6 +147,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         likeBtn.classList.remove('here')
         questBtn.classList.add('here')
     })
-})
+}) {% endcomment %}
 </script>
 {% endblock javascript %}
