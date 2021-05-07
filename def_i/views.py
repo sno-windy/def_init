@@ -62,7 +62,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
-        articles = Article.objects.all()
+        articles = Article.objects.all().order_by('-created_at')
         order_by = self.request.GET.get('orderby')
 
         if order_by == 'new':
@@ -71,10 +71,13 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         elif order_by == 'like':
             articles = articles.order_by('-like_count','-created_at')
 
+        elif order_by == 'mynote':
+            articles = articles.filter(poster=self.request.user).order_by('-created_at')
+
         if (query_word := self.request.GET.get('keyword')): #代入式
             articles = articles.filter(
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
+            ).order_by('-created_at')
 
         return articles
 
@@ -192,22 +195,30 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
         return super().delete(request,*args,**kwargs)
 
 
-class QuestionFeed(LoginRequiredMixin,ListView):
+class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     model = Question
+    form_class = QuestionSearchForm
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
     paginate_by = 10
-    queryset = Question.objects.order_by('-created_at')
 
     def get_queryset(self):
         order_by = self.request.GET.get('orderby')
-        questions = Question.objects.all()
+        questions = Question.objects.all().order_by('-created_at')
 
         if order_by == 'new':
             questions = questions.order_by('-created_at')
 
         elif order_by == 'unanswered':
-            questions = questions.filter(if_answered=False)
+            questions = questions.filter(if_answered=False).order_by('created_at')
+
+        elif order_by == 'myquestion':
+            questions = questions.filter(poster=self.request.user).order_by('-created_at')
+
+        if (query_word := self.request.GET.get('keyword')):
+            questions = questions.filter(
+                Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
+            ).order_by('-created_at')
 
         return questions
 

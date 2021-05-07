@@ -35,7 +35,8 @@
                 <p class="header-container__icon"><img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}"></p>
             </a>
             <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
-            <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}?orderby=new">学ぶ</a></p>
+            <p class="header-container__contents studynow"><a href="{% url 'question_feed' %}?orderby=new">質問</a></p>
+            <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}?orderby=new">ノート</a></p>
             <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>
             <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
             <p class="header-container__usericon" id="icon">
