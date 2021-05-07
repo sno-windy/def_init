@@ -62,7 +62,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
-        articles = Article.objects.all()
+        articles = Article.objects.all().order_by('-created_at')
         order_by = self.request.GET.get('orderby')
 
         if order_by == 'new':
@@ -77,7 +77,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         if (query_word := self.request.GET.get('keyword')): #代入式
             articles = articles.filter(
                 Q(title__icontains=query_word)|Q(poster__username__icontains=query_word)
-            )
+            ).order_by('-created_at')
 
         return articles
 

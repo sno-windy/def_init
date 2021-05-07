@@ -11,11 +11,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='article',
-            name='article_image_2',
-            field=models.ImageField(blank=True, null=True, upload_to='def_i/img'),
-        ),
-        migrations.AlterField(
             model_name='linefriend',
             name='is_intern',
             field=models.BooleanField(default=False),
