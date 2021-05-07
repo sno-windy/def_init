@@ -3,6 +3,11 @@
 {% block extra_style %}
 <link rel="stylesheet" href="{% static 'def_i/css/question_feed.css' %}">{% endblock extra_style %}
 {% block contents %}
+<form action="" method="GET">
+    {{form}}
+    <button type="submit">検索する</button>
+</form>
+<h2>質問一覧</h2>
 {% if messages %}
 	{% for message in messages %}
 		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>

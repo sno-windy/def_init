@@ -31,15 +31,17 @@ def handle_callback(request):
 def handle_follow(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='Def initに登録したユーザー名を「名前 (半角スペース)」に続けて入力してください。例）名前 definit')
+        TextSendMessage(text='【登録はまだ完了していません】Def initに登録したユーザー名を「名前 (半角スペース)」に続けて入力してください。例）名前 definit')
     )
 
 @handler.add(UnfollowEvent)
 def handle_unfollow(event):
     LineFriend.objects.filter(line_user_id=event.source.user_id).delete()
+    print('deleted')
 
 @handler.add(MessageEvent)
 def handle_message(event):
+    print('id:', event.source.user_id)
     line_user_id = event.source.user_id
     text = event.message.text
 
