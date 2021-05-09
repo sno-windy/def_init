@@ -24,6 +24,12 @@
 </div>
 <p>投稿者：{{contents.poster}}</p>
 <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
+{% if contents.article_image_1 %}
+<img src="{{ contents.question_image_1_resize.url }}" alt="">
+{% endif %}
+{% if contents.article_image_2 %}
+<img src="{{ contents.question_image_2_resize.url }}" alt="">
+{% endif %}
 <p>最新のコメント</p>
     {% for c in comments %}
     <article class="main-container__contents-article">

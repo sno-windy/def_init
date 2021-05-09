@@ -34,6 +34,9 @@ class Category(models.Model):
         )
     description = models.TextField(max_length=100, null=True)
 
+    def __str__(self):
+        return str(self.title)
+
 class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
@@ -72,7 +75,9 @@ class StudyingCategory(models.Model):
 
 class Article(models.Model):
     poster = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="user_article",null=True)
-    article_at = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article",null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_article", null=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_article", null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article", null=True)
     title = models.CharField(max_length=30)
     content = MarkdownxField()
     like_count = models.PositiveIntegerField(default=0)
@@ -101,16 +106,31 @@ class Article(models.Model):
 
 
 class Question(models.Model):
-    poster = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="user_question",null=True)
-    question_at = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question",null=True)
+    poster = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="user_question", null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_question", null=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_question", null=True)
+    lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question", null=True)
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
     if_answered = models.BooleanField(default=False) #->is_answered
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
+    # 画像を添付する
+    question_image_1 = models.ImageField(upload_to="def_i/img", null=True, blank=True)
+    question_image_2 = models.ImageField(upload_to="def_i/img", null=True, blank=True)
+    question_image_1_resize = ImageSpecField(source='question_image_1',
+        processors=[ResizeToFill(250,250)],
+        format='JPEG',
+        options={'quality':60}
+        )
+    question_image_2_resize = ImageSpecField(source='question_image_2',
+        processors=[ResizeToFill(250,250)],
+        format='JPEG',
+        options={'quality':60}
+        )
 
-    def browser_push(self,request):
+    def browser_push(self, request):
         data = {
             'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
             'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",

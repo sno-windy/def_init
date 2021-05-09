@@ -160,11 +160,11 @@ class ArticlePost(LoginRequiredMixin,CreateView):
         article_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
         article.article_at = article_at
         article.save()
-        messages.success(self.request,'記事を投稿しました．')
+        messages.success(self.request,'ノートを作成しました．')
         return super().form_valid(form)
 
     def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
-        messages.error(self.request,'記事作成に失敗しました．')
+        messages.error(self.request,'ノート作成に失敗しました．')
         return super().form_invalid(form)
 
 
@@ -320,6 +320,11 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
         return reverse_lazy('question_detail',kwargs={"pk":self.kwargs['pk']})
 
     def form_valid(self,form):
+        if uploaded := self.request.POST.get('question_image_1'):
+            print('file')
+            print(uploaded)
+        else:
+            print('no file')
         messages.success(self.request,'質問を編集しました．')
         return super().form_valid(form)
 
@@ -348,6 +353,7 @@ class TaskQuestionPost(LoginRequiredMixin,CreateView):
         question.poster = self.request.user
         question.question_at = question_at
         question.save()
+        question.notify_new_comment()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 

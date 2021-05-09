@@ -6,9 +6,10 @@
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
 <h1 class="postform-title">質問投稿フォーム</h1>
-<form action = "" method = "POST" class="postform-form">
+<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
 {% csrf_token %}
-{{form}}
+{{form.as_p}}
+<!-- <textarea name="content" cols="40" rows="10" placeholder="本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと &#13;・試したこと&#13;・出力されたエラー <br> などを書きましょう"></textarea> -->
 <button type="submit" class="postform-btn">投稿</button>
 </form>
 {% endblock contents %}

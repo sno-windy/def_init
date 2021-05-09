@@ -6,7 +6,7 @@
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
 <h1>記事編集</h1>
-<form action = "" method = "POST" class="postform-form">
+<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
 {% csrf_token %}
 {{form}}
 <button type="submit" class="postform-btn">保存</button>

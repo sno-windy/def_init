@@ -82,12 +82,12 @@ class GetIndexInfo:
 
     # 進行中のコースに関連した質問を取得
     def get_related_questions(self):
-        related_questions = Question.objects.filter(question_at=self.learning_lesson).order_by('-created_at')[:6]
+        related_questions = Question.objects.filter(lesson=self.learning_lesson).order_by('-created_at')[:6]
         return related_questions
 
     # 進行中のコースに関連したノートを取得
     def get_related_articles(self):
-        related_articles = Article.objects.filter(article_at=self.learning_lesson).order_by('-created_at')[:6]  # 並べる順番
+        related_articles = Article.objects.filter(lesson=self.learning_lesson).order_by('-created_at')[:6]  # 並べる順番
         return related_articles
 
     # 進捗が近いユーザーを取得

@@ -1,5 +1,8 @@
 from django import forms
-from .models import User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course
+from markdownx.widgets import MarkdownxWidget
+from .models import (
+    User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course, Category
+)
 from django.contrib.auth.forms import (
     AuthenticationForm
 )
@@ -11,9 +14,13 @@ class ArticleTalkForm(forms.ModelForm):
         fields = ['msg',]
 
 class ArticlePostForm(forms.ModelForm):
+    category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
+    course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択')
+    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択')
+
     class Meta:
         model = Article
-        fields = ['title','content','article_image_1','article_image_2']
+        fields = ['is_published', 'title', 'category', 'course', 'lesson', 'content','article_image_1','article_image_2']
         labels = {
             'title':'',
             'content':'',
@@ -22,8 +29,8 @@ class ArticlePostForm(forms.ModelForm):
             'title': forms.TextInput(
                 attrs={'placeholder':'記事タイトル：30文字以内'}
             ),
-            'content': forms.Textarea(
-                attrs={'placeholder':'マークダウンで書くことができます！'}
+            'content': MarkdownxWidget(
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）<br> * 実現したいこと <br> * 試したこと <br> * 出力されたエラー <br> などを書きましょう'}
             )
         }
 
@@ -33,19 +40,27 @@ class QuestionTalkForm(forms.ModelForm):
         fields = ['msg',]
 
 class QuestionPostForm(forms.ModelForm):
+    category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
+    course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択')
+    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択')
+
     class Meta:
         model = Question
-        fields = ['title','content',]
+        fields = ['title', 'category', 'lesson', 'course', 'content', 'question_image_1', 'question_image_2']
         labels = {
             'title':'',
+            'category': '',
+            'lesson': '',
+            'course': '',
             'content':'',
         }
+        # emply_label = '選択してください'
         widgets = {
             'title': forms.TextInput(
                 attrs={'placeholder':'質問タイトル：30文字以内'}
             ),
-            'content': forms.Textarea(
-                attrs={'placeholder':'マークダウンで書くことができます！'}
+            'content': MarkdownxWidget(
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう'}
             )
         }
 

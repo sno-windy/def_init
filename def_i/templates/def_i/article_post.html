@@ -6,9 +6,9 @@
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
 <h1 class="postform-title">記事投稿フォーム</h1>
-<form action = "" method = "POST" class="postform-form">
+<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
 {% csrf_token %}
-{{form}}
-<button type="submit" class="postform-btn">投稿</button>
+{{form.as_p}}
+<button type="submit" class="postform-btn">保存する</button>
 </form>
 {% endblock contents %}
