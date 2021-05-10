@@ -12,6 +12,11 @@ class ArticleTalkForm(forms.ModelForm):
     class Meta:
         model = TalkAtArticle
         fields = ['msg',]
+        widgets = {
+            'msg': MarkdownxWidget(
+                attrs={'placeholder': 'あなたの回答を入力（コードを含む場合はMarkdown記法をご使用ください）'}
+            )
+        }
 
 class ArticlePostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
@@ -38,6 +43,11 @@ class QuestionTalkForm(forms.ModelForm):
     class Meta:
         model = TalkAtQuestion
         fields = ['msg',]
+        widgets = {
+            'msg': MarkdownxWidget(
+                attrs={'placeholder': 'あなたの回答を入力（コードを含む場合はMarkdown記法をご使用ください）'}
+            )
+        }
 
 class QuestionPostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')

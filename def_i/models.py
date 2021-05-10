@@ -129,6 +129,7 @@ class Question(models.Model):
         format='JPEG',
         options={'quality':60}
         )
+    bookmark_count = models.PositiveIntegerField(default=0)
 
     def browser_push(self, request):
         data = {

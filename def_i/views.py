@@ -44,7 +44,8 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
         context["colleagues"] = info.get_colleagues(self.request.user)
 
-        new_likes, article_talk, question_talk = info.get_notification(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
         context["new_likes"] = new_likes
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
@@ -94,40 +95,27 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return context
 
 
-class ArticleDetail(LoginRequiredMixin,DetailView): #pk_url_kwargで指定すればkwargsで取得できる
-    model = Article
-    template_name = "def_i/article_detail.html"
-    def get(self,request,pk):
-        articles = Article.objects.all()
-        #Userがlikeしてるかどうかの判別
-        liked_set = Like.objects.filter(user=request.user).values_list('article',flat=True)
-        cm = TalkAtArticle.objects.filter(msg_at=pk)
-        comments = cm.order_by('-time')[:3]
-        comments_count = cm.count() #lenにしてQuerysetが走っている回数を数える．
-        params ={
-            'contents':Article.objects.get(pk=pk),
-            'liked_set':liked_set,
-            'comments_count':comments_count,
-            'comments':comments,
-        }
-        return render(request,self.template_name,params)
 
-
-class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
+class ArticleDetail(LoginRequiredMixin, FormMixin, ListView):
     model =TalkAtArticle
-    context_object_name = "messages"
+    # context_object_name = "messages"
     form_class = ArticleTalkForm #いらんかも
-    template_name = 'def_i/article_talk.html'
+    template_name = 'def_i/article_detail.html'
 
     def get(self, request, pk):
         form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
-        messages = TalkAtArticle.objects.filter(msg_at=article).order_by('time')
+        liked_set = Like.objects.filter(user=request.user).values_list('article',flat=True)
+
+        comments = TalkAtArticle.objects.filter(msg_at=article).order_by('-time')[:3]
+        comments_count = comments.count() #lenにしてQuerysetが走っている回数を数える．
         return render(request,self.template_name,
             {
-                "messages":messages,
                 "form":form,
-                'pk':pk
+                'contents': article,
+                'liked_set':liked_set,
+                'comments_count':comments_count,
+                'comments':comments,
             })
 
     def post(self, request, pk, *args, **kwargs):
@@ -144,7 +132,7 @@ class ArticleTalk(LoginRequiredMixin,FormMixin,ListView):
 class ArticleTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "article_talk_suc.html"
     def get(self,request,pk):
-        return redirect("article_talk",pk=pk)
+        return redirect("article_detail", pk=pk)
 
 
 class ArticlePost(LoginRequiredMixin,CreateView):
@@ -234,34 +222,22 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
         return context
 
 
-class QuestionDetail(LoginRequiredMixin,DetailView):
-    model = Question
-    context_object_name = "contents"
-    template_name = "def_i/question_detail.html"
-
-    def get_context_data(self,**kwargs):
-        context = super().get_context_data(**kwargs)
-        comments = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk'])
-        context['comments_count'] = comments.count()
-        context['comments'] = comments.order_by('-time')[:3]
-        return context
-
-
-class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
+class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
     model =TalkAtQuestion
-    form_class = QuestionTalkForm #いらんかも
-    template_name = 'def_i/question_talk.html'
+    form_class = QuestionTalkForm
+    template_name = 'def_i/question_detail.html'
 
     def get(self, request, pk):
         form = QuestionTalkForm()
         question = Question.objects.get(pk=pk)
-        # question = Question.objects.prefetch_related('talkatquestion_set').get(pk=pk)
-        # messages = TalkAtQuestion.objects.filter(msg_at=question).order_by('time')
-        messages = question.talkatquestion_set.all().order_by('time')
+        bookmark_set = BookMark.objects.filter(question=question, user=request.user).values_list('question', flat=True)
+        comments = question.talkatquestion_set.all().order_by('-time')
+
         return render(request, self.template_name, {
-            "messages": messages,
+            "contents": question,
+            "bookmark_set": bookmark_set,
+            "comments": comments,
             "form": form,
-            "pk": pk
         })
 
     def post(self, request,pk, *args, **kwargs):
@@ -280,11 +256,47 @@ class QuestionTalk(LoginRequiredMixin,FormMixin,ListView):
 
             return redirect("question_talk_suc",pk=pk)
 
+    def get_context_data(self,**kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = TalkAtQuestion.objects.filter(msg_at=self.kwargs['pk'])
+        context['comments_count'] = comments.count()
+        context['comments'] = comments.order_by('-time')[:3]
+        return context
+
+
+def BookMarkView(request,pk):
+    if request.method =="GET":
+        question = Question.objects.get(pk=pk)
+        question_poster = question.poster
+        user = request.user
+        is_bookmarked = False
+        bookmark = BookMark.objects.filter(question=question, user=user)
+
+        if bookmark.exists():
+            bookmark.delete()
+            question.bookmark_count=F('bookmark_count')-1
+            # question_poster.bookmark_count=F('bookmark_count')-1
+
+        else:
+            BookMark.create(question=question, user=user)
+            question.bookmark_count=F('bookmark_count')+1
+            # question_poster.bookmark_count=F('bookmark_count')+1
+            is_bookmarked = True
+
+        question.save()
+        # question_poster.save()
+        params={
+            'question_id': question.id,
+            'bookmarked': is_bookmarked,
+            'count': question.bookmark_set.count(),
+        }
+
+        return JsonResponse(params)
 
 class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
     template_name = "question_talk_suc.html"
     def get(self,request,pk):
-        return redirect("question_talk",pk=pk)
+        return redirect("question_detail",pk=pk)
 
 
 class QuestionPost(LoginRequiredMixin,CreateView):

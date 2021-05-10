@@ -2,9 +2,12 @@
 {% load sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
 
 {% block menubar %}{% endblock menubar %}
+
 {% block contents %}
 {% if messages %}
 	{% for message in messages %}
@@ -12,10 +15,16 @@
 	{% endfor %}
 {% endif %}
 <h1>{{contents.title}}</h1>
+<div class="like-outer">
+    {% include 'def_i/bookmark.html' %}ddd
+</div>
 {% if user == contents.poster %}
     <span><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>
     <span><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
 {% endif %}
+<p>{{contents.category}}</p>
+<p>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</p>
+<p>{{contents.created_at}}</p>
 <p>質問者：{{contents.poster}}</p>
 <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
 {% if contents.question_image_1 %}
@@ -25,16 +34,48 @@
     <img src="{{ contents.question_image_2_resize.url }}" alt="">
 {% endif %}
 
-<p>最新のコメント</p>
+<p>コメント</p>
     {% for c in comments %}
     <article class="main-container__contents-article">
-        <a href="{% url 'user_page' c.msg_from.pk %}"><p>{{c.msg_from}}></p></a>
+        <a href="{% url 'user_page' c.msg_from.pk %}"><img src="{{c.msg_from.user_image.url}}" width="30" alt=""><p>{{c.msg_from}}></p></a>
+        <p>{{c.time|date:"Y/M/j H:i"}}</p>
         <h1>{{c.msg}}</h1>
-        <p>{{c.time|date:"Y年 M j日 H:i:s"}}</p>
     </article>
     {% empty %}
         <p>コメントがありません．</p>
     {% endfor %}
-<a href="{% url 'question_talk' contents.pk %}"><p>コメントを書く<span>({{comments_count}})</span></p></a>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{form}}
+        <button type='submit'>送信</button>
+    </form>
 <a href="{% url 'question_feed' %}?orderby=new"><p>質問フィードに戻る</p></a>
 {% endblock contents %}
+
+{% block javascript %}
+<script>
+    //jQueryあんまりよくないと知る前に作ったので使っています．．．
+    $(document).ready(function (e) {
+        $(document).on('click', '#bookmark', function (e) {
+            e.preventDefault(); //button&POSTに対しては効きません．．．．
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'bookmark' contents.pk %}",
+                success: function (response) {
+                    heartMark = document.getElementById('bookmark')
+                    if (response.bookmarked) {
+                        $(heartMark).html("<i class='fas fa-lg fa-heart'></i>")
+                    }
+                    else {
+                        $(heartMark).html("<i class='far fa-lg fa-heart'></i>")
+                    }
+                    likeCount = document.getElementById('count')
+                    $(likeCount).text(response.bookmark_count)
+                }
+            })
+        })
+    })
+
+</script>
+{% endblock javascript %}

@@ -104,6 +104,7 @@ class GetIndexInfo:
     def get_notification(self, user):
         # 記事へのいいね
         new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
+        new_bookmarks = BookMark.objects.filter(question__user=user, has_noticed=True)
         # 記事へのコメント
         article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント
@@ -112,6 +113,9 @@ class GetIndexInfo:
         for like in new_likes:
             like.has_noticed = True
             like.save()
+        for bookmark in new_bookmarks:
+            bookmark.has_noticed = True
+            bookmark.save()
         for talk in article_talk:
             talk.has_noticed = True
             talk.save()
@@ -119,7 +123,7 @@ class GetIndexInfo:
             talk.has_noticed = True
             talk.save()
 
-        return new_likes, article_talk, question_talk
+        return new_likes, new_bookmarks, article_talk, question_talk
 
     # def get_course_list(self,user,category):
     #     courses = Course.objects.filter(category__title=category).order_by('course_num')

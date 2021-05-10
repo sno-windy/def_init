@@ -104,6 +104,10 @@
     <p>{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p>
 {% endfor %}
 
+{% for bookmark in new_bookmarks %}
+    <p>{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p>
+{% endfor %}
+
 {% for comment in article_talk %}
     <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
 {% endfor %}
