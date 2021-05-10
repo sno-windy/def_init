@@ -1,13 +1,20 @@
+$black:#212121;
 $button-gray:#BAB7B7;
 $list-stay:#837F7F;
 $list-hover:#C3BABA;
 $next-page:rgba(10, 10, 10, 0.1);
 $next-hover:rgba(5, 5, 5, 0.5);
 $header-contents:rgba(250, 247, 247, 0.5);
+
 .header{
     z-index: 100;
 }
 .main-container{
+    h1{
+        margin-top: 48px;
+        margin-bottom: 24px;
+        font-size: 22px;
+    }
     &__userinfo{
     position: fixed;
     left: 5%;
@@ -19,10 +26,9 @@ $header-contents:rgba(250, 247, 247, 0.5);
     flex-direction: row;
     flex-wrap: wrap;
         h1{
-            // font-weight: normal;
-            margin: 4.1rem 0.5rem 0 2rem;
-            font-size: 1.1rem;
-            color: $list-stay;
+            margin-top: 48px;
+            font-size: 22px;
+            color: $black;
         }
         h2{
             margin: 0 0 0 2.3rem;
@@ -44,9 +50,7 @@ $header-contents:rgba(250, 247, 247, 0.5);
         }
     }
     &__contents{
-        margin: 0%;
-        padding: 5rem 0 5rem 16rem;
-        width: 55%;
+        padding: 48px 0 0;
     }
 }
 .hidden{
