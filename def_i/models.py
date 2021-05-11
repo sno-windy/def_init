@@ -19,11 +19,6 @@ from def_init.secret_settings import *
 User = get_user_model()
 
 
-# COURSE_CATEGORY_CHOICE = (
-#     ('backend','backend'),
-#     ('frontend','frontend'),
-#     ('design','design')
-# )
 class Category(models.Model):
     title = models.CharField(max_length=10)
     category_image = ProcessedImageField(upload_to="def_i/img",

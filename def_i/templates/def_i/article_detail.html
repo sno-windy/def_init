@@ -50,6 +50,10 @@
     <button type='submit'>送信</button>
 </form>
 <a href="{% url 'article_feed' %}?orderby=new"><p>記事フィードに戻る</p></a>
+<h2>関連したノート</h2>
+{% for article in related_articles %}
+    <p><a href="{% url 'article_detail' article.pk %}">{{article.title}}</a></p>
+{% endfor %}
 <!-- 画像を挿入する場合
 {% if contents.article_image %}
 <button id="popup-btn">画像を表示する</button>

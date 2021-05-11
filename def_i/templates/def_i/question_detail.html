@@ -9,6 +9,11 @@
 {% block menubar %}{% endblock menubar %}
 
 {% block contents %}
+<h2>関連した質問</h2>
+{% for question in related_questions %}
+    <p><a href="{% url 'question_detail' question.pk %}">{{question.title}}</a></p>
+{% endfor %}
+
 {% if messages %}
 	{% for message in messages %}
 		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
@@ -16,7 +21,7 @@
 {% endif %}
 <h1>{{contents.title}}</h1>
 <div class="like-outer">
-    {% include 'def_i/bookmark.html' %}ddd
+    {% include 'def_i/bookmark.html' %}
 </div>
 {% if user == contents.poster %}
     <span><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>

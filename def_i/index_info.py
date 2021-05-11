@@ -104,7 +104,7 @@ class GetIndexInfo:
     def get_notification(self, user):
         # 記事へのいいね
         new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
-        new_bookmarks = BookMark.objects.filter(question__user=user, has_noticed=True)
+        new_bookmarks = BookMark.objects.filter(question__poster=user, has_noticed=True)
         # 記事へのコメント
         article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント

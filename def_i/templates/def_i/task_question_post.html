@@ -1,24 +1,23 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/question_post.scss' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_post.scss' %}">
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
-
 {% if messages %}
     {% for message in messages %}
         <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</span>
     {% endfor %}
 
-    <a href="{% url 'article_feed' %}">質問一覧に戻る</a>
+    <a href="{% url 'task_detail' pk %}">課題に戻る</a>
 {% endif %}
 
-<h1 class="postform-title">質問投稿フォーム</h1>
-<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
-{% csrf_token %}
-{{form.as_p}}
-<button type="submit" class="postform-btn">投稿</button>
+<h1 class="postform-title">記事投稿フォーム</h1>
+<form action="" method="POST" class="postform-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="postform-btn">保存する</button>
 </form>
 {% endblock contents %}
 

@@ -8,7 +8,6 @@ urlpatterns = [
     # 記事系
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
     path('article_detail/<int:pk>/',views.ArticleDetail.as_view(),name="article_detail"),
-    path('article_talk_suc/<int:pk>/',views.ArticleTalkSuc.as_view(),name='article_talk_suc'),
     path('article_post/',views.ArticlePost.as_view(),name='article_post'),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
@@ -27,11 +26,9 @@ urlpatterns = [
     path('task_backend/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
     # path('task_backend/<int:pk>/memo', views.MemoView, name='task_memo'),
     path('task_backend/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),
-    # path('task_backend/<int:pk>/question_unanswered', views.TaskQuestionUnanswered.as_view(), name='task_question_unanswered'),
     path('task_backend/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_backend/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),
     path('task_backend/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
-    # path('task_backend/<int:pk>/article_like', views.TaskArticleLike.as_view(), name='task_article_like'),
     path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
     path('note_list/', views.note_list, name = 'note_list'),
 
