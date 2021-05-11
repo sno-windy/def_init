@@ -688,10 +688,10 @@ def mypage_view(request):
     question = Question.objects.order_by('created_at')
     if orderby == 'like':
         question_like = question.filter(bookmark__user=user)
-        paginator = Paginator(question_like,3)
+        paginator = Paginator(question_like,5)
     else:
         question = question.filter(poster=user)
-        paginator = Paginator(question,3)
+        paginator = Paginator(question,5)
 
     page = request.GET.get('q_page')
 
@@ -706,10 +706,10 @@ def mypage_view(request):
     article = Article.objects.order_by('-created_at')
     if orderby == 'like':
         article_like = article.filter(like__user=user)
-        paginator = Paginator(article_like,3)
+        paginator = Paginator(article_like,5)
     else:
         article = article.filter(poster=user)
-        paginator = Paginator(article, 3)
+        paginator = Paginator(article, 5)
 
     page = request.GET.get('a_page')
 
@@ -726,11 +726,12 @@ def mypage_view(request):
     }
     return render(request, 'def_i/my_page.html', params)
 
+
 def userpage_view(request,pk):
     user = User.objects.get(pk=pk)
     question = Question.objects.order_by('created_at').filter(poster=user)
 
-    paginator = Paginator(question,3)
+    paginator = Paginator(question,5)
     page = request.GET.get('q_page')
 
     try:
@@ -743,7 +744,7 @@ def userpage_view(request,pk):
 
     article = Article.objects.order_by('-created_at').filter(poster=user)
 
-    paginator = Paginator(article, 3)
+    paginator = Paginator(article, 5)
     page = request.GET.get('a_page')
 
     try:

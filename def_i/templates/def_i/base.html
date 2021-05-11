@@ -7,9 +7,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/reset.scss' %}">
     <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
+
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
     window.OneSignal = window.OneSignal || [];
@@ -31,20 +33,24 @@
     {% block header %}
     <header class="header">
         <div class="header-container">
-            <a href="{% url 'index' %}">
+            <a href="{% url 'index' %}" class="header-container__top">
                 <p class="header-container__icon"><img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}"></p>
+                <p class="header-container__title">Def <span style="color:#3011ab;">Init</span></p>
             </a>
-            <p class="header-container__contents tasknow"><a href="{% url 'index' %}">課題をする</a></p>
-            <p class="header-container__contents studynow"><a href="{% url 'question_feed' %}?orderby=new">質問</a></p>
-            <p class="header-container__contents studynow"><a href="{% url 'article_feed' %}?orderby=new">ノート</a></p>
-            <p class="header-container__contents asknow"><a href="{% url 'question_post' %}">質問する</a></p>
-            <p class="header-container__contents postnow"><a href="{% url 'article_post' %}">投稿する</a></p>
-            <p class="header-container__usericon" id="icon">
+            <a class="header-container__contents tasknow" href="{% url 'index' %}">コース</a>
+            <a class="header-container__contents studynow" href="{% url 'question_feed' %}?orderby=new">質問</a>
+            <a class="header-container__contents studynow" href="{% url 'article_feed' %}?orderby=new">ノート</a>
+            <div class="header-container__user" id="icon">
                 {% if user.user_image %}
-                <img src="{{ user.user_image.url }}" alt="">
-                {% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">
+                    <img src="{{ user.user_image.url }}">
+                {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}">
                 {% endif %}
-            </p>
+                <p class="header-container__user-name">{{ user.username }}</p>
+            </div>
+            <div class="header-container__notification-button">
+                <p>aaa</p>
+            </div>
         </div>
         <div class="header__hover-item hidden_class" id="hover_item">
         <p>{{ user.username }}</p>
