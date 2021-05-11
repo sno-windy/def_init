@@ -9,6 +9,7 @@ urlpatterns = [
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
     path('article_detail/<int:pk>/',views.ArticleDetail.as_view(),name="article_detail"),
     path('article_post/',views.ArticlePost.as_view(),name='article_post'),
+    path('article_post/<int:pk>/',views.ArticlePost.as_view(),name='article_post'),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
 
