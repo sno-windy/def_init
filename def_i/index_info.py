@@ -82,12 +82,12 @@ class GetIndexInfo:
 
     # 進行中のコースに関連した質問を取得
     def get_related_questions(self):
-        related_questions = Question.objects.filter(question_at=self.learning_lesson).order_by('-created_at')[:6]
+        related_questions = Question.objects.filter(lesson=self.learning_lesson).order_by('-created_at')[:6]
         return related_questions
 
     # 進行中のコースに関連したノートを取得
     def get_related_articles(self):
-        related_articles = Article.objects.filter(article_at=self.learning_lesson).order_by('-created_at')[:6]  # 並べる順番
+        related_articles = Article.objects.filter(lesson=self.learning_lesson).order_by('-created_at')[:6]  # 並べる順番
         return related_articles
 
     # 進捗が近いユーザーを取得
@@ -104,6 +104,7 @@ class GetIndexInfo:
     def get_notification(self, user):
         # 記事へのいいね
         new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
+        new_bookmarks = BookMark.objects.filter(question__poster=user, has_noticed=True)
         # 記事へのコメント
         article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント
@@ -112,6 +113,9 @@ class GetIndexInfo:
         for like in new_likes:
             like.has_noticed = True
             like.save()
+        for bookmark in new_bookmarks:
+            bookmark.has_noticed = True
+            bookmark.save()
         for talk in article_talk:
             talk.has_noticed = True
             talk.save()
@@ -119,7 +123,7 @@ class GetIndexInfo:
             talk.has_noticed = True
             talk.save()
 
-        return new_likes, article_talk, question_talk
+        return new_likes, new_bookmarks, article_talk, question_talk
 
     # def get_course_list(self,user,category):
     #     courses = Course.objects.filter(category__title=category).order_by('course_num')
