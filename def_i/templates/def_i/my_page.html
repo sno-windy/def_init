@@ -39,7 +39,10 @@
     {% for q in question %}
         <article class="main-container__contents-article questions">
                 <h2>{{q.title}}</h2>
-                <p>{{q.question_at.course.category.title}}  レッスン{{q.question_at.course.course_num}}-{{q.question_at.lesson_num}}<a href="">{{q.poster}}</a>が{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+                <div class="main-container__contents-article-data">
+                    {{q.question_at.course.category.title}}  レッスン{{q.question_at.course.course_num}}-{{q.question_at.lesson_num}}
+                    <a href=""><img src="{{q.poster.user_image}}"><p>{{q.poster}}</p></a><p class="post-date">{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+                </div>
             <a href="{% url 'question_detail' q.pk %}">
             </a>
         </article>
