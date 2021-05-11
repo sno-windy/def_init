@@ -5,10 +5,27 @@
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
+{% if messages %}
+    {% for message in messages %}
+        <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</span>
+    {% endfor %}
+
+    <a href="{% url 'article_feed' %}">ノート一覧に戻る</a>
+{% endif %}
+
 <h1 class="postform-title">記事投稿フォーム</h1>
-<form action = "" method = "POST" class="postform-form">
+<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
 {% csrf_token %}
-{{form}}
-<button type="submit" class="postform-btn">投稿</button>
+{{form.as_p}}
+<button type="submit" class="postform-btn">保存する</button>
 </form>
 {% endblock contents %}
+
+{% block javascript %}
+<script>
+    const courses = JSON.parse('{{course_dict|escapejs}}');
+    console.log("courses: " + courses);
+    const lessons = JSON.parse('{{lesson_dict|escapejs}}');
+</script>
+<script src="{% static 'def_i/js/filter.js' %}"></script>
+{% endblock javascript %}

@@ -2,18 +2,7 @@
 {% load static %}
         {% block menubar %}
             <div class="main-container__menubar">
-                <!-- <a href="{% url 'article_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link"> -->
-                    <!-- <h1>記事フィード</h1> -->
-                <!-- </a> -->
-                <!-- <a href="{% url 'article_feed' %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink"> -->
-                    <!-- <p><span style="visibility:hidden;">──</span>──新着順</p> -->
-                <!-- </a> -->
-                <!-- <a href="{% url 'article_feed' %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink"> -->
-                    <!-- <p><span style="visibility:hidden;">──</span>──いいね順</p> -->
-                <!-- </a> -->
-                <!-- <a href="" class="main-container__menubar-link now-here"> -->
-                    <!-- <h1>質問フィード</h1> -->
-                <!-- </a> -->
+
             {% if orderby == 'new' %}
                 <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink now-here-sub">
                     <!-- now-here-subはjsで指定すればよさそう -->

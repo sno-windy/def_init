@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head></head>
+<body>
+    <form action="{% url 'bookmark' contents.pk %}" method="POST">
+        {% csrf_token %}
+        {% if contents.id in bookmark_set %}
+            <button id="bookmark" name="{{contents.id}}">
+                <i class="fas fa-lh fa-heart like-red"></i>
+            </button>
+        {% else %}
+            <button id="bookmark" name="{{contents.id}}">
+                <i class="far fa-lg fa-heart"></i>
+            </button>
+        {% endif %}
+    </form>
+    <p class="count" id="count" name="{{contents.id}}">{{bookmark_count}}</p>
+</body>
+</html>
