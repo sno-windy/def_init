@@ -14,6 +14,7 @@
     {{form}}
     <button type="submit">検索する</button>
 </form>
+<a href="{% url 'article_post' %}">ノートを書く</a>
     {% for a in articles %}
     <article class="main-container__contents-article">
         <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>

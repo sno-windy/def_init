@@ -7,6 +7,7 @@
     {{form}}
     <button type="submit">検索する</button>
 </form>
+<a href="{% url 'question_post' %}">質問する</a>
 <h2>質問一覧</h2>
 {% if messages %}
 	{% for message in messages %}

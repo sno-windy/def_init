@@ -13,7 +13,7 @@
     <a href="{% url 'task_detail' pk %}">課題に戻る</a>
 {% endif %}
 
-<h1 class="postform-title">記事投稿フォーム</h1>
+<h1 class="postform-title">質問投稿フォーム</h1>
 <form action="" method="POST" class="postform-form" enctype="multipart/form-data">
     {% csrf_token %}
     {{form.as_p}}

@@ -442,7 +442,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('article_post',kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('task_article_post',kwargs={"pk":self.kwargs['pk']})
 
 
 def pass_courses():
