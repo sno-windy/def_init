@@ -1,58 +1,80 @@
 {% extends 'def_i/base.html' %}
-{% load static %}
-{% load sass_tags %}
+{% load static sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
 
-{% block menubar %}
-{% endblock menubar %}
+{% block menubar %}{% endblock menubar %}
 
 {% block contents %}
-{% if messages %}
-	{% for message in messages %}
-		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
-	{% endfor %}
-{% endif %}
-<h1>{{contents.title}}</h1>
+
 {% if user == contents.poster %}
-    <span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
-    <span><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
+<span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
+<span><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
 {% endif %}
-<div class="like-outer">
-{% include 'def_i/like.html' %}
+
+<div id="note">
+    <h1>{{contents.title}}</h1>
+    <div class="like-outer">
+        {% include 'def_i/like.html' %}
+    </div>
+
+    <span>{{contents.category}}</span>
+    <span>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</span>
+    <span>{{contents.created_at|date:"Y/M/j H:i"}}</span>
+
+    <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
+    {% if contents.article_image_1 %}
+    <img src="{{ contents.article_image_1_resize.url }}" alt="">
+    {% endif %}
+    {% if contents.article_image_2 %}
+    <img src="{{ contents.article_image_2_resize.url }}" alt="">
+    {% endif %}
 </div>
-<p>投稿者：{{contents.poster}}</p>
-<p>{{contents.category}}</p>
-<p>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</p>
-<div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-{% if contents.article_image_1 %}
-<img src="{{ contents.question_image_1_resize.url }}" alt="">
-{% endif %}
-{% if contents.article_image_2 %}
-<img src="{{ contents.question_image_2_resize.url }}" alt="">
-{% endif %}
-<p>コメント</p>
+
+<div id="comments">
+
+    <p>コメント</p>
     {% for c in comments %}
     <article class="main-container__contents-article">
-        <a href="{% url 'user_page' c.msg_from.pk %}"><img src="{{c.msg_from.user_image.url}}" width="30" alt=""><p>{{c.msg_from}}></p></a>
+        <a href="{% url 'user_page' c.msg_from.pk %}">
+            <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+            <p>{{c.msg_from}}></p>
+        </a>
         <p>{{c.time|date:"Y/M/j H:i"}}</p>
-        <h1>{{c.msg}}</h1>
+        <p>{{c.msg}}</p>
     </article>
     {% empty %}
-        <p>コメントがありません．</p>
+    <p>コメントがありません．</p>
     {% endfor %}
+</div>
+
 <form method="POST">
     {% csrf_token %}
-    {{form}}
+    {{form.msg}}
     <button type='submit'>送信</button>
 </form>
 <a href="{% url 'article_feed' %}?orderby=new"><p>記事フィードに戻る</p></a>
+
+<!-- サイドバー -->
+<p>投稿者：{{contents.poster}}</p>
+<!-- {% if user == contents.poster %}
+    <form method="POST">
+        {% csrf_token %}
+        <input type="">
+    </form>
+{% endif %} -->
+
+<ul>
+    <li id="to_note">ノート</li>
+    <li id="to_comment">コメント</li>
+</ul>
+
 <h2>関連したノート</h2>
 {% for article in related_articles %}
-    <p><a href="{% url 'article_detail' article.pk %}">{{article.title}}</a></p>
+    <p><a href="{% url 'article_detail' article.pk %}">{{article.title|truncatechars:40}}</a></p>
 {% endfor %}
 <!-- 画像を挿入する場合
 {% if contents.article_image %}
@@ -90,6 +112,24 @@ $(document).ready(function(e){
         })
     })
 })
+
+// ノート本体へスクロール
+document.getElementById("to_note").addEventListener('click', function(){
+    const note = document.getElementById("note");
+    const note_position = note.getBoundingClientRect();
+    window.scrollTo(0, note_position.top);
+});
+
+// コメントへスクロール
+document.getElementById("to_comment").addEventListener('click', function(){
+    const comments = document.getElementById("comments");
+    console.log('comments:' + comments);
+    const comments_position = comments.getBoundingClientRect();
+    console.log('comments_posi:' + comments_position);
+    window.scrollTo(0, comments_position.top);
+});
+
+
 //画像が存在する場合にpopupする物を作りたかった残骸
 {% comment %} document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('popup-btn').addEventListener('click',()=>{
