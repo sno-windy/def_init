@@ -7,24 +7,57 @@
 {% block contents %}
 {% if messages %}
 	{% for message in messages %}
+    <!-- CSSで投稿後の画面を作るため -->
 		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
 	{% endfor %}
 {% endif %}
+
+<!-- ノート検索窓 -->
 <form action="" method="GET">
     {{form}}
     <button type="submit">検索する</button>
 </form>
+
 <a href="{% url 'article_post' %}">ノートを書く</a>
-    {% for a in articles %}
-    <article class="main-container__contents-article">
-        <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
-        <a href="{% url 'article_detail' a.pk %}">
-            <h1>{{a.title}}</h1>
+
+<!-- 並び替え方法を選択 -->
+<ul>
+    <li>
+        <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">新着</a>
+    </li>
+    <li>
+        <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">人気</a>
+    </li>
+    <li>
+        <a href="?orderby=mynote&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">あなたのノート</a>
+    </li>
+</ul>
+
+<h2>ノート一覧</h2>
+{% for article in articles %}
+<article class="main-container__contents-article">
+    <a href="{% url 'article_detail' article.pk %}">
+        <h1>{{article.title}}</h1>
+    </a>
+    <span>{{article.category}}</span>
+    <span>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</span>
+
+    <p>
+        <a href="{% url 'user_page' article.poster.pk %}">
+            {% if article.poster.user_image %}
+                <img src="{{article.poster.user_image.url}}" width="30" alt="">
+            {% else %}
+                <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+            {% endif %}
+            {{article.poster}}
         </a>
-        <p>{{a.like_count}}いいね</p>
-    </article>
-    {% empty %}
-        <p>記事がありません．</p>
-    {% endfor %}
-<div class="pagination">{% include 'def_i/pagination.html' %}</div>
+        <span>{{article.created_at|date:"Y/M/j H:i"}}に投稿</span>
+    </p>
+    <!-- <p>{{article.like_count}}いいね</p> -->
+</article>
+{% empty %}
+    <p>記事がありません．</p>
+{% endfor %}
+
+{% include 'def_i/pagination.html' %}
 {% endblock contents %}

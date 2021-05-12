@@ -75,14 +75,22 @@ class QuestionPostForm(forms.ModelForm):
         }
 
 
-# class MemoForm(forms.ModelForm):
-#     class Meta:
-#         model = Memo
-#         fields = ['contents',]
 
 class ArticleSearchForm(forms.Form):
-    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+    keyword = forms.CharField(
+        label='',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'ノートを検索'}
+        )
+    )
 
 
 class QuestionSearchForm(forms.Form):
-    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+    keyword = forms.CharField(
+        label='',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': '質問を検索'}
+        )
+    )

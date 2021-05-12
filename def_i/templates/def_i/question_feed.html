@@ -1,29 +1,60 @@
 {% extends 'def_i/base-question.html' %}
 {% load static %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% static 'def_i/css/question_feed.css' %}">{% endblock extra_style %}
+<link rel="stylesheet" href="{% static 'def_i/css/question_feed.css' %}">
+{% endblock extra_style %}
+
 {% block contents %}
+{% if messages %}
+    {% for message in messages %}
+        <!-- CSSで投稿後の画面を作るため -->
+        <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</span>
+    {% endfor %}
+{% endif %}
+
+<!-- 質問検索窓 -->
 <form action="" method="GET">
     {{form}}
     <button type="submit">検索する</button>
 </form>
 <a href="{% url 'question_post' %}">質問する</a>
+
+<!-- 並び替え方法を選択 -->
+<ul>
+    <li>
+        <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">新着</a>
+    </li>
+    <li>
+        <a href="?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">未解決</a>
+    </li>
+    <li>
+        <a href="?orderby=myquestion&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">あなたの質問</a>
+    </li>
+</ul>
+
 <h2>質問一覧</h2>
-{% if messages %}
-	{% for message in messages %}
-		<span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
-	{% endfor %}
-{% endif %}
+
     {% for q in questions %}
     <article class="main-container__contents-article">
-        <p>{{q.poster}}が{{q.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
         <a href="{% url 'question_detail' q.pk %}">
             <h1>{{q.title}}</h1>
         </a>
+        <span>{{q.category}}</span>
+        <span>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</span>
+        <p>
+            {% if q.poster.user_image %}
+                <img src="{{q.poster.user_image.url}}" width="30" alt="">
+            {% else %}
+                <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+            {% endif %}
+            <span>{{q.poster}}</span>
+            <span>{{q.created_at|date:"Y/M/j H:i"}}に投稿</span>
+        </p>
     </article>
-    {% empty %}
-        <p>質問がありません．</p>
-    {% endfor %}
-<div class="pagination">{% include 'def_i/pagination.html' %}</div>
 
+{% empty %}
+    <p>質問がありません．</p>
+{% endfor %}
+
+{% include 'def_i/pagination.html' %}
 {% endblock contents %}

@@ -1,6 +1,6 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
-        {% block menubar %}
+        {#% block menubar %#}
             <div class="main-container__menubar">
                 <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link now-here">
                     <h1>記事フィード</h1>
@@ -37,9 +37,9 @@
                     <p><span style="visibility:hidden;">──</span>──未回答</p>
                 </a>　-->
             </div>
-        {% endblock menubar %}
+        {#% endblock menubar %#}
         {% block contents %}
-        {% block member_list %}
+        {#% block member_list %#}
         <div class="main-container__member-list">
         <p class="main-container__member-list-title">メンバー</p>
             {% for m in member %}
@@ -55,5 +55,5 @@
             </a>
             {% endfor %}
         </div>
-        {% endblock member_list %}
+        {#% endblock member_list %#}
         {% endblock contents %}
