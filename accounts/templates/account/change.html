@@ -1,44 +1,28 @@
+{% extends 'def_i/base.html' %}
 {% load static %}
 {% load sass_tags %}
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
-    <link rel="stylesheet" href="{% sass_src 'accounts/css/change.scss' %}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
-    <title>DefInit</title>
-</head>
-
-<body>
-    <div class="change">
-        <div class="change-container">
-            <p class="change-container__title">アカウント設定</p>
-            <form class="change-container__form" action="{% url 'account_change' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <p class="normal_box">名前 {{ form.username }}</p>
-                <p class="image_box">画像
-                    <label for="">{{ form.user_image }}</label></p>
-                <p class="normal_box">肩書き {{ form.position }}</p>
-                <p class="normal_box">メールアドレス {{ form.email }}</p>
-                {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                    <p class="alert alert-danger">{{ error }}</p>
-                    {% endfor %}
-                {% endfor %}
-                <p class="normal_box"><input class="button" type="submit" value="変更完了"></p>
-            </form> 
-       </div>
-    </div>
-    
-</body>
-
-</html>
-
-
-
-
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'accounts/css/change.scss' %}">
+{% endblock extra_style %}
+{% block contents %}
+<div class="change-choices">
+    <p><a href="#" class="here">プロフィール編集</a></p>
+    <p><a href="{% url 'password_change' %}">パスワード変更</a></p>
+</div>
+<div class="change-container">
+    <form class="change-container__form" action="{% url 'account_change' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p class="image_box">プロフィール画像
+            <label for="">{{ form.user_image }}</label></p>
+        <p class="normal_box"><span>ユーザー名</span>{{ form.username }}</p>
+        <p class="normal_box"><span>肩書き</span>{{ form.position }}</p>
+        <p class="normal_box"><span>メールアドレス</span>{{ form.email }}</p>
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+            <p class="alert alert-danger">{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+        <p class="change-btn"><input class="button" type="submit" value="変更する"></p>
+    </form>
+</div>
+{% endblock contents %}

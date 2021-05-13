@@ -65,7 +65,7 @@ class StudyingCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="studying_category")
 
     def __str__(self):
-        return f"{self.user} now studying {self.course_category}"
+        return f"{self.user} now studying {self.category}"
 
 
 class Article(models.Model):

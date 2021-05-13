@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/reset.scss' %}">
     <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
     <link rel="stylesheet" href="{% sass_src 'accounts/css/login.scss' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
     <title>DefInit</title>
 </head>
 
@@ -20,21 +21,22 @@
             <div class="login-container__icon">
                 <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
             </div>
+            <p class="login-container__title">Def <span style="color:#3011ab;">Init</span></p>
             <form class="login-container__form" action="{% url 'account_login' %}" method="POST">
                 {% csrf_token %}
-                <p>{{ form.login }}</p>
+                <p style="background-color:#fff;">{{ form.login }}</p>
                 <p>{{ form.password }}</p>
                 <p><input class="button" type="submit" value="ログイン"></p>
+                <p class="login-container__link"><a href="{% url 'password_reset' %}">パスワードを忘れた場合</a></p>
                 {% for field, errors in form.errors.items %}
                     {% for error in errors %}
                     <p class="alert alert-danger">{{ error }}</p>
                     {% endfor %}
                 {% endfor %}
             </form>
-            <a href="{% url 'line_login' %}">lineでログイン</a>
+            <p class="lo"><a href="{% url 'line_login' %}">lineでログイン</a></p>
 
             <p class="login-container__link">会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
-            <p class="login-container__link">パスワードを忘れた方は<a href="{% url 'password_reset' %}">こちら</a></p>
         </div>
     </div>
 

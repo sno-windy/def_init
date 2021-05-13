@@ -2,85 +2,132 @@
 {% load static %}
 {% load sass_tags %}
 {% block extra_style %}
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="{% sass_src 'def_i/css/user_page.scss' %}">
 {% endblock extra_style %}
 {% block menubar %}
-<div class="main-container__userinfo">
-<div class="main-container__userinfo-user">
-<p>{% if user_data.user_image %}<img src="{{ user_data.user_image.url }}" alt="">
-{% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">{% endif %}</p>
-<div>
-    <h1>{{user_data.username}}</h1>
-    <p>{{user_data.position}}</p>
-</div>
-</div>
-<h2>総いいね数：<span>{{user_data.like_count}}</span></h2>
-<p><a href="{% url 'article_feed' %}?orderby=new">検索に戻る</a></p>
-</div>
 {% endblock menubar %}
 {% block contents %}
-<h1>投稿記事</h1>
-    <div id="new-articles">
-        {% for a in article %}
-            <article class="main-container__contents-article">
-                <p><a href="{% url 'user_page' a.poster.pk %}">{{a.poster}}</a>が{{a.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
-                <a href="{% url 'article_detail' a.pk %}">
-                    <h1>{{a.title}}</h1>
-                </a>
-                <p>{{a.like_count}}いいね</p>
-            </article>
-        {% empty %}
-        <p>記事がありません．</p>
-        {% endfor %}
-        <div class="pagination">{% include 'def_i/pagination.html' %}</div>
-    </div>
-    <div id="questions">
-    {% for q in question %}
+<div class="main-container__contents-userdata">
+<img src="{{user_data.user_image.url}}">
+<p>{{user_data.username}}</p>
+</div>
+{% if studying %}
+<h1>現在の進捗</h1>
+<div class="main-container__contents-studying">
+<img src="{{studying.category.category_image.url}}">
+<div class="main-container__contents-studying-info">
+    <h2>{{studying.category}}</h2>
+    <p>進捗率</p>
+    <p>学習中コース</p>
+</div>
+</div>
+{% else %}
+{% endif %}
+<h1>投稿した質問</h1>
+{% if question %}
+<div class="main-container__contents-article-container">
+    <div id="questions" class="main-container__contents-article-box">
+        {% for q in question %}
         <article class="main-container__contents-article questions">
-            <p><a href="">{{q.poster}}</a>が{{q.created_at|date:"Y年 M j日 H:i:s"}}に投稿</p>
             <a href="{% url 'question_detail' q.pk %}">
-                <h1>{{q.title}}</h1>
+                <h2>{{q.title}}</h2>
+            </a>
+            <div class="main-container__contents-article-data">
+                {{q.category.title}} レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}
+                <a href="{% url 'user_page' q.poster.pk %}" class="user-disp"><img src="{{q.poster.user_image.url}}">
+                    <p>{{q.poster}}</p>
+                </a>
+                <p class="post-date">{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+            </div>
+            <a href="{% url 'question_detail' q.pk %}">
             </a>
         </article>
         {% empty %}
         <p>質問がありません．</p>
-    {% endfor %}
-        <div class="pagination">
+        {% endfor %}
+    </div>
+    <div class="main-container__contents-article-btn">
+        <p class="btn1"><a href="{% url 'question_feed' %}">質問一覧を見る</a></p>
+        <p class="btn2"><a href="{% url 'question_post' %}">質問する</a></p>
+    </div>
+</div>
+<div class="pagination">
     {% if question.has_previous %}
-            <p class="pagination_box"><a href="?q_page={{ question.previous_page_number }}&keyword={{request.GET.keyword}}">前へ</a></p>
+    <p class="pagination_box"><a
+            href="?q_page={{ question.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&lt;</a>
+    </p>
     {% endif %}
     <!-- 数字の部分 -->
-    {% for num in question.paginator.page_range %}
-        {% if question.number == num %}
-            <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
-        {% else %}
-            <p class="pagination_num pagination_not_here"><a href="?q_page={{ num }}&keyword={{request.GET.keyword}}">{{ num }}</a></p>
-        {% endif %}
-    {% endfor %}
-    <!-- 次へ の部分 -->
-    {% if question.has_next %}
-        <p class="pagination_box"><a href="?q_page={{ question.next_page_number }}&keyword={{request.GET.keyword}}">次へ</a></p>
+    {% if question.number > 3 %}
+    <p class="pagination_num pagination_not_here"><a href="?q_page=1&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">1</a></p>
     {% endif %}
 
+    {% if question.number > 4 %}
+    <p class="pagination_num pagination_not_here"><span>...</span></p>
+    {% endif %}
 
+    {% for num in question.paginator.page_range %}
+    {% if question.number == num %}
+    <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
+    {% elif num < question.number|add:3 and num > question.number|add:-3 %}
+    <p class="pagination_num pagination_not_here"><a
+        href="?q_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+    {% endif %}
+    {% endfor %}
 
+    {% if question.number < question.paginator.num_pages|add:-3 %}
+        <p class="pagination_num pagination_not_here"><span>...</span></p>
+    {% endif %}
+    {% if question.number < question.paginator.num_pages|add:-2 %}
+    <p class="pagination_num pagination_not_here"><a
+        href="?q_page={{ question.paginator.num_pages }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ question.paginator.num_pages }}</a></p>
+    {% endif %}
+    <!-- 次へ の部分 -->
+    {% if question.has_next %}
+    <p class="pagination_box"><a
+            href="?q_page={{ question.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&gt;</a>
+    </p>
+    {% endif %}
+</div>
+{% endif %}
+{% if article %}
+<h1>公開したノート</h1>
+
+<div class="main-container__contents-article-container">
+    <div id="new-articles" class="main-container__contents-article-box">
+    {% for a in article %}
+        <article class="main-container__contents-article">
+            <a href="{% url 'article_detail' a.pk %}">
+                <h2>{{a.title}}</h2>
+            </a>
+            <div class="main-container__contents-article-data">
+                {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
+                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp"><img src="{{a.poster.user_image.url}}">
+                    <p>{{a.poster}}</p>
+                </a>
+                <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+            </div>
+        </article>
+    {% empty %}
+        <p>ノートがありません．</p>
+    {% endfor %}
+    </div>
+        <div class="main-container__contents-article-btn">
+        <p class="btn1"><a href="{% url 'article_feed' %}">ノート一覧を見る</a></p>
+        <p class="btn2"><a href="{% url 'article_post' %}">ノートを書く</a></p>
+    </div>
+</div>
+{% endif %}
+<div class="pagination">{% include 'def_i/pagination.html' %}</div>
+
+<p>{{learning_course}}</p>
+<p>{{learning_lesson}}</p>
 {% endblock contents %}
 {% block member_list %}{% endblock member_list %}
 {% block javascript %}
 <script>
-document.addEventListener('DOMContentLoaded',function(){
-    document.getElementById('new').addEventListener('click',()=>{
-        document.getElementById('new-articles').classList.remove('hidden')
-        document.getElementById('like-articles').classList.add('hidden')
-        document.getElementById('new').classList.add('here')
-        document.getElementById('like').classList.remove('here')
-    })
-    document.getElementById('like').addEventListener('click',()=>{
-        document.getElementById('like-articles').classList.remove('hidden')
-        document.getElementById('new-articles').classList.add('hidden')
-        document.getElementById('new').classList.remove('here')
-        document.getElementById('like').classList.add('here')
-    })
-})
 </script>
 {% endblock javascript %}

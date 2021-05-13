@@ -1,13 +1,36 @@
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <p class="pagination_box"><a href="?a_page={{ page_obj.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">前へ</a></p>
-    {% endif %}
-    <!-- 数字の部分 -->
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
-        {% else %}
-            <p class="pagination_num pagination_not_here"><a href="?a_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+
+
+        {% if article.has_previous %}
+            <p class="pagination_box"><a href="?a_page={{ article.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&lt;</a></p>
+        {% endif %}
+        <!-- 数字の部分 -->
+        {% if article.number > 3 %}
+        <p class="pagination_num pagination_not_here"><a href="?a_page=1&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">1</a></p>
+        {% endif %}
+
+        {% if article.number > 4 %}
+        <p class="pagination_num pagination_not_here"><span>...</span></p>
+        {% endif %}
+
+        {% for num in article.paginator.page_range %}
+        {% if article.number == num %}
+        <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
+        {% elif num < article.number|add:3 and num > article.number|add:-3 %}
+        <p class="pagination_num pagination_not_here"><a
+            href="?a_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+        {% endif %}
+        {% endfor %}
+
+        {% if article.number < article.paginator.num_pages|add:-3 %}
+            <p class="pagination_num pagination_not_here"><span>...</span></p>
+        {% endif %}
+        {% if article.number < article.paginator.num_pages|add:-2 %}
+        <p class="pagination_num pagination_not_here"><a
+            href="?a_page={{ article.paginator.num_pages }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ article.paginator.num_pages }}</a></p>
+        {% endif %}
+        <!-- 次へ の部分 -->
+        {% if article.has_next %}
+            <p class="pagination_box"><a href="?a_page={{ article.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&gt;</a></p>
         {% endif %}
     {% endfor %}
     <!-- 次へ の部分 -->
