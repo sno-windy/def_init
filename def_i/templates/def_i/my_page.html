@@ -8,20 +8,12 @@
 <link rel="stylesheet" href="{% sass_src 'def_i/css/user_page.scss' %}">
 {% endblock extra_style %}
 {% block menubar %}
-{% comment %} <div class="main-container__userinfo">
-    <div class="main-container__userinfo-user">
-        <p>{% if user.user_image %}<img src="{{ user.user_image.url }}" alt="">
-            {% else %}<img src="{% static 'def_i/img/default.png' %}" alt="">{% endif %}</p>
-        <div>
-            <h1>{{user.username}}</h1>
-            <p>{{user.position}}</p>
-        </div>
-    </div>
-    <h2>総いいね数：<span>{{user.like_count}}</span></h2>
-    <p><a href="{% url 'article_feed' %}?orderby=new">検索に戻る</a></p>
-</div> {% endcomment %}
 {% endblock menubar %}
 {% block contents %}
+<div class="main-container__contents-userdata">
+<img src="{{user.user_image.url}}">
+<p>{{user.username}}</p>
+</div>
 {% if studying %}
 <h1>学習中のコース</h1>
 <div class="main-container__contents-studying">
@@ -67,7 +59,7 @@
             </a>
         </article>
         {% empty %}
-        <p>記事がありません．</p>
+        <p>質問がありません．</p>
         {% endfor %}
     </div>
     <div class="main-container__contents-article-btn">
@@ -129,7 +121,6 @@
 
 <div class="main-container__contents-article-container">
     <div id="new-articles" class="main-container__contents-article-box">
-{% comment %} {% if request.GET.orderby == 'new' %} {% endcomment %}
     {% for a in article %}
         <article class="main-container__contents-article">
             <a href="{% url 'article_detail' a.pk %}">
@@ -152,25 +143,6 @@
         <p class="btn2"><a href="{% url 'article_post' %}">ノートを書く</a></p>
     </div>
 </div>
-{% comment %} {% else %}
-<div id="like-articles" class="main-container__contents-article-box">
-    {% for a in article %}
-    <article class="main-container__contents-article like-articles">
-            <a href="{% url 'article_detail' a.pk %}">
-                <h2>{{a.title}}</h2>
-            </a>
-            <div class="main-container__contents-article-data">
-                {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
-                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp"><img src="{{a.poster.user_image.url}}">
-                    <p>{{a.poster}}</p>
-                </a>
-                <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
-            </div>
-    </article>
-    {% empty %}
-    <p>ノートがありません．</p>
-    {% endfor %}
-</div> {% endcomment %}
 {% endif %}
 <div class="pagination">{% include 'def_i/pagination.html' %}</div>
 
@@ -180,41 +152,5 @@
 {% block member_list %}{% endblock member_list %}
 {% block javascript %}
 <script>
-    {% comment %} document.addEventListener('DOMContentLoaded', () => {
-        const url = new URL(location)
-        url.searchParams.delete('orderby')
-        const artBtn = document.getElementById('art-new')
-        const likeBtn = document.getElementById('like')
-        const questBtn = document.getElementById('quest-new')
-        const artList = document.getElementById('new-articles')
-        const likeList = document.getElementById('like-articles')
-        const questList = document.getElementById('questions')
-        artBtn.addEventListener('click', () => {
-            artList.classList.remove('hidden')
-            likeList.classList.add('hidden')
-            questList.classList.add('hidden')
-            artBtn.classList.add('here')
-            likeBtn.classList.remove('here')
-            questBtn.classList.remove('here')
-            url.searchParams.set("orderby", "new")
-        })
-        likeBtn.addEventListener('click', () => {
-            likeList.classList.remove('hidden')
-            artList.classList.add('hidden')
-            questList.classList.add('hidden')
-            artBtn.classList.remove('here')
-            likeBtn.classList.add('here')
-            questBtn.classList.remove('here')
-            url.searchParams.set("orderby", "like")
-        })
-        questBtn.addEventListener('click', () => {
-            artList.classList.add('hidden')
-            likeList.classList.add('hidden')
-            questList.classList.remove('hidden')
-            artBtn.classList.remove('here')
-            likeBtn.classList.remove('here')
-            questBtn.classList.add('here')
-        })
-    }) {% endcomment %}
 </script>
 {% endblock javascript %}

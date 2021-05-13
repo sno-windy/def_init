@@ -760,10 +760,16 @@ def userpage_view(request,pk):
     except EmptyPage:
         article = paginator.page(paginator.num_pages)
 
+    try:
+        studying = StudyingCategory.objects.get(user=user)
+    except ObjectDoesNotExist:
+        studying = None
+
     params = {
         'question':question,
         'article':article,
-        'user_data':user
+        'user_data':user,
+        'studying':studying
     }
     return render(request, 'def_i/user_page.html', params)
 
