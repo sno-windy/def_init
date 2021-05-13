@@ -1,6 +1,6 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
-        {% block menubar %}
+        {#% block menubar %#}
             <div class="main-container__menubar">
 
             {% if orderby == 'new' %}
@@ -26,9 +26,9 @@
                 </a>
             {% endif %}
             </div>
-        {% endblock menubar %}
+        {#% endblock menubar %#}
         {% block contents %}
-        {% block member_list %}
+        {#% block member_list %#}
         <div class="main-container__member-list">
         <p class="main-container__member-list-title">メンバー</p>
             {% for m in member %}
@@ -44,5 +44,5 @@
             </a>
             {% endfor %}
         </div>
-        {% endblock member_list %}
+        {#% endblock member_list %#}
         {% endblock contents %}

@@ -42,7 +42,7 @@
             <a class="header-container__contents studynow" href="{% url 'article_feed' %}?orderby=new">ノート</a>
             <div class="header-container__user" id="icon">
                 {% if user.user_image %}
-                    <img src="{{ user.user_image.url }}">
+                    <img src="{{ user.user_image.url }}" width="30">
                 {% else %}
                     <img src="{% static 'def_i/img/default.png' %}">
                 {% endif %}

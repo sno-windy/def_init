@@ -19,9 +19,9 @@ class ArticleTalkForm(forms.ModelForm):
         }
 
 class ArticlePostForm(forms.ModelForm):
-    category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
-    course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択')
-    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択')
+    category = forms.ModelChoiceField(Category.objects.all(), empty_label='コースをタブから選択')
+    course = forms.ModelChoiceField(Course.objects.all(), empty_label='レッスンをタブから選択')
+    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='セクションをタブから選択')
 
     class Meta:
         model = Article
@@ -75,14 +75,22 @@ class QuestionPostForm(forms.ModelForm):
         }
 
 
-# class MemoForm(forms.ModelForm):
-#     class Meta:
-#         model = Memo
-#         fields = ['contents',]
 
 class ArticleSearchForm(forms.Form):
-    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+    keyword = forms.CharField(
+        label='',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'ノートを検索'}
+        )
+    )
 
 
 class QuestionSearchForm(forms.Form):
-    keyword = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={'placeholder': 'タイトルorユーザー名'}))
+    keyword = forms.CharField(
+        label='',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': '質問を検索'}
+        )
+    )
