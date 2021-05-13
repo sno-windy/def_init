@@ -70,9 +70,46 @@ body{
                 }
             }
         }
-        &__link a{
+        &__link{
+            width: 100%;
+            a{
             color: #5fa2e6;
-            margin-top: 16px;
+            margin-top: 8px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            }
+        }
+        &__line{
+            width: 224px;
+            height: 48px;
+            background: #00C300 0% 0% no-repeat padding-box;
+            border-radius: 8px;
+            margin: 24px 40px 16px 40px;
+            a{
+                color: white;
+                line-height: 48px;
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+        &__create{
+            width: 224px;
+            height: 48px;
+            background: #4E93E1 0% 0% no-repeat padding-box;
+            margin: 0 40px;
+            border-radius: 8px;
+            a{
+                color: white;
+                line-height: 48px;
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+
+            }
         }
     }
 }
