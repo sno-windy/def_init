@@ -63,7 +63,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
-        articles = Article.objects.filter(Q(poster=self.request.user)|Q(is_published=True)).order_by('-created_at')
+        articles = Article.objects.order_by('-created_at')
         order_by = self.request.GET.get('orderby')
 
         if order_by == 'new':
@@ -109,7 +109,7 @@ class ArticleDetail(LoginRequiredMixin, FormMixin, ListView):
         comments = TalkAtArticle.objects.filter(msg_at=article).order_by('-time')[:3]
         comments_count = comments.count() #lenにしてQuerysetが走っている回数を数える．
 
-        related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(Q(is_published=True)|Q(poster=request.user)).order_by('-created_at')[:5]
+        related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(is_published=True).order_by('-created_at')[:5]
         return render(request,self.template_name,
             {
                 "form":form,
@@ -547,7 +547,7 @@ class TaskArticle(LoginRequiredMixin, ListView):
         order_by = self.request.GET.get('orderby')
         questions = Question.objects.all()
         lesson = Lesson.objects.get(pk=self.kwargs['pk'])
-        articles = Article.objects.filter(lesson=lesson).filter(Q(poster=self.request.user)|Q(is_published=True))
+        articles = Article.objects.filter(lesson=lesson).filter(is_published=True)
         if order_by == 'new':
             articles = articles.order_by('-created_at')
 

@@ -34,30 +34,36 @@
 </ul>
 
 <h2>ノート一覧</h2>
-{% for article in articles %}
-<article class="main-container__contents-article">
-    <a href="{% url 'article_detail' article.pk %}">
-        <h1>{{article.title}}</h1>
-    </a>
-    <span>{{article.category}}</span>
-    <span>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</span>
+<div class="main-container__contents-article-container">
 
-    <p>
-        <a href="{% url 'user_page' article.poster.pk %}">
-            {% if article.poster.user_image %}
-                <img src="{{article.poster.user_image.url}}" width="30" alt="">
-            {% else %}
-                <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
-            {% endif %}
-            {{article.poster}}
-        </a>
-        <span>{{article.created_at|date:"Y/M/j H:i"}}に投稿</span>
-    </p>
-    <!-- <p>{{article.like_count}}いいね</p> -->
-</article>
-{% empty %}
-    <p>記事がありません．</p>
-{% endfor %}
+    <div class="main-container__contents-article-box">
+
+        {% for article in articles %}
+        <article class="main-container__contents-article">
+            <a href="{% url 'article_detail' article.pk %}">
+                <h1>{{article.title}}</h1>
+            </a>
+            <span>{{article.category}}</span>
+            <span>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</span>
+
+            <p>
+                <a href="{% url 'user_page' article.poster.pk %}">
+                    {% if article.poster.user_image %}
+                    <img src="{{article.poster.user_image.url}}" width="30" alt="">
+                    {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+                    {% endif %}
+                    {{article.poster}}
+                </a>
+                <span>{{article.created_at|date:"Y/M/j H:i"}}に投稿</span>
+            </p>
+            <!-- <p>{{article.like_count}}いいね</p> -->
+        </article>
+        {% empty %}
+        <p>記事がありません．</p>
+        {% endfor %}
+    </div>
+</div>
 
 {% include 'def_i/pagination.html' %}
 {% endblock contents %}
