@@ -32,3 +32,9 @@
         {% if article.has_next %}
             <p class="pagination_box"><a href="?a_page={{ article.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&gt;</a></p>
         {% endif %}
+    {% endfor %}
+    <!-- 次へ の部分 -->
+    {% if page_obj.has_next %}
+        <p class="pagination_box"><a href="?a_page={{ page_obj.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">次へ</a></p>
+    {% endif %}
+</div>

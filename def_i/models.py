@@ -108,7 +108,7 @@ class Question(models.Model):
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
     content = MarkdownxField()
-    if_answered = models.BooleanField(default=False) #->is_answered
+    is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     # 画像を添付する

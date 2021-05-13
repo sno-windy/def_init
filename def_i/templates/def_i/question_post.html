@@ -11,7 +11,7 @@
         <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</span>
     {% endfor %}
 
-    <a href="{% url 'article_feed' %}">質問一覧に戻る</a>
+    <a href="{% url 'question_feed' %}">質問一覧に戻る</a>
 {% endif %}
 
 <h1 class="postform-title">質問投稿フォーム</h1>

@@ -200,7 +200,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
             questions = questions.order_by('-created_at')
 
         elif order_by == 'unanswered':
-            questions = questions.filter(if_answered=False).order_by('created_at')
+            questions = questions.filter(is_answered=False).order_by('created_at')
 
         elif order_by == 'myquestion':
             questions = questions.filter(poster=self.request.user).order_by('-created_at')
@@ -255,8 +255,8 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
             msg.save()
             print('saved')
             msg.notify_new_comment()
-            if not question.if_answered: #コメントの時にブール値を編集する
-                question.if_answered = True
+            if not question.is_answered: #コメントの時にブール値を編集する
+                question.is_answered = True
                 question.save()
 
             return redirect("question_talk_suc",pk=pk)
@@ -442,7 +442,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('article_post',kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('task_article_post',kwargs={"pk":self.kwargs['pk']})
 
 
 def pass_courses():
@@ -522,7 +522,7 @@ class TaskQuestion(LoginRequiredMixin, ListView):
             questions = questions.order_by('-created_at')
 
         elif order_by == 'unanswered':
-            questions = questions.filter(if_answered=False)
+            questions = questions.filter(is_answered=False)
 
         return questions
 
