@@ -720,9 +720,15 @@ def mypage_view(request):
     except EmptyPage:
         article = paginator.page(paginator.num_pages)
 
+    try:
+        studying = StudyingCategory.objects.get(user=user)
+    except ObjectDoesNotExist:
+        studying = None
+    print(studying)
     params = {
         'question':question,
         'article':article,
+        'studying':studying
     }
     return render(request, 'def_i/my_page.html', params)
 
