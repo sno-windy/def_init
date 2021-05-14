@@ -58,6 +58,7 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
     paginate_by = 5
+    page_kwarg = "a_page"
 
     def get_initial(self):
         return self.request.GET #検索の値の保持.copy()
@@ -84,8 +85,8 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        # context['sort_by_new'] = True #新着順かどうか=>クエリパラメーターで扱う
         context['orderby'] = self.request.GET.get('orderby')
+        context["article"] = context["page_obj"]
 
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
@@ -751,7 +752,7 @@ def userpage_view(request,pk):
     article = Article.objects.order_by('-created_at').filter(poster=user)
 
     paginator = Paginator(article, 5)
-    page = request.GET.get('a_page')
+    page = request.GET.get('page')
 
     try:
         article = paginator.page(page)

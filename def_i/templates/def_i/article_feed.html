@@ -41,22 +41,22 @@
         {% for article in articles %}
         <article class="main-container__contents-article">
             <a href="{% url 'article_detail' article.pk %}">
-                <h1>{{article.title}}</h1>
+                <h2>{{article.title}}</h2>
             </a>
-            <span>{{article.category}}</span>
-            <span>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</span>
 
-            <p>
-                <a href="{% url 'user_page' article.poster.pk %}">
+            <div class="main-container__contents-article-data">
+                {{article.category}}  レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}
+                <!-- <div>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</div> -->
+                <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
                     {% if article.poster.user_image %}
                     <img src="{{article.poster.user_image.url}}" width="30" alt="">
                     {% else %}
                     <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
                     {% endif %}
-                    {{article.poster}}
+                    <p>{{article.poster}}</p>
                 </a>
-                <span>{{article.created_at|date:"Y/M/j H:i"}}に投稿</span>
-            </p>
+                <p class="post-date">{{article.created_at|date:"Y/M/j H:i"}}に投稿</p>
+            </div>
             <!-- <p>{{article.like_count}}いいね</p> -->
         </article>
         {% empty %}
@@ -65,5 +65,7 @@
     </div>
 </div>
 
-{% include 'def_i/pagination.html' %}
+<div class="pagination">
+    {% include 'def_i/pagination.html' %}
+</div>
 {% endblock contents %}
