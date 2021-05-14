@@ -1,7 +1,8 @@
 {% extends 'def_i/base-education.html' %}
-{% load static %}
+{% load static sass_tags %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'def_i/css/article_feed.css' %}">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/article_feed.scss' %}">
 {% endblock %}
 
 {% block contents %}
@@ -13,30 +14,40 @@
 {% endif %}
 
 <!-- ノート検索窓 -->
-<form action="" method="GET">
-    {{form}}
-    <button type="submit">検索する</button>
-</form>
+<div class="note_top">
+    <form action="" method="GET"  class="search_form">
+        {{form}}
+        <!-- <button type="submit">検索する</button> -->
+    </form>
 
-<a href="{% url 'article_post' %}">ノートを書く</a>
+    <div class="btn-write_note">
+        <a href="{% url 'article_post' %}">ノートを書く</a>
+    </div>
+</div>
 
+<h1 class="note_list__title">ノート一覧</h1>
 <!-- 並び替え方法を選択 -->
-<ul>
-    <li>
-        <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">新着</a>
-    </li>
-    <li>
-        <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">人気</a>
-    </li>
-    <li>
-        <a href="?orderby=mynote&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">あなたのノート</a>
-    </li>
-</ul>
+<div class="choice-button">
+    {% if request.GET.orderby == 'new' %}
+    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-<h2>ノート一覧</h2>
+    {% elif request.GET.orderby == 'like' %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like" class="here"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
+
+    {% else %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p class="here"><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
+
+    {% endif %}
+</div>
+
 <div class="main-container__contents-article-container">
-
-    <div class="main-container__contents-article-box">
+    <div class="main-container__contents-article-box note_list">
 
         {% for article in articles %}
         <article class="main-container__contents-article">
@@ -46,7 +57,6 @@
 
             <div class="main-container__contents-article-data">
                 {{article.category}}  レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}
-                <!-- <div>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</div> -->
                 <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
                     {% if article.poster.user_image %}
                     <img src="{{article.poster.user_image.url}}" width="30" alt="">
