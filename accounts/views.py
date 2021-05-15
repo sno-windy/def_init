@@ -6,7 +6,7 @@ from django.views.generic import FormView, DetailView, UpdateView
 from allauth.account.views import LoginView, SignupView, LogoutView, login, logout, signup,PasswordChangeView
 from django.views.generic.edit import UpdateView
 from .models import User
-from .forms import MyCustomSignupForm, UserChangeForm
+from .forms import MyCustomSignupForm, UserChangeForm, UserPasswordResetForm
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import ( PasswordChangeView,  PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView)
 from django.contrib.auth.forms import PasswordChangeForm,PasswordResetForm, SetPasswordForm
@@ -38,7 +38,7 @@ class PasswordChange(PasswordChangeView):
 class PasswordReset(PasswordResetView):
     """パスワード変更用URLの送付ページ"""
     email_template_name = 'account/mail_template/password_reset/message.txt'
-    form_class = PasswordResetForm
+    form_class = UserPasswordResetForm
     subject_template_name = 'account/mail_template/password_reset/subject.txt'
     success_url = reverse_lazy('password_reset_done')
     template_name = 'account/password_reset_form.html'

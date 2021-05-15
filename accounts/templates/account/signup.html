@@ -7,45 +7,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% comment %} <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
     <link rel="stylesheet" href="{% sass_src 'accounts/css/signup.scss' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
     <title>DefInit</title>
 </head>
 
 <body>
     <div class="signup">
         <div class="signup-container">
-            <div class="signup-container__icon">
-                <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
-            </div>
+        <h1>アカウントを作成</h1>
             <form class="signup-container__form" action="{% url 'account_signup' %}" method="POST" enctype="multipart/form-data">
-                {% if form.non_field_errors %}
-                <!-- <ul class="alert alert-danger list-unstyled">
-                <ul class="alert alert-danger list-unstyled">{% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                </ul>
-                </ul> -->
-                {% endfor %}
-
-                {% endif %}
                 {% csrf_token %}
-                <p class="normal_box">名前 {{ form.username }}</p>
-                <p class="image_box">画像 <br>
+                {% comment %} <p class="image_box"><span>プロフィール画像</span>
                     <label for="">
                         {{ form.user_image }}
-                    </label></p>
-                <p class="normal_box">肩書き {{ form.position }}</p>
-                <p class="normal_box">メールアドレス {{ form.email }}</p>
-                <p class="normal_box">パスワード {{ form.password1 }}</p>
-                <p class="normal_box">パスワード(確認用) {{ form.password2 }}</p>
+                    </label></p> {% endcomment %}
+                <p class="normal_box"><span>ニックネーム</span>{{ form.username }}</p>
+                <p class="normal_box"><span>肩書き</span>{{ form.position }}</p>
+                <p class="normal_box"><span>メールアドレス</span>{{ form.email }}</p>
+                <p class="normal_box"><span>パスワード</span>{{ form.password1 }}</p>
+                <p class="normal_box"><span>パスワード(確認用)</span>{{ form.password2 }}</p>
                 {% for field, errors in form.errors.items %}
                     {% for error in errors %}
                     <p class="alert alert-danger">{{ error }}</p>
                     {% endfor %}
                 {% endfor %}
-                <p class="normal_box"><input class="button" type="submit" value="登録完了"></p>
+                <p class="change-btn"><input class="button" type="submit" value="登録完了"></p>
             </form>
         </div>
     </div>
