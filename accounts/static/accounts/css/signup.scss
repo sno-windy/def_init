@@ -1,85 +1,113 @@
 body{
-    background-color: black;
+    background-color: #f7fafd;
     margin: 0%;
     padding:0%;
 }
 .signup{
-    background-color: black;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: auto;
     &-container{
-        width: 400px;
-
-        &__icon{
-            width: 100%;
-
-            img{
-                display: flex;
-                width: 150px;
-                height: 35px;
-                max-width: 150%;
-                object-fit: cover;
-                zoom: 2;
-                margin: 0 auto;
-            }
+        width: 480px;
+        height: 560px;
+        background-color: #fff;
+        box-shadow: 0px 2px 6px #2121211A;
+        border-radius: 8px;
+        margin-top: 96px;
+        h1{
+            font-size: 22px;
+            text-align: center;
+            margin-top: 24px;
         }
-
         &__form{
             display: flex;
             flex-direction: column;
-            color: white;
-
-            .normal_box{
-                margin: 10px 0px;
-                input{
-                    background-color: #4e4e4e63;
-                    width: 100%;
-                    height: 40px;
-                    margin: 5px 0px;
-                    padding: 0%;
-                    text-indent: 1rem;
-                    border: 0;
-                    font-size: 1rem;
-                    color: white;
-
-                }
-                ::placeholder{
-                    color: rgba(255, 255, 255, 0.26);
-                    font-weight: 600;
-                    opacity:1;
-                  }
-                input.button{
-                    background-color:white;
-                    opacity: 1;
-                    text-indent: 0rem;
-                    font-weight: 600;
-                    color: rgb(0, 0, 0);
-                    margin-top: 20px;
-
-                    &:hover{
-                        cursor: pointer;
-                        background-color: rgb(204, 204, 204);
-                    }
-                }
-            }
-            .image_box{
-                background-color: black !important;
-            }
-
         }
-
-        &__link{
-            margin-top: 30px;
-            text-align: right;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 400;
-
-
+        .normal_box{
+            height: 52px;
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: row;
+            span{
+                display: inline-block;
+                line-height: 52px;
+                word-break: keep-all;
+                text-align: center;
+                color: #212121;
+                margin-left: 32px;
+            }
+            input{
+                width: 240px;
+                height: 100%;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                margin:0 32px 0 auto;
+            }
         }
-
     }
 }
+.button{
+    margin: 24px 96px 0 96px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    width: 288px;
+    height: 48px;
+    color: white;
+    font-size: 16px;
+    background-color: #4e93e1;
+    cursor: pointer;
+}
+
+    //         .normal_box{
+    //             margin: 10px 0px;
+    //             input{
+    //                 background-color: #4e4e4e63;
+    //                 width: 100%;
+    //                 height: 40px;
+    //                 margin: 5px 0px;
+    //                 padding: 0%;
+    //                 text-indent: 1rem;
+    //                 border: 0;
+    //                 font-size: 1rem;
+    //                 color: white;
+
+    //             }
+    //             ::placeholder{
+    //                 color: rgba(255, 255, 255, 0.26);
+    //                 font-weight: 600;
+    //                 opacity:1;
+    //               }
+    //             input.button{
+    //                 background-color:white;
+    //                 opacity: 1;
+    //                 text-indent: 0rem;
+    //                 font-weight: 600;
+    //                 color: rgb(0, 0, 0);
+    //                 margin-top: 20px;
+
+    //                 &:hover{
+    //                     cursor: pointer;
+    //                     background-color: rgb(204, 204, 204);
+    //                 }
+    //             }
+    //         }
+    //         .image_box{
+    //             background-color: black !important;
+    //         }
+
+    //     }
+
+    //     &__link{
+    //         margin-top: 30px;
+    //         text-align: right;
+    //         color: white;
+    //         font-size: 0.9rem;
+    //         font-weight: 400;
+
+
+    //     }
+
+    // }

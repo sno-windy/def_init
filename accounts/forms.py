@@ -43,3 +43,14 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email',  'position', 'user_image']
+
+class UserPasswordResetForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super(UserPasswordResetForm, self).__init__(*args, **kwargs)
+
+    email = forms.EmailField(label='', widget=forms.EmailInput(attrs={
+        'class': 'email',
+        'placeholder': '  メールアドレス',
+        'type': 'email',
+        'name': 'email'
+        }))

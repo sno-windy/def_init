@@ -19,7 +19,7 @@
     <div class="login">
         <div class="login-container">
             <div class="login-container__icon">
-                <img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}">
+                <img src="{% static 'def_i/img/definit-logo.svg' %}">
             </div>
             <p class="login-container__title">Def <span style="color:#3011ab;">Init</span></p>
             <form class="login-container__form" action="{% url 'account_login' %}" method="POST">
@@ -34,9 +34,9 @@
                     {% endfor %}
                 {% endfor %}
             </form>
-            <p class="lo"><a href="{% url 'line_login' %}">lineでログイン</a></p>
+            <p class="login-container__line"><a href="{% url 'line_login' %}">lineでログイン</a></p>
 
-            <p class="login-container__link">会員登録は<a href="{% url 'account_signup' %}">こちら</a></p>
+            <p class="login-container__create"><a href="{% url 'account_signup' %}">アカウント作成</a></p>
         </div>
     </div>
 
