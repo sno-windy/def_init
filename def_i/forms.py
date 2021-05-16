@@ -35,7 +35,7 @@ class ArticlePostForm(forms.ModelForm):
                 attrs={'placeholder':'記事タイトル：30文字以内'}
             ),
             'content': MarkdownxWidget(
-                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）<br> * 実現したいこと <br> * 試したこと <br> * 出力されたエラー <br> などを書きましょう'}
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;&#10; * 実現したいこと &#13;&#10; * 試したこと <br> * 出力されたエラー &#13;&#10; などを書きましょう'}
             )
         }
 

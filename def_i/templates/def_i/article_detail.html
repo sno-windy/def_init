@@ -11,27 +11,35 @@
 {% block contents %}
 
 {% if user == contents.poster %}
+<!-- base.html -->
+<!-- main:width 1024px -->
+<!-- main-container:margin -->
+<!-- main-container__contents: 中身 -->
+<!-- オフホワイトの所から -->
 <span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
 <span><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
+
 {% endif %}
 
-<div id="note">
-    <h1>{{contents.title}}</h1>
-    <div class="like-outer">
-        {% include 'def_i/like.html' %}
-    </div>
+<div id="note">  <!--記事の中身-->
+        <h1>{{contents.title}}</h1>
+        <div class="like-outer">
+            {% include 'def_i/like.html' %}
+        </div>
 
-    <span>{{contents.category}}</span>
-    <span>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</span>
-    <span>{{contents.created_at|date:"Y/M/j H:i"}}</span>
+        <div class="note-info">
+            <div>{{contents.category}}</div>
+            <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+            <div>{{contents.created_at|date:"Y/M/j H:i"}}</div>
+        </div>
 
-    <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-    {% if contents.article_image_1 %}
-    <img src="{{ contents.article_image_1_resize.url }}" alt="">
-    {% endif %}
-    {% if contents.article_image_2 %}
-    <img src="{{ contents.article_image_2_resize.url }}" alt="">
-    {% endif %}
+        <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
+        {% if contents.article_image_1 %}
+        <img src="{{ contents.article_image_1_resize.url }}" alt="">
+        {% endif %}
+        {% if contents.article_image_2 %}
+        <img src="{{ contents.article_image_2_resize.url }}" alt="">
+        {% endif %}
 </div>
 
 <div id="comments">
@@ -101,10 +109,10 @@ $(document).ready(function(e){
             success:function(response){
                 heartMark = document.getElementById('like')
                 if(response.liked){
-                    $(heartMark).html("<i class='fas fa-lg fa-heart'></i>")
+                    $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" +  " alt=" + "いいねを解除" + " width=" + "30" + ">")
                 }
                 else{
-                    $(heartMark).html("<i class='far fa-lg fa-heart'></i>")
+                    $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "30" + ">")
                 }
                 likeCount = document.getElementById('count')
                 $(likeCount).text(response.count)
