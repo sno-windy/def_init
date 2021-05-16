@@ -58,12 +58,13 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
     context_object_name = "articles"
     template_name = "def_i/article_feed.html"
     paginate_by = 5
+    page_kwarg = "a_page"
 
     def get_initial(self):
         return self.request.GET #検索の値の保持.copy()
 
     def get_queryset(self):
-        articles = Article.objects.filter(Q(poster=self.request.user)|Q(is_published=True)).order_by('-created_at')
+        articles = Article.objects.order_by('-created_at')
         order_by = self.request.GET.get('orderby')
 
         if order_by == 'new':
@@ -84,8 +85,8 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
-        # context['sort_by_new'] = True #新着順かどうか=>クエリパラメーターで扱う
         context['orderby'] = self.request.GET.get('orderby')
+        context["article"] = context["page_obj"]
 
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
@@ -109,7 +110,7 @@ class ArticleDetail(LoginRequiredMixin, FormMixin, ListView):
         comments = TalkAtArticle.objects.filter(msg_at=article).order_by('-time')[:3]
         comments_count = comments.count() #lenにしてQuerysetが走っている回数を数える．
 
-        related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(Q(is_published=True)|Q(poster=request.user)).order_by('-created_at')[:5]
+        related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(is_published=True).order_by('-created_at')[:5]
         return render(request,self.template_name,
             {
                 "form":form,
@@ -547,7 +548,7 @@ class TaskArticle(LoginRequiredMixin, ListView):
         order_by = self.request.GET.get('orderby')
         questions = Question.objects.all()
         lesson = Lesson.objects.get(pk=self.kwargs['pk'])
-        articles = Article.objects.filter(lesson=lesson).filter(Q(poster=self.request.user)|Q(is_published=True))
+        articles = Article.objects.filter(lesson=lesson).filter(is_published=True)
         if order_by == 'new':
             articles = articles.order_by('-created_at')
 
@@ -751,7 +752,7 @@ def userpage_view(request,pk):
     article = Article.objects.order_by('-created_at').filter(poster=user)
 
     paginator = Paginator(article, 5)
-    page = request.GET.get('a_page')
+    page = request.GET.get('page')
 
     try:
         article = paginator.page(page)

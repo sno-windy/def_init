@@ -1,7 +1,8 @@
 {% extends 'def_i/base-education.html' %}
-{% load static %}
+{% load static sass_tags %}
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'def_i/css/article_feed.css' %}">
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/article_feed.scss' %}">
 {% endblock %}
 
 {% block contents %}
@@ -13,51 +14,76 @@
 {% endif %}
 
 <!-- ノート検索窓 -->
-<form action="" method="GET">
-    {{form}}
-    <button type="submit">検索する</button>
-</form>
+<div class="note_top">
+    <form action="" method="GET"  class="search_form">
+        {{form}}
+        <!-- <button type="submit">検索する</button> -->
+    </form>
 
-<a href="{% url 'article_post' %}">ノートを書く</a>
+    <div class="btn-write_note">
+        <a href="{% url 'article_post' %}">ノートを書く</a>
+    </div>
+</div>
 
+<h1 class="note_list__title">ノート一覧</h1>
 <!-- 並び替え方法を選択 -->
-<ul>
-    <li>
-        <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">新着</a>
-    </li>
-    <li>
-        <a href="?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">人気</a>
-    </li>
-    <li>
-        <a href="?orderby=mynote&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">あなたのノート</a>
-    </li>
-</ul>
+<div class="choice-button">
+    {% if request.GET.orderby == 'new' %}
+    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-<h2>ノート一覧</h2>
-{% for article in articles %}
-<article class="main-container__contents-article">
-    <a href="{% url 'article_detail' article.pk %}">
-        <h1>{{article.title}}</h1>
-    </a>
-    <span>{{article.category}}</span>
-    <span>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</span>
+    {% elif request.GET.orderby == 'like' %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like" class="here"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-    <p>
-        <a href="{% url 'user_page' article.poster.pk %}">
-            {% if article.poster.user_image %}
-                <img src="{{article.poster.user_image.url}}" width="30" alt="">
-            {% else %}
-                <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
-            {% endif %}
-            {{article.poster}}
-        </a>
-        <span>{{article.created_at|date:"Y/M/j H:i"}}に投稿</span>
-    </p>
-    <!-- <p>{{article.like_count}}いいね</p> -->
-</article>
-{% empty %}
-    <p>記事がありません．</p>
-{% endfor %}
+    {% else %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p class="here"><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-{% include 'def_i/pagination.html' %}
+    {% endif %}
+</div>
+
+<div class="main-container__contents-article-container">
+    <div class="main-container__contents-article-box note_list">
+
+        {% for article in articles %}
+        <article class="main-container__contents-article">
+            <a href="{% url 'article_detail' article.pk %}">
+                <h2>{{article.title}}</h2>
+            </a>
+
+            <div class="main-container__contents-article-data">
+                <div class="note_info">
+                    <div class="note_info_like">
+                        <img src="{% static 'def_i/img/good-before.svg' %}" class="btn-good" alt="">
+                        <span>{{article.like_count}}</span>
+                    </div>
+                    <div>{{article.category}}</div>
+                    <div>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</div>
+                </div>
+                <div class="user_date">
+                    <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
+                        {% if article.poster.user_image %}
+                        <img src="{{article.poster.user_image.url}}" width="30" alt="">
+                        {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+                        {% endif %}
+                        <p>{{article.poster}}</p>
+                    </a>
+                    <p class="post-date">{{article.created_at|date:"Y/M/j H:i"}}に投稿</p>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <p>記事がありません．</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="pagination">
+    {% include 'def_i/pagination.html' %}
+</div>
 {% endblock contents %}
