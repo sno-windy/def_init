@@ -1,6 +1,13 @@
+#note {
+    padding: 32px 48px;
+    border: 1px solid #eeeeee;
+    border-radius: 4px;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+}
 .like-outer{
     display: flex;
     flex-direction: row;
+    margin-top: 25px;
     p{
         margin: 0%;
         padding: 0 0 0 1rem;
@@ -12,6 +19,10 @@
     i{
         font-size: 1rem;
     }
+}
+.note-info {
+    margin-top: 26px;
+    display: flex;
 }
 .article{
     &-contents{

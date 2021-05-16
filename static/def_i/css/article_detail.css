@@ -1,3 +1,3 @@
-.like-outer{display:flex;flex-direction:row}.like-outer p{margin:0%;padding:0 0 0 1rem}.like-outer #like{border:0;padding:0%}.like-outer i{font-size:1rem}.article-contents{background-color:white;padding:1rem;word-wrap:break-word}code{background-color:oldlace;display:inline-block;white-space:normal;max-width:100%;word-break:break-all;word-wrap:break-word}
+#note{padding:32px 48px;border:1px solid #eeeeee;border-radius:4px;background:#FFFFFF 0% 0% no-repeat padding-box}.like-outer{display:flex;flex-direction:row;margin-top:25px}.like-outer p{margin:0%;padding:0 0 0 1rem}.like-outer #like{border:0;padding:0%}.like-outer i{font-size:1rem}.note-info{margin-top:26px;display:flex}.article-contents{background-color:white;padding:1rem;word-wrap:break-word}code{background-color:oldlace;display:inline-block;white-space:normal;max-width:100%;word-break:break-all;word-wrap:break-word}
 
 /*# sourceMappingURL=article_detail.css.map */

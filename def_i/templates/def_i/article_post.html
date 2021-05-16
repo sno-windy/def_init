@@ -13,21 +13,33 @@
     <a href="{#% url 'article_feed' %#}">ノート一覧に戻る</a>
 {#% endif %#} -->
 
-<!-- <h1 class="postform-title">記事投稿フォーム</h1> -->
 <form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
     {% csrf_token %}
-    {{form.is_published}}
-    <div>ノートを公開する</div>
-{{form.title}}
-<div>
-    {{form.category}}
-    {{form.course}}
-    {{form.lesson}}
-</div>
-{{form.content}}
-{{form.article_image_1}}
-{{form.article_image_2}}
-<button type="submit" class="postform-btn">保存する</button>
+    <div class="postnow">
+        <label class="post_checkbox" for="id_is_published">
+            <input type="checkbox" name="is_published" id="id_is_published">
+            <span class="checkbox_is_published"></span>
+            <span>ノートを公開する</span>
+        </label>
+    </div>
+    <div>{{form.title}}</div>
+    <div class="note-at">
+        {{form.category}}
+        {{form.course}}
+        {{form.lesson}}
+    </div>
+
+    <div class="content">
+
+        <textarea name="content" id="id_content" cols="40" rows="10" placeholder="本文を入力（コードを含む場合はMarkdown記法をご使用ください）"></textarea>
+        <label>
+            <div class="article_image_icon">
+                <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+            </div>
+            <input type="file" name="article_image_1" id="id_article_image_1" accept="image/*">
+        </label>
+    </div>
+    <button type="submit" class="postform-btn">ノートを投稿する</button>
 </form>
 {% endblock contents %}
 

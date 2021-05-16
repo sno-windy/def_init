@@ -56,18 +56,26 @@
             </a>
 
             <div class="main-container__contents-article-data">
-                {{article.category}}  レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}
-                <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
-                    {% if article.poster.user_image %}
-                    <img src="{{article.poster.user_image.url}}" width="30" alt="">
-                    {% else %}
-                    <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
-                    {% endif %}
-                    <p>{{article.poster}}</p>
-                </a>
-                <p class="post-date">{{article.created_at|date:"Y/M/j H:i"}}に投稿</p>
+                <div class="note_info">
+                    <div class="note_info_like">
+                        <img src="{% static 'def_i/img/good-before.svg' %}" class="btn-good" alt="">
+                        <span>{{article.like_count}}</span>
+                    </div>
+                    <div>{{article.category}}</div>
+                    <div>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</div>
+                </div>
+                <div class="user_date">
+                    <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
+                        {% if article.poster.user_image %}
+                        <img src="{{article.poster.user_image.url}}" width="30" alt="">
+                        {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+                        {% endif %}
+                        <p>{{article.poster}}</p>
+                    </a>
+                    <p class="post-date">{{article.created_at|date:"Y/M/j H:i"}}に投稿</p>
+                </div>
             </div>
-            <!-- <p>{{article.like_count}}いいね</p> -->
         </article>
         {% empty %}
         <p>記事がありません．</p>
