@@ -31,7 +31,12 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        try:
+            studying = StudyingCategory.objects.get(user=self.request.user)
+        except ObjectDoesNotExist:
+            studying = None
 
+        context["studying"] = studying
         info = GetIndexInfo(self.request.user)
 
         context["ranking"] = info.get_ranking()
@@ -39,8 +44,8 @@ class IndexView(LoginRequiredMixin, TemplateView):
         all_progress,each_progress = info.get_progress(self.request.user)
         context["all_progress"] = all_progress
         context["each_progress"] = each_progress
-        context["questions"] = info.get_related_questions()
-        context["articles"] = info.get_related_articles()
+        context["question"] = info.get_related_questions()
+        context["article"] = info.get_related_articles()
 
         context["colleagues"] = info.get_colleagues(self.request.user)
 
@@ -164,7 +169,7 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
     form_class = ArticlePostForm
     template_name = 'def_i/article_edit.html'
 
-    def get_success_url(self,**kwargs):
+    def get_success_url(self):
         return reverse_lazy('article_detail',kwargs={"pk":self.kwargs['pk']})
 
     def form_valid(self,form):
@@ -246,7 +251,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
             "related_questions": related_questions,
         })
 
-    def post(self, request,pk, *args, **kwargs):
+    def post(self, request, pk):
         form = QuestionTalkForm(request.POST)
         if form.is_valid():
             messages = form.cleaned_data.get('msg')
@@ -273,7 +278,6 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
 def BookMarkView(request, pk):
     if request.method =="GET":
         question = Question.objects.get(pk=pk)
-        question_poster = question.poster
         user = request.user
         is_bookmarked = False
         bookmark = BookMark.objects.filter(question=question, user=user)
@@ -340,7 +344,7 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_edit.html'
 
-    def get_success_url(self,**kwargs):
+    def get_success_url(self):
         return reverse_lazy('question_detail',kwargs={"pk":self.kwargs['pk']})
 
     def form_valid(self,form):
@@ -388,7 +392,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         context["pk"] = self.kwargs["pk"]
         return context
 
-    def form_valid(self, form, **kwargs):
+    def form_valid(self, form):
         pk = self.kwargs['pk']
         question_at = Lesson.objects.get(pk=pk)
         question = form.save(commit=False)
@@ -403,7 +407,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         messages.error(self.request,'質問作成に失敗しました．')
         return super().form_invalid(form)
 
-    def get_success_url(self,**kwargs):
+    def get_success_url(self):
         return reverse_lazy('task_question_post',kwargs={"pk":self.kwargs['pk']})
 
 
@@ -428,7 +432,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         context["pk"] = self.kwargs["pk"]
         return context
 
-    def form_valid(self, form, **kwargs):
+    def form_valid(self, form):
         pk = self.kwargs['pk']
         article_at = Lesson.objects.get(pk=pk)
         article = form.save(commit=False)
@@ -442,7 +446,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         messages.error(self.request,'ノート保存に失敗しました．')
         return super().form_invalid(form)
 
-    def get_success_url(self, **kwargs):
+    def get_success_url(self):
         return reverse_lazy('task_article_post',kwargs={"pk":self.kwargs['pk']})
 
 
@@ -488,7 +492,7 @@ class CourseList(LoginRequiredMixin,ListView):
     model = Course
     template_name = "def_i/base-task.html"
 
-    def get_queryset(self,**kwargs):
+    def get_queryset(self):
         course_list = Course.objects.filter(category__title=self.kwargs['category']).order_by('course_num').prefetch_related('lessons')
         progress_percent_list = []
         for course in course_list:
@@ -546,7 +550,6 @@ class TaskArticle(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         order_by = self.request.GET.get('orderby')
-        questions = Question.objects.all()
         lesson = Lesson.objects.get(pk=self.kwargs['pk'])
         articles = Article.objects.filter(lesson=lesson).filter(is_published=True)
         if order_by == 'new':

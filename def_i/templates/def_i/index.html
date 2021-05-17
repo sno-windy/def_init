@@ -6,25 +6,6 @@
 {% endblock %}
 
 {% block menubar %}
-<div class="main-container__menubar">
-    <!-- <a href="{% url 'index' %}" class="main-container__menubar-link now-here"> -->
-        <a href="{% url 'course' %}">
-            <h1>コースへ</h1>
-        </a>
-    <!-- </a> -->
-    <a href="{% url 'question_feed' %}">
-        <h1>質問へ</h1>
-    </a>
-    <a href="{% url 'article_feed' %}">
-        <h1>記事へ</h1>
-    </a>
-    <a href="{% url 'my_page' %}">
-        <h1>マイページ</h1>
-    </a>
-    <!-- <a href="{% url 'message_notification' %}" class="main-container__menubar-link">
-        <h1>メッセージ</h1>
-    </a> -->
-</div>
 {% endblock menubar %}
 {% block contents %}
 <h2>ユーザーのランキング</h2>
@@ -38,54 +19,115 @@
     {% endifchanged %}
 {% endfor %}
 
-<h2>コース</h2>
-<div>
-    <h3>進行中のコース・進捗</h3>
-    <!-- 進捗 -->
-    <p>完了率：{{all_progress|floatformat}}%</p>
-    <p>個別の完了率：{% for cat,prog in each_progress %}
-    {{cat.title}}は
-    {{prog}}%
-    {% endfor %}</p>
-    {% if not learning_lesson %}
-        <p>全てのレッスンを完了しました。</p>
-    {% else %}
-        <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
-    {% endif %}
-
-    <a href="{% url 'course' %}">
-        <p>講座一覧へ</p>
-    </a>
+{% if studying %}
+<h1>学習中のコース</h1>
+<div class="main-container__contents-studying">
+<img src="{{studying.category.category_image.url}}">
+<div class="main-container__contents-studying-info">
+    <h2>{{studying.category}}</h2>
+    <p>進捗率</p>
+    <p>学習中コース</p>
 </div>
+
+<p class="btn1"><a href="">続きからはじめる</a></p>
+</div>
+{% else %}
+{% endif %}
 
 <h2>質問</h2>
 <div>
-    <h3>進行中のコースに関連した質問</h3>
-    {% for question in questions %}
-        <a href="{% url 'question_detail' question.pk %}">
-            <p>・{{question.title}}</p>
-        </a>
+<h1>学習中のコースに関連した質問</h1>
+<div class="main-container__contents-article-container">
+    <div id="questions" class="main-container__contents-article-box">
+        {% for q in question %}
+        <article class="main-container__contents-article questions">
+            <a href="{% url 'question_detail' q.pk %}">
+                <h2>{{q.title}}</h2>
+            </a>
+            <div class="main-container__contents-article-data">
+                {{q.category.title}} レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}
+                <a href="{% url 'user_page' q.poster.pk %}" class="user-disp"><img src="{{q.poster.user_image.url}}">
+                    <p>{{q.poster}}</p>
+                </a>
+                <p class="post-date">{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+            </div>
+            <a href="{% url 'question_detail' q.pk %}">
+            </a>
+        </article>
+        {% empty %}
+        <p>質問がありません．</p>
+        {% endfor %}
+    </div>
+    <div class="main-container__contents-article-btn">
+        <p class="btn1"><a href="{% url 'question_feed' %}">質問一覧を見る</a></p>
+        <p class="btn2"><a href="{% url 'question_post' %}">質問する</a></p>
+    </div>
+</div>
+<div class="pagination">
+    {% if question.has_previous %}
+    <p class="pagination_box"><a
+            href="?q_page={{ question.previous_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&lt;</a>
+    </p>
+    {% endif %}
+    <!-- 数字の部分 -->
+    {% if question.number > 3 %}
+    <p class="pagination_num pagination_not_here"><a href="?q_page=1&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">1</a></p>
+    {% endif %}
+
+    {% if question.number > 4 %}
+    <p class="pagination_num pagination_not_here"><span>...</span></p>
+    {% endif %}
+
+    {% for num in question.paginator.page_range %}
+    {% if question.number == num %}
+    <p class="pagination_num pagination_here"><span>{{ num }}</span></p>
+    {% elif num < question.number|add:3 and num > question.number|add:-3 %}
+    <p class="pagination_num pagination_not_here"><a
+        href="?q_page={{ num }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ num }}</a></p>
+    {% endif %}
     {% endfor %}
-    <a href="{% url 'question_feed' %}">
-        <p>質問一覧へ</p>
-    </a>
-    <a href="{% url 'question_post' %}">
-        <p>質問する</p>
-    </a>
+
+    {% if question.number < question.paginator.num_pages|add:-3 %}
+        <p class="pagination_num pagination_not_here"><span>...</span></p>
+    {% endif %}
+    {% if question.number < question.paginator.num_pages|add:-2 %}
+    <p class="pagination_num pagination_not_here"><a
+        href="?q_page={{ question.paginator.num_pages }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">{{ question.paginator.num_pages }}</a></p>
+    {% endif %}
+    <!-- 次へ の部分 -->
+    {% if question.has_next %}
+    <p class="pagination_box"><a
+            href="?q_page={{ question.next_page_number }}&keyword={{request.GET.keyword}}&orderby={{request.GET.orderby}}">&gt;</a>
+    </p>
+    {% endif %}
+</div>
 </div>
 
-<h2>ノート</h2>
-<div>
-    <h3>進行中のコースに関連したノート</h3>
-    {% for article in articles %}
-        <a href="{% url 'article_detail' article.pk %}">
-            <p>・{{article.title}}</p>
-        </a>
+<h1>学習中のコースに関連したノート</h1>
+<div class="main-container__contents-article-container">
+    <div id="new-articles" class="main-container__contents-article-box">
+    {% for a in article %}
+        <article class="main-container__contents-article">
+            <a href="{% url 'article_detail' a.pk %}">
+                <h2>{{a.title}}</h2>
+            </a>
+            <div class="main-container__contents-article-data">
+                {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
+                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp"><img src="{{a.poster.user_image.url}}">
+                    <p>{{a.poster}}</p>
+                </a>
+                <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
+            </div>
+        </article>
+    {% empty %}
+        <p>ノートがありません．</p>
     {% endfor %}
-    <a href="{% url 'note_list' %}">
-        <p>公開ノート一覧へ</p>
-    </a>
-    <p>ノートを書く</p>
+    </div>
+        <div class="main-container__contents-article-btn">
+        <p class="btn1"><a href="{% url 'article_feed' %}">ノート一覧を見る</a></p>
+        <p class="btn2"><a href="{% url 'article_post' %}">ノートを書く</a></p>
+    </div>
+</div>
 </div>
 
 <h2>進捗が近いユーザー</h2>
@@ -95,6 +137,30 @@
         <a href="{% url 'user_page' colleague.pk %}">{{colleague}}</a>
     {% endfor %}
     <p>ユーザーの進捗</p>
+</div>
+<div>
+    <h1>コース一覧</h1>
+    <p>完了率：{{all_progress|floatformat}}%</p>
+    <div class="indexbox-container">
+    {% for cat,prog in each_progress %}
+    <div class="indexbox-container-box">
+        <h1>{{cat.title}}</h1>
+        <img src="{% static 'cat.category_image' %}" alt="">
+        <p>{{cat.description}}</p>
+        <a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a>
+    </div>
+    {% endfor %}
+    </div>
+    </p>
+    {% if not learning_lesson %}
+        <p>全てのレッスンを完了しました。</p>
+    {% else %}
+        <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
+    {% endif %}
+
+    <a href="{% url 'course' %}">
+        <p>講座一覧へ</p>
+    </a>
 </div>
 
 <a href="{% url 'message_notification' %}">
@@ -116,6 +182,4 @@
     <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
 {% endfor %}
 
-
-<h2>チュートリアル</h2>
 {% endblock contents %}
