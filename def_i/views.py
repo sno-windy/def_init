@@ -479,10 +479,17 @@ def pass_lessons():
 
 def course(request):
     if request.method == 'GET':
+        try:
+            studying = StudyingCategory.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            studying = None
+
+
         info = GetIndexInfo(request.user)
         _,progress = info.get_progress(request.user)
         params = {
             "progress":progress,
+            "studying":studying,
         }
     return render(request, "def_i/course.html",params)
 

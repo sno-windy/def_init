@@ -1,3 +1,4 @@
+from django.db.models.fields.files import ImageField
 import requests
 
 from django.contrib.auth import get_user_model
@@ -21,12 +22,13 @@ User = get_user_model()
 
 class Category(models.Model):
     title = models.CharField(max_length=10)
-    category_image = ProcessedImageField(upload_to="def_i/img",
-        processors=[ResizeToFill(250,250)],
-        format='JPEG',
-        options={'quality':60},
-        blank=True
-        )
+    category_image = models.FileField(upload_to='def_i/img')
+    # category_image = ProcessedImageField(upload_to="def_i/img",
+    #     processors=[ResizeToFill(250,250)],
+    #     format='JPEG',
+    #     options={'quality':60},
+    #     blank=True
+    #     )
     description = models.TextField(max_length=100, null=True)
 
     def __str__(self):

@@ -8,7 +8,7 @@
 {% block menubar %}
 {% endblock menubar %}
 {% block contents %}
-<h2>ユーザーのランキング</h2>
+{% comment %} <h2>ユーザーのランキング</h2>
 {% for rank in ranking %}
     {% ifchanged rank.cleared_lesson_num rank.note_num %}
         <p>{{forloop.counter}}位：{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s)
@@ -17,10 +17,10 @@
     {% else %}
         <p>(同率）{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s), wrote {{rank.note_num}}</p>
     {% endifchanged %}
-{% endfor %}
+{% endfor %} {% endcomment %}
 
 {% if studying %}
-<h1>学習中のコース</h1>
+<h1 class="index_title">学習中のコース</h1>
 <div class="main-container__contents-studying">
 <img src="{{studying.category.category_image.url}}">
 <div class="main-container__contents-studying-info">
@@ -34,9 +34,8 @@
 {% else %}
 {% endif %}
 
-<h2>質問</h2>
 <div>
-<h1>学習中のコースに関連した質問</h1>
+<h1 class="index_title">学習中のコースに関連した質問</h1>
 <div class="main-container__contents-article-container">
     <div id="questions" class="main-container__contents-article-box">
         {% for q in question %}
@@ -103,7 +102,7 @@
 </div>
 </div>
 
-<h1>学習中のコースに関連したノート</h1>
+<h1 class="index_title">学習中のコースに関連したノート</h1>
 <div class="main-container__contents-article-container">
     <div id="new-articles" class="main-container__contents-article-box">
     {% for a in article %}
@@ -129,7 +128,7 @@
     </div>
 </div>
 </div>
-
+{% comment %}
 <h2>進捗が近いユーザー</h2>
 <div>
     <h3>ユーザー</h3>
@@ -137,22 +136,24 @@
         <a href="{% url 'user_page' colleague.pk %}">{{colleague}}</a>
     {% endfor %}
     <p>ユーザーの進捗</p>
-</div>
+</div> {% endcomment %}
 <div>
-    <h1>コース一覧</h1>
-    <p>完了率：{{all_progress|floatformat}}%</p>
+<h1 class="index_title">コース一覧</h1>
+    {% comment %} <p>完了率：{{all_progress|floatformat}}%</p> {% endcomment %}
     <div class="indexbox-container">
     {% for cat,prog in each_progress %}
     <div class="indexbox-container-box">
         <h1>{{cat.title}}</h1>
-        <img src="{% static 'cat.category_image' %}" alt="">
+        <img src="{{cat.category_image.url}}" alt="">
+        <div class="progress_bar">{{prog}}</div>
         <p>{{cat.description}}</p>
-        <a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a>
+        <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
+        <p class="btn4">学習中にする</p>
     </div>
     {% endfor %}
     </div>
     </p>
-    {% if not learning_lesson %}
+    {% comment %} {% if not learning_lesson %}
         <p>全てのレッスンを完了しました。</p>
     {% else %}
         <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
@@ -181,5 +182,5 @@
 {% for comment in question_talk %}
     <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
 {% endfor %}
-
+{% endcomment %}
 {% endblock contents %}
