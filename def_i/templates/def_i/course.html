@@ -6,27 +6,33 @@
 {% endblock %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
-<h1>講座一覧</h1>
-<div class="indexbox-container">
-    {% comment %} <div class="indexbox-container-box">
-        <h1>バックエンド編</h1>
-        <img src="{% static 'def_i/img/django_three_bros.png' %}" alt="">
-        <p>Pythonのフルスタックフレームワークのdjangoを使ってバックエンドの学習を行います</p>
-        <a href="{% url 'course_list' 'backend' %}">バックエンド編をはじめる</a>
-    </div>
-    <div class="indexbox-container-box">
-        <h1>フロントエンド編</h1>
-        <img src="{% static 'def_i/img/front_three_bros.jpeg' %}" alt="">
-        <p>HTML, CSS, JavaScriptを使ってフロントエンドの学習を行います</p>
-        <a href="{% url 'course_list' 'frontend' %}">フロントエンド編をはじめる</a>
-    </div> {% endcomment %}
-{% for cat,prog in progress %}
+{% if studying %}
+<h1 class="index_title">学習中のコース</h1>
+<div class="main-container__contents-studying">
+<img src="{{studying.category.category_image.url}}">
+<div class="main-container__contents-studying-info">
+    <h2>{{studying.category}}</h2>
+    <p>進捗率</p>
+    <p>学習中コース</p>
+</div>
+
+<p class="btn1"><a href="">続きからはじめる</a></p>
+</div>
+{% else %}
+{% endif %}
+
+<h1 class="index_title">コース一覧</h1>
+    {% comment %} <p>完了率：{{all_progress|floatformat}}%</p> {% endcomment %}
+    <div class="indexbox-container">
+    {% for cat,prog in progress %}
     <div class="indexbox-container-box">
         <h1>{{cat.title}}</h1>
-        <img src="{% static 'cat.category_image' %}" alt="">
+        <img src="{{cat.category_image.url}}" alt="">
+        <div class="progress_bar">{{prog}}</div>
         <p>{{cat.description}}</p>
-        <a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a>
+        <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
+        <p class="btn4">学習中にする</p>
     </div>
-{% endfor %}
-</div>
+    {% endfor %}
+    </div>
 {% endblock contents %}

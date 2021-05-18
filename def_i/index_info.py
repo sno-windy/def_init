@@ -9,6 +9,8 @@ from .models import *
 class GetIndexInfo:
     def __init__(self, user):
         # 他の情報取得に使うため、進行中のコースを取得
+        self.studying_category = Category.objects.filter(studying_category__user=user)[:1]
+
         self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
         try:
             self.last_cleared_lesson = self.cleared_lesson[0]
@@ -21,7 +23,8 @@ class GetIndexInfo:
             next_course_num = 1
 
         try:
-            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course_num)
+            next_course = Course.objects.get(course_num=next_course_num,category=self.studying_category)
+            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course)
         except ObjectDoesNotExist:
             # 全てのレッスンを完了した場合
             self.learning_lesson = None
@@ -72,7 +75,6 @@ class GetIndexInfo:
 
             progress_percent_list.append(progress_percent)
         progress_zip = [[cat,per] for cat,per in zip(category_list,progress_percent_list)]
-        print(progress_zip) #[['backend', 66.7], ['frontend', 0.0], ['design', 0.0]]
         all_lesson_count = all_lesson.count()
         my_cleared_lesson_num = self.cleared_lesson.count()
         progress_decimal = my_cleared_lesson_num / all_lesson_count if all_lesson_count else 0.0
