@@ -77,7 +77,10 @@ $black: #212121;
   }
   &_like {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    img {
+      width: 14px;
+    }
     span {
       margin-left: 3px;
     }

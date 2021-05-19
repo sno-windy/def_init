@@ -11,11 +11,11 @@
     <form action="{% url 'like' contents.pk %}" method="POST">
     {% csrf_token %}
     {% if contents.id in liked_set %}
-        <button id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-after.svg' %}" alt="いいねを解除" width="30"></button>
+        <span id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-after.svg' %}" alt="いいねを解除" width="22"></span>
     {% else %}
-        <button id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-before.svg' %}" alt="いいね" width="30"></button>
+        <span id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-before.svg' %}" alt="いいね" width="22"></span>
     {% endif %}
     </form>
-<p name="{{contents.id}}" class="count" id="count"> {{ contents.like_set.count }} </p>
+    <p name="{{contents.id}}" class="count" id="count"> {{ contents.like_set.count }} </p>
 </body>
 </html>

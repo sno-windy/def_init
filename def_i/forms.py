@@ -39,6 +39,12 @@ class ArticlePostForm(forms.ModelForm):
             )
         }
 
+
+class ArticlePublishForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['is_published']
+
 class QuestionTalkForm(forms.ModelForm):
     class Meta:
         model = TalkAtQuestion

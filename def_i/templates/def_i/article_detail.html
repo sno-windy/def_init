@@ -1,125 +1,157 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
 
 {% block menubar %}{% endblock menubar %}
 
 {% block contents %}
+<div class="main-bar">
 
-{% if user == contents.poster %}
-<!-- base.html -->
-<!-- main:width 1024px -->
-<!-- main-container:margin -->
-<!-- main-container__contents: 中身 -->
-<!-- オフホワイトの所から -->
-<span><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
-<span><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
+    <div id="note" class="contents">
+        <h1 class="contents-title">{{contents.title}}</h1>
+        <div class="contents-info">
+            <div class="like-outer">
+                {% include 'def_i/like.html' %}
+            </div>
 
-{% endif %}
-
-<div id="note">  <!--記事の中身-->
-        <h1>{{contents.title}}</h1>
-        <div class="like-outer">
-            {% include 'def_i/like.html' %}
+            <div class="contents-info-at">
+                <div class="contents-info-at-category">{{contents.category}}</div>
+                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+            </div>
+            <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
         </div>
 
-        <div class="note-info">
-            <div>{{contents.category}}</div>
-            <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
-            <div>{{contents.created_at|date:"Y/M/j H:i"}}</div>
+        <div class="contents-text">
+            {{contents.formatted_markdown|safe}}
+        </div>
+        <div class="contents-images">
+            {% if contents.article_image_1 %}
+            <img src="{{ contents.article_image_1_resize.url }}" alt="">
+            {% endif %}
+            {% if contents.article_image_2 %}
+            <img src="{{ contents.article_image_2_resize.url }}" alt="">
+            {% endif %}
         </div>
 
-        <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-        {% if contents.article_image_1 %}
-        <img src="{{ contents.article_image_1_resize.url }}" alt="">
+        <div class="contents-buttons">
+            {% if user == contents.poster %}
+            <span class="btn-edit"><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
+            <span class="btn-delete"><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
+        </div>
+
         {% endif %}
-        {% if contents.article_image_2 %}
-        <img src="{{ contents.article_image_2_resize.url }}" alt="">
-        {% endif %}
+    </div>
+
+    <div class="comments-wrapper">
+        <h2 class="comments-wrapper__title" id="comments">コメント</h2>
+
+        {% for c in comments %}
+            <article class="comment">
+                <div class="comment-info">
+                    <a href="{% url 'user_page' c.msg_from.pk %}">
+                        <img src="{{c.msg_from.user_image.url}}" alt="">
+                        <p>{{c.msg_from}}</p>
+                    </a>
+                    <p>{{c.time|date:"Y/n/j H:i"}}</p>
+                </div>
+                <div class="comment-text">{{c.msg}}</div>
+            </article>
+            {% empty %}
+            <p>コメントがありません．</p>
+            {% endfor %}
+    </div>
+
+    <div class="form-wrapper">
+        <form method="POST">
+            {% csrf_token %}
+            {{comment_form.msg}}
+            <button type='submit' name="comment_form">
+                <img src="{% static 'def_i/img/send-icon.svg' %}" alt="コメントを送信">
+            </button>
+        </form>
+    </div>
 </div>
-
-<div id="comments">
-
-    <p>コメント</p>
-    {% for c in comments %}
-    <article class="main-container__contents-article">
-        <a href="{% url 'user_page' c.msg_from.pk %}">
-            <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
-            <p>{{c.msg_from}}></p>
-        </a>
-        <p>{{c.time|date:"Y/M/j H:i"}}</p>
-        <p>{{c.msg}}</p>
-    </article>
-    {% empty %}
-    <p>コメントがありません．</p>
-    {% endfor %}
-</div>
-
-<form method="POST">
-    {% csrf_token %}
-    {{form.msg}}
-    <button type='submit'>送信</button>
-</form>
-<a href="{% url 'article_feed' %}?orderby=new"><p>記事フィードに戻る</p></a>
 
 <!-- サイドバー -->
-<p>投稿者：{{contents.poster}}</p>
-<!-- {% if user == contents.poster %}
-    <form method="POST">
-        {% csrf_token %}
-        <input type="">
-    </form>
-{% endif %} -->
+<div class="sidebar">
+    <div class="sidebar-poster">
+        <h3>投稿者</h3>
+        <div class="sidebar-poster-info">
+            {% if contents.poster.user_image.url %}
+                <img src="{{contents.poster.user_image.url}}" alt="">
+            {% else %}
+                <img src="{% static 'def_i/img/default.png' %}" alt="">
+            {% endif %}
+            {{contents.poster}}
+        </div>
+        {% if user == contents.poster %}
+            <form name="publish_form" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="publish_form">
+                {% if contents.is_published %}
+                    <input type="checkbox" id="id_is_published" name="publish" checked>
+                {% else %}
+                    <input type="checkbox" id="id_is_published" name="publish">
+                {% endif %}
+                <span>ノートを公開する</span>
 
-<ul>
-    <li id="to_note">ノート</li>
-    <li id="to_comment">コメント</li>
-</ul>
+            </form>
+        {% endif %}
+    </div>
+    <div class="sidebar-move">
+        <div id="to_note">ノート</div>
+        <div id="to_comment">コメント</div>
+    </div>
 
-<h2>関連したノート</h2>
-{% for article in related_articles %}
-    <p><a href="{% url 'article_detail' article.pk %}">{{article.title|truncatechars:40}}</a></p>
-{% endfor %}
-<!-- 画像を挿入する場合
-{% if contents.article_image %}
-<button id="popup-btn">画像を表示する</button>
-<div class="popup" id="popup">
-  <div class="popup-inner">
-    <div class="close-btn" id="close-btn"><i class="fas fa-times"></i></div>
-    <a href="#"><img src="./img/popup.jpg" alt="ポップアップ画像"></a>
-  </div>
-  <div class="black-background" id="black-bg"></div>
+    <h3>関連したノート</h3>
+    <div class="related-contents">
+        {% for article in related_articles %}
+        <div class="related-contents-title">
+            <a href="{% url 'article_detail' article.pk %}">{{article.title|truncatechars:40}}</a>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-{% endif %}
--->
+    <!-- 画像を挿入する場合
+        {% if contents.article_image %}
+        <button id="popup-btn">画像を表示する</button>
+        <div class="popup" id="popup">
+            <div class="popup-inner">
+                <div class="close-btn" id="close-btn"><i class="fas fa-times"></i></div>
+                <a href="#"><img src="./img/popup.jpg" alt="ポップアップ画像"></a>
+            </div>
+            <div class="black-background" id="black-bg"></div>
+        </div>
+        {% endif %}
+    -->
 {% endblock contents %}
 {% block javascript %}
 <script>
-//jQueryあんまりよくないと知る前に作ったので使っています．．．
-$(document).ready(function(e){
-    $(document).on('click','#like',function(e){
-        e.preventDefault(); //button&POSTに対しては効きません．．．．
-        $.ajax({
-            type:'GET',
-            url:"{% url 'like' contents.pk %}",
-            success:function(response){
-                heartMark = document.getElementById('like')
-                if(response.liked){
-                    $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" +  " alt=" + "いいねを解除" + " width=" + "30" + ">")
+    //jQueryあんまりよくないと知る前に作ったので使っています．．．
+    $(document).ready(function(e){
+        $(document).on('click','#like',function(e){
+            e.preventDefault(); //button&POSTに対しては効きません．．．．
+            $.ajax({
+                type:'GET',
+                url:"{% url 'like' contents.pk %}",
+                success:function(response){
+                    heartMark = document.getElementById('like')
+                    if(response.liked){
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" +  " alt=" + "いいねを解除" + " width=" + "22" + ">")
+                    }
+                    else{
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "22" + ">")
+                    }
+                    likeCount = document.getElementById('count')
+                    $(likeCount).text(response.count)
                 }
-                else{
-                    $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "30" + ">")
-                }
-                likeCount = document.getElementById('count')
-                $(likeCount).text(response.count)
-            }
+            })
         })
     })
-})
 
 // ノート本体へスクロール
 document.getElementById("to_note").addEventListener('click', function(){
@@ -131,10 +163,13 @@ document.getElementById("to_note").addEventListener('click', function(){
 // コメントへスクロール
 document.getElementById("to_comment").addEventListener('click', function(){
     const comments = document.getElementById("comments");
-    console.log('comments:' + comments);
     const comments_position = comments.getBoundingClientRect();
-    console.log('comments_posi:' + comments_position);
     window.scrollTo(0, comments_position.top);
+});
+
+// ノート公開
+document.getElementById("id_is_published").addEventListener('change', function(){
+    document.publish_form.submit();
 });
 
 

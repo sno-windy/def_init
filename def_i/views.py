@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
                                   ListView, TemplateView, UpdateView)
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
 
@@ -101,14 +101,12 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
         return context
 
 
-class ArticleDetail(LoginRequiredMixin, FormMixin, ListView):
+class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
     model =TalkAtArticle
-    # context_object_name = "messages"
-    form_class = ArticleTalkForm #いらんかも
     template_name = 'def_i/article_detail.html'
+    fields = ()
 
     def get(self, request, pk):
-        form = ArticleTalkForm()
         article = Article.objects.get(pk=pk)
         liked_set = Like.objects.filter(user=request.user).values_list('article',flat=True)
 
@@ -118,22 +116,39 @@ class ArticleDetail(LoginRequiredMixin, FormMixin, ListView):
         related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(is_published=True).order_by('-created_at')[:5]
         return render(request,self.template_name,
             {
-                "form":form,
                 'contents': article,
                 'liked_set':liked_set,
                 'comments_count':comments_count,
                 'comments':comments,
                 'related_articles': related_articles,
+                'comment_form': ArticleTalkForm(),
             })
 
     def post(self, request, pk, *args, **kwargs):
-        form = ArticleTalkForm(request.POST)
-        if form.is_valid():
-            messages = form.cleaned_data.get('msg')
+        if 'comment_form' in request.POST:
+            comment_form = ArticleTalkForm(request.POST)
+            if comment_form.is_valid():
+                messages = comment_form.cleaned_data.get('msg')
+                article = Article.objects.get(pk=pk)
+                article_poster = User.objects.get(pk=article.poster.id)
+                msg = self.model.objects.create(msg=messages, msg_from=request.user, msg_to=article_poster, msg_at=article)
+                msg.notify_new_comment()
+                return redirect("article_detail", pk=pk)
+
+        elif 'publish_form' in request.POST:
             article = Article.objects.get(pk=pk)
-            article_poster = User.objects.get(pk=article.poster.id)
-            msg = self.model.objects.create(msg=messages, msg_from=request.user, msg_to=article_poster, msg_at=article)
-            msg.notify_new_comment()
+            publish_form = ArticlePublishForm(request.POST, instance=article)
+            publish = request.POST.get("publish")
+            if publish == "on":
+                publish = True
+            else:
+                publish = False
+            if publish_form.is_valid():
+                article.is_published = publish
+                article.save()
+            return redirect("article_detail", pk=pk)
+
+        else:
             return redirect("article_detail", pk=pk)
 
 
