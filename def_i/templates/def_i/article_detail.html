@@ -22,7 +22,7 @@
                 <div class="contents-info-at-category">{{contents.category}}</div>
                 <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
             </div>
-            <div>{{contents.created_at|date:"Y/M/j H:i"}}</div>
+            <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
         </div>
 
         <div class="contents-text">
@@ -56,7 +56,7 @@
                         <img src="{{c.msg_from.user_image.url}}" alt="">
                         <p>{{c.msg_from}}</p>
                     </a>
-                    <p>{{c.time|date:"Y/M/j H:i"}}</p>
+                    <p>{{c.time|date:"Y/n/j H:i"}}</p>
                 </div>
                 <div class="comment-text">{{c.msg}}</div>
             </article>

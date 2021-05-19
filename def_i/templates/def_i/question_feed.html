@@ -1,7 +1,8 @@
-{% extends 'def_i/base-question.html' %}
-{% load static %}
+{% extends 'def_i/base.html' %}
+{% load static sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% static 'def_i/css/question_feed.css' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_feed.scss' %}">
 {% endblock extra_style %}
 
 {% block contents %}
@@ -13,48 +14,80 @@
 {% endif %}
 
 <!-- 質問検索窓 -->
-<form action="" method="GET">
-    {{form}}
-    <button type="submit">検索する</button>
-</form>
-<a href="{% url 'question_post' %}">質問する</a>
+<div class="note_top">
+    <form action="" method="GET">
+        {{form}}
+    </form>
 
+    <div class="btn-write_note">
+        <a href="{% url 'question_post' %}">質問する</a>
+    </div>
+</div>
+
+<h1 class="note_list__title">質問一覧</h1>
 <!-- 並び替え方法を選択 -->
-<ul>
-    <li>
-        <a href="?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">新着</a>
-    </li>
-    <li>
-        <a href="?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">未解決</a>
-    </li>
-    <li>
-        <a href="?orderby=myquestion&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">あなたの質問</a>
-    </li>
-</ul>
+<div class="choice-button">
+    {% if request.GET.orderby == 'new' %}
+    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
+    <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
 
-<h2>質問一覧</h2>
+    {% elif request.GET.orderby == 'unanswered' %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p class="here"><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
+    <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
 
-    {% for q in questions %}
-    <article class="main-container__contents-article">
-        <a href="{% url 'question_detail' q.pk %}">
-            <h1>{{q.title}}</h1>
-        </a>
-        <span>{{q.category}}</span>
-        <span>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</span>
-        <p>
-            {% if q.poster.user_image %}
-                <img src="{{q.poster.user_image.url}}" width="30" alt="">
-            {% else %}
-                <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
-            {% endif %}
-            <span>{{q.poster}}</span>
-            <span>{{q.created_at|date:"Y/M/j H:i"}}に投稿</span>
-        </p>
-    </article>
+    {% else %}
+    <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
+    <p class="here"><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
+    {% endif %}
+</div>
 
-{% empty %}
-    <p>質問がありません．</p>
-{% endfor %}
+<div class="main-container__contents-article-container">
+    <div class="main-contaner__contents-article-box note_list">
 
-{% include 'def_i/pagination.html' %}
+        {% for q in questions %}
+        <article class="main-container__contents-article">
+            <a href="{% url 'question_detail' q.pk %}">
+                <h2>{{q.title}}</h2>
+            </a>
+
+            <div class="main-container__contents-article-data">
+                <div class="note_info">
+                    <div class="note_info_like">
+                        <img src="{% static 'def_i/img/good-before.svg' %}" class="btn-good" alt="">
+                        <span>{{q.bookmark_count}}</span>
+                    </div>
+                    {% if q.is_answered %}
+                    <div>解決済み</div>
+                    {% else %}
+                    <div>未解決</div>
+                    {% endif %}
+                    <div>{{q.category}}</div>
+                    <div>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</div>
+                </div>
+                <div class="user_date">
+                    <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
+
+                        {% if q.poster.user_image %}
+                        <img src="{{q.poster.user_image.url}}" width="30" alt="">
+                        {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+                        {% endif %}
+                        <p>{{q.poster}}</p>
+                    </a>
+                    <p class="post-date">{{q.created_at|date:"Y/n/j H:i"}}に投稿</p>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <p>質問がありません．</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="pagination">
+    {% include 'def_i/pagination.html' %}
+</div>
 {% endblock contents %}
