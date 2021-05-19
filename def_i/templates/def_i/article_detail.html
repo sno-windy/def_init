@@ -3,7 +3,6 @@
 {% block extra_style %}
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
-<link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
 
@@ -142,10 +141,10 @@
                 success:function(response){
                     heartMark = document.getElementById('like')
                     if(response.liked){
-                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" +  " alt=" + "いいねを解除" + " width=" + "30" + ">")
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" +  " alt=" + "いいねを解除" + " width=" + "22" + ">")
                     }
                     else{
-                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "30" + ">")
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "22" + ">")
                     }
                     likeCount = document.getElementById('count')
                     $(likeCount).text(response.count)
@@ -164,9 +163,7 @@ document.getElementById("to_note").addEventListener('click', function(){
 // コメントへスクロール
 document.getElementById("to_comment").addEventListener('click', function(){
     const comments = document.getElementById("comments");
-    console.log('comments:' + comments);
     const comments_position = comments.getBoundingClientRect();
-    console.log('comments_posi:' + comments_position);
     window.scrollTo(0, comments_position.top);
 });
 

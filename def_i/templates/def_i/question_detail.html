@@ -1,77 +1,120 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/article_detail.scss' %}">
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
 
 {% block menubar %}{% endblock menubar %}
 
 {% block contents %}
-{% if user == contents.poster %}
-    <span><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>
-    <span><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
-{% endif %}
+<div class="main-bar">
 
-<div id="question">
+    <div id="question" class="contents">
 
-    <h1>{{contents.title}}</h1>
-    <div class="like-outer">
-        {% include 'def_i/bookmark.html' %}
+        <h1 class="contents-title">{{contents.title}}</h1>
+        <div class="contents-info">
+            <div class="like-outer">
+                {% include 'def_i/bookmark.html' %}
+            </div>
+
+            <div class="contents-info-at">
+                <div class="contents-info-at-category">{{contents.category}}</div>
+                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+            </div>
+            <div>{{contents.created_at|date:"Y/M/j H:i"}}</div>
+        </div>
+
+        <div class="contents-text">
+            {{contents.formatted_markdown|safe}}
+        </div>
+        <div class="contents-images">
+            {% if contents.question_image_1 %}
+            <img src="{{ contents.question_image_1_resize.url }}" alt="">
+            {% endif %}
+            {% if contents.question_image_2 %}
+            <img src="{{ contents.question_image_2_resize.url }}" alt="">
+            {% endif %}
+        </div>
     </div>
 
-    <p>{{contents.category}}</p>
-    <p>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</p>
-    <span>{{contents.created_at|date:"Y/M/j H:i"}}</span>
-    <div class="article-contents">{{contents.formatted_markdown|safe}}</div>
-    {% if contents.question_image_1 %}
-    <img src="{{ contents.question_image_1_resize.url }}" alt="">
-    {% endif %}
-    {% if contents.question_image_2 %}
-    <img src="{{ contents.question_image_2_resize.url }}" alt="">
-    {% endif %}
+    <div class="comments-wrapper">
+        <h2 class="comments-wrapper__title" id="answers">回答</h2>
+
+        {% for c in comments %}
+        <article class="comment">
+            <div class="comment-info">
+                <a href="{% url 'user_page' c.msg_from.pk %}">
+                    <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+                    <p>{{c.msg_from}}></p>
+                </a>
+                <p>{{c.time|date:"Y/M/j H:i"}}</p>
+            </div>
+            <div class="comment-text">{{c.msg}}</div>
+        </article>
+        {% empty %}
+        <p>コメントがありません．</p>
+        {% endfor %}
+    </div>
+
+    <div class="form-wrapper">
+        <form method="POST">
+            {% csrf_token %}
+            {{form.msg}}
+            <button type='submit' name="answer_form">
+                <img src="{% static 'def_i/img/send-icon.svg' %}" alt="回答を送信">
+            </button>
+        </form>
+    </div>
 </div>
 
-<p id="answers">回答</p>
-{% for c in comments %}
-<article class="main-container__contents-article">
-    <a href="{% url 'user_page' c.msg_from.pk %}">
-        <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
-        <p>{{c.msg_from}}></p>
-    </a>
-    <p>{{c.time|date:"Y/M/j H:i"}}</p>
-    <h1>{{c.msg}}</h1>
-</article>
-{% empty %}
-<p>コメントがありません．</p>
-{% endfor %}
-
-<form method="POST">
-    {% csrf_token %}
-    {{form.msg}}
-    <button type='submit'>送信</button>
-</form>
-<a href="{% url 'question_feed' %}?orderby=new"><p>質問フィードに戻る</p></a>
-
 <!-- サイドバー -->
-<p>投稿者：{{contents.poster}}</p>
-<ul>
-    <li id="to_question">質問</li>
-    <li id="to_answer">回答</li>
-</ul>
+<div class="sidebar">
+    <div class="sidebar-poster">
 
-<h2>関連した質問</h2>
-{% for question in related_questions %}
-    <p><a href="{% url 'question_detail' question.pk %}">{{question.title|truncatechars:40}}</a></p>
-{% endfor %}
+        <h3>投稿者</h3>
+        <div class="sidebar-poster-info">
+            {% if contents.poster.user_image.url %}
+                <img src="{{contents.poster.user_image.url}}" alt="">
+            {% else %}
+                <img src="{% static 'def_i/img/default.png' %}" alt="">
+            {% endif %}
+            {{contents.poster}}
+        </div>
+        <!-- {% if user == contents.poster %}
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="">
+                {% if contents.is_published %}
+                {% else %}
+                <input type="hidden" name="publish">
+                {% endif %}
+                <input type="checkbox"><span>ノートを公開する</span>
+            </form>
+        {% endif %} -->
+    </div>
+    <div class="sidebar-move">
+        <div id="to_question">質問</div>
+        <div id="to_answer">回答</div>
+    </div>
+
+    <h2>関連した質問</h2>
+    <div class="related-contents">
+        {% for question in related_questions %}
+        <div class="related-contents-title">
+            <a href="{% url 'question_detail' question.pk %}">{{question.title|truncatechars:40}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock contents %}
 
 {% block javascript %}
 <script>
-    //jQueryあんまりよくないと知る前に作ったので使っています．．．
-    $(document).ready(function (e) {
-        $(document).on('click', '#bookmark', function (e) {
+        //jQueryあんまりよくないと知る前に作ったので使っています．．．
+        $(document).ready(function (e) {
+            $(document).on('click', '#bookmark', function (e) {
             e.preventDefault(); //button&POSTに対しては効きません．．．．
             $.ajax({
                 type: 'GET',
@@ -79,10 +122,10 @@
                 success: function (response) {
                     heartMark = document.getElementById('bookmark')
                     if (response.bookmarked) {
-                        $(heartMark).html("<i class='fas fa-lg fa-heart'></i>")
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-after.svg' %}" + " alt=" + "いいねを解除" + " width=" + "22" + ">")
                     }
                     else {
-                        $(heartMark).html("<i class='far fa-lg fa-heart'></i>")
+                        $(heartMark).html("<img src=" + "{% static 'def_i/img/good-before.svg' %}" + " alt=" + "いいねを解除" + " width=" + "22" + ">")
                     }
                     likeCount = document.getElementById('count')
                     $(likeCount).text(response.bookmark_count)
@@ -99,11 +142,8 @@
     });
 
     document.getElementById("to_answer").addEventListener('click', function(){
-        console.log('0');
         const answers = document.getElementById("answers");
-        console.log('answers:' + answers);
         const answers_position = answers.getBoundingClientRect();
-        console.log('answers_posi:' + answers_position);
         window.scrollTo(0, answers_position.top);
     });
 </script>

@@ -220,11 +220,11 @@ $blue: #4e93e1;
   }
   &-move {
     margin: 34px 0 16px 0;
-    #to_note, #to_comment {
+    #to_note, #to_comment, #to_question, #to_answer {
       height: 24px;
       padding: 12px 0 12px 16px;
     }
-    #to_note {
+    #to_note, #to_question {
       background: #f5f5f5 0% 0% no-repeat padding-box;
       border-radius: 4px;
     }
@@ -250,4 +250,19 @@ $blue: #4e93e1;
       border: none;
     }
   }
+}
+.like-outer {
+    display: flex;
+    align-items: center;
+    p {
+        margin-left: 8px;
+    }
+}
+code{
+    background-color: oldlace;
+    display: inline-block;
+    white-space: normal;
+    max-width:100%;
+    word-break:break-all;
+    word-wrap:break-word;
 }
