@@ -69,8 +69,8 @@
     <div class="form-wrapper">
         <form method="POST">
             {% csrf_token %}
-            {{form.msg}}
-            <button type='submit'>
+            {{comment_form.msg}}
+            <button type='submit' name="comment_form">
                 <img src="{% static 'def_i/img/send-icon.svg' %}" alt="コメントを送信">
             </button>
         </form>
@@ -90,15 +90,16 @@
             {{contents.poster}}
         </div>
         {% if user == contents.poster %}
-            <form method="POST">
+            <form name="publish_form" method="POST">
                 {% csrf_token %}
-                <!-- 動くようにする -->
+                <input type="hidden" name="publish_form">
                 {% if contents.is_published %}
-                    <input type="hidden" name="unpublish">
+                    <input type="checkbox" id="id_is_published" name="publish" checked>
                 {% else %}
-                    <input type="hidden" name="publish">
+                    <input type="checkbox" id="id_is_published" name="publish">
                 {% endif %}
-                <input type="checkbox"><span>ノートを公開する</span>
+                <span>ノートを公開する</span>
+
             </form>
         {% endif %}
     </div>
@@ -167,6 +168,11 @@ document.getElementById("to_comment").addEventListener('click', function(){
     const comments_position = comments.getBoundingClientRect();
     console.log('comments_posi:' + comments_position);
     window.scrollTo(0, comments_position.top);
+});
+
+// ノート公開
+document.getElementById("id_is_published").addEventListener('change', function(){
+    document.publish_form.submit();
 });
 
 
