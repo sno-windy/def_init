@@ -210,10 +210,20 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
     template_name = 'def_i/article_edit.html'
 
     def get_success_url(self):
-        return reverse_lazy('article_detail',kwargs={"pk":self.kwargs['pk']})
+        if self.article.is_published:
+            return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
+        else:
+            return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course_dict"] = pass_courses
+        context["lesson_dict"] = pass_lessons
+        return context
 
     def form_valid(self,form):
         messages.success(self.request,'記事を編集しました．')
+        self.article = form.save()
         return super().form_valid(form)
 
     def form_invalid(self,form):
