@@ -429,7 +429,7 @@ class QuestionDeleteView(LoginRequiredMixin,DeleteView):
 
 class TaskQuestionPost(LoginRequiredMixin, CreateView):
     form_class = QuestionPostForm
-    template_name = 'def_i/task_question_post.html'
+    template_name = 'def_i/question_post.html'
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -469,7 +469,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
 
 class TaskArticlePost(LoginRequiredMixin, CreateView):
     form_class = ArticlePostForm
-    template_name = 'def_i/task_article_post.html'
+    template_name = 'def_i/article_post.html'
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -503,7 +503,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_article_post',kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('task_article_post', kwargs={"pk":self.kwargs['pk']})
 
 
 def pass_courses():
