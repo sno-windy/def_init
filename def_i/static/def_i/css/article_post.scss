@@ -10,6 +10,9 @@
     background: #ffffff 0% 0% no-repeat padding-box;
 
 }
+.question-title {
+    padding-top: 128px;
+}
 .postnow label {
     display: flex;
     margin-top: 144px;
@@ -92,7 +95,9 @@ input#id_is_published {
     width: 99.6%;
     box-sizing: border-box;
     padding: 19px 16px;
-    font-size: 14px;
+    font: normal normal medium 14px/28px Noto Sans JP;
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.29px;
 }
 .content {
     position: relative;
@@ -104,7 +109,7 @@ input#id_is_published {
     width: 32px;
     height: 32px;
 }
-#id_article_image_1 {
+#id_article_image_1, #id_question_image_1 {
     display: none;
 }
 

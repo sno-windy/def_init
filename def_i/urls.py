@@ -10,13 +10,15 @@ urlpatterns = [
     path('article_detail/<int:pk>/',views.ArticleDetail.as_view(),name="article_detail"),
     path('article_post/',views.ArticlePost.as_view(),name='article_post'),
     path('article_post/<int:pk>/',views.ArticlePost.as_view(),name='article_post'),
+    path('article_published/<int:pk>/', views.ArticlePublishedView.as_view(), name='article_published'),
+    path('article_saved/<int:pk>/', views.ArticleSavedView.as_view(), name='article_saved'),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
 
     # 質問系
     path('question_feed/',views.QuestionFeed.as_view(),name='question_feed'),
     path('question_detail/<int:pk>/',views.QuestionDetail.as_view(),name='question_detail'),
-    path('question_talk_suc/<int:pk>/',views.QuestionTalkSuc.as_view(),name='question_talk_suc'),
+    path('question_post_suc/<int:pk>/',views.QuestionPostSuc.as_view(),name='question_post_suc'),
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
     path('question_edit/<int:pk>/',views.QuestionUpdateView.as_view(),name='question_edit'),
     path('question_delete/<int:pk>/',views.QuestionDeleteView.as_view(),name='question_delete'),
