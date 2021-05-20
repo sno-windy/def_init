@@ -11,7 +11,7 @@
 
 }
 .question-title {
-    margin-top: 128px;
+    padding-top: 128px;
 }
 .postnow label {
     display: flex;
@@ -95,7 +95,9 @@ input#id_is_published {
     width: 99.6%;
     box-sizing: border-box;
     padding: 19px 16px;
-    font-size: 14px;
+    font: normal normal medium 14px/28px Noto Sans JP;
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.29px;
 }
 .content {
     position: relative;
