@@ -24,7 +24,7 @@
             <p class="login-container__title">Def <span style="color:#3011ab;">Init</span></p>
             <form class="login-container__form" action="{% url 'account_login' %}" method="POST">
                 {% csrf_token %}
-                <p style="background-color:#fff;">{{ form.login }}</p>
+                <p>{{ form.login }}</p>
                 <p>{{ form.password }}</p>
                 <p><input class="button" type="submit" value="ログイン"></p>
                 <p class="login-container__link"><a href="{% url 'password_reset' %}">パスワードを忘れた場合</a></p>

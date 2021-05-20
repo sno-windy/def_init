@@ -87,7 +87,7 @@ body{
             height: 48px;
             background: #00C300 0% 0% no-repeat padding-box;
             border-radius: 8px;
-            margin: 24px 40px 16px 40px;
+            margin: 24px 48px 16px 48px;
             a{
                 color: white;
                 line-height: 48px;
@@ -100,7 +100,7 @@ body{
             width: 224px;
             height: 48px;
             background: #4E93E1 0% 0% no-repeat padding-box;
-            margin: 0 40px;
+            margin: 0 48px;
             border-radius: 8px;
             a{
                 color: white;
@@ -112,4 +112,12 @@ body{
             }
         }
     }
+}
+.alert{
+    font-size: 12px;
+    margin-bottom: 0px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    color: red;
 }
