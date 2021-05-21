@@ -34,7 +34,7 @@
                     {% endfor %}
                 {% endfor %}
             </form>
-            <p class="login-container__line"><a href="{% url 'line_login' %}">lineでログイン</a></p>
+            <p class="login-container__line"><a href="{% url 'line_login' %}"><img src="{% static 'def_i/img/line-icon.svg' %}">lineでログイン</a></p>
 
             <p class="login-container__create"><a href="{% url 'account_signup' %}">アカウント作成</a></p>
         </div>

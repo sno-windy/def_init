@@ -37,7 +37,16 @@
         }
         .btn4{
             margin: 0 56px 32px 56px;
-            color: #76B2EA;
+            color: #5FA2E6;
+        }
+        .btn4-studying{
+            font-size: 0;
+            background-color: #76B2EA;
+            color: white;
+            &::before{
+                font-size: 14px;
+                content: '学習中';
+            }
         }
     }
 }

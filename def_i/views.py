@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
                                   ListView, TemplateView, UpdateView)
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic.base import View
 from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
@@ -55,6 +56,20 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
         return context
+
+
+def notify_bell(request):
+    if request.method =="GET":
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
+        params={
+            'new_likes': new_likes,
+            'new_bookmarks': new_bookmarks,
+            'article_talk': article_talk,
+            'question_talk':question_talk,
+        }
+        return JsonResponse(params)
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):

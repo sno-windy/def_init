@@ -18,7 +18,7 @@ class GetIndexInfo:
             next_course_num = self.last_cleared_lesson.lesson.course.course_num + 1
         except IndexError:
             # まだ一つもレッスンを完了していない場合
-            self.last_cleared_lesson = None
+            self.last_cleared_lesson = 0
             next_lesson_num = 1
             next_course_num = 1
 
@@ -27,7 +27,7 @@ class GetIndexInfo:
             self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course)
         except ObjectDoesNotExist:
             # 全てのレッスンを完了した場合
-            self.learning_lesson = None
+            self.learning_lesson = 0
 
 
 
@@ -50,7 +50,7 @@ class GetIndexInfo:
             )
             # Noneのとき０にしたい
 
-        ).order_by('-note_num').order_by('-cleared_lesson_num')[:6]  # 何位まで表示する？
+        ).order_by('-note_num').order_by('-cleared_lesson_num')[:3]  # 何位まで表示する？
         return ranking
 
     # 進捗状況を取得

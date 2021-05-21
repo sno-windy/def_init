@@ -37,6 +37,7 @@ urlpatterns = [
 
     # マイページ系
     path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
+    path('notify_bell/',views.notify_bell,name='notify'),
     path('like/<int:pk>/',views.LikeView,name='like'),
     path('bookmark/<int:pk>/', views.BookMarkView, name='bookmark'),
     path('user_page/<int:pk>/',views.userpage_view,name='user_page'),

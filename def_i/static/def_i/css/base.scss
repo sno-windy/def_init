@@ -512,23 +512,23 @@ a{
         margin-right: 8px;
         width: 24px;
         background-color: #fff;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
         a{
-            color: #2f458e;
+            color: #4d45d5;
         }
     }
     &_num{
         a{
-            color: #2f458e;
+            color: #4d45d5;
         }
     }
     &_here{
         height: 32px;
         width: 32px;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
-        background-color: #2f458e;
+        background-color: #4d45d5;
         color: #fff;
         margin-right: 8px;
     }
@@ -536,12 +536,12 @@ a{
         height: 32px;
         width: 32px;
         background-color: #fff;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
         margin-right: 8px;
 
         span{
-            color: #2f458e;
+            color: #4d45d5;
             font-size: 16px;
         }
     }
@@ -556,6 +556,10 @@ a{
     background: #4D45D5 0% 0% no-repeat padding-box;
     box-shadow: 0px 1px 6px #21212119;
     border-radius: 4px;
+    &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 48px;
@@ -571,6 +575,10 @@ a{
     background: #76b2ea 0% 0% no-repeat padding-box;
     box-shadow: 0px 1px 6px #21212119;
     border-radius: 4px;
+    &:hover{
+        background-color: #5FA2E6;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 48px;
@@ -586,6 +594,10 @@ a{
     height: 40px;
     background: #4D45D5 0% 0% no-repeat padding-box;
     border-radius: 4px;
+    &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 40px;
@@ -605,7 +617,7 @@ a{
     border: 2px solid #76B2EA;
     line-height: 40px;
     :hover{
-        background: #76B2EA 0% 0% no-repeat padding-box;
-        border: 2px solid #76B2EA;
+        background: #5FA2E6 0% 0% no-repeat padding-box;
+        border: 2px solid #5FA2E6;
     }
 }

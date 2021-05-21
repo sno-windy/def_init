@@ -58,7 +58,7 @@ body{
                   }
                 input.button{
                     margin-top: 8px;
-                    background-color:#4539c9;
+                    background-color:#4d45d5;
                     opacity: 1;
                     text-indent: 0rem;
                     font-size: 16px;
@@ -66,6 +66,7 @@ body{
                     border-radius: 8px;
                     &:hover{
                         cursor: pointer;
+                        background-color: #3d2dbd;
                     }
                 }
             }
@@ -83,6 +84,7 @@ body{
             }
         }
         &__line{
+            position: relative;
             width: 224px;
             height: 48px;
             background: #00C300 0% 0% no-repeat padding-box;
@@ -94,6 +96,14 @@ body{
                 display: inline-block;
                 width: 100%;
                 text-align: center;
+                img{
+                    position: absolute;
+                    top: 8px;
+                    left: 8px;
+                    height: 32px;
+                    width: 32px;
+                    max-width: 100%;
+                }
             }
         }
         &__create{
