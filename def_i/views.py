@@ -240,6 +240,11 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
+        return context
+
 
 class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     model = Question
