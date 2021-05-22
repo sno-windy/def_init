@@ -31,10 +31,14 @@
         </div>
         <div class="contents-images">
             {% if contents.question_image_1 %}
-            <img src="{{ contents.question_image_1_resize.url }}" alt="">
+            <a href="{{contents.question_image_1_resize.url}}">
+                <img src="{{ contents.question_image_1_resize.url }}" alt="">
+            </a>
             {% endif %}
             {% if contents.question_image_2 %}
-            <img src="{{ contents.question_image_2_resize.url }}" alt="">
+            <a href="{{contents.question_image_2_resize.url}}">
+                <img src="{{ contents.question_image_2_resize.url }}" alt="">
+            </a>
             {% endif %}
         </div>
     </div>
@@ -54,7 +58,7 @@
             <div class="comment-text">{{c.msg}}</div>
         </article>
         {% empty %}
-        <p>コメントがありません．</p>
+        <p class="no-contents">コメントがありません．</p>
         {% endfor %}
     </div>
 
