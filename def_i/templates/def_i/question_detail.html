@@ -50,7 +50,13 @@
         <article class="comment">
             <div class="comment-info">
                 <a href="{% url 'user_page' c.msg_from.pk %}">
-                    <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+                    {#% if c.msg_from.user_image %#}
+                        <!-- <img src="{{c.msg_from.user_image.url}}" width="30" alt=""> -->
+                        aaaaaaaa
+                    {#% else %#}
+                    bbbbbbbbbb
+                        <!-- <img src="{#% static 'def_i/img/default.png' %#}" alt=""> -->
+                    {#% endif %#}
                     <p>{{c.msg_from}}></p>
                 </a>
                 <p>{{c.time|date:"Y/n/j H:i"}}</p>

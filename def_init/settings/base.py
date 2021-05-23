@@ -9,12 +9,11 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-from .secret_settings import *
+from ..secret_settings import *
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,9 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = SETTINGS_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['def-init.tk', 'localhost', '127.0.0.1']
+# DEBUG = True
 
 
 # Application definition
@@ -45,7 +42,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.line',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'sass_processor',
     'taggit',
     'markdownx',
@@ -53,8 +50,6 @@ INSTALLED_APPS = [
     'imagekit',
     'storages',
 ]
-
-SITE_ID = 2
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,28 +80,32 @@ TEMPLATES = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
+WSGI_APPLICATION = 'def_init.wsgi.application'
 
-    # `allauth` specific authentication methods, such as login by e-mail
+# Database
+# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# アカウント系設定
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
-
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
-
 ACCOUNT_USERNAME_REQUIRED = True
-
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-
 ACCOUNT_EMAIL_REQUIRED = True
-
 ACCOUNT_UNIQUE_EMAIL = True
-
 ACCOUNT_LOGOUT_ON_GET = True
-
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -120,8 +119,6 @@ EMAIL_USE_SSL = True
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = 'index'
 
-WSGI_APPLICATION = 'def_init.wsgi.application'
-
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.MyCustomLoginForm',
     'signup': 'accounts.forms.MyCustomSignupForm'
@@ -132,17 +129,6 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile','openid'],
     }
 }
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -176,44 +162,46 @@ USE_L10N = True
 
 USE_TZ = True
 
+SITE_ID = 2
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-# STATICFILES_FINDERS = [
-#     'django.contrib.staticfiles.finders.FileSystemFinder',
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#     'sass_processor.finders.CssFinder',
-# ]
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
 
-# STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+STATIC_URL = '/static/'
+# STATIC_ROOT = BASE_DIR / 'static'
+
 # STATICFILES_DIRS = (
-# os.path.join(BASE_DIR, 'static'),
+#     BASE_DIR / 'static'
 # )
 
-SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
 SASS_PRECISION = 8
 SASS_OUTPUT_STYLE = 'compressed'
 SASS_TEMPLATE_EXTS = ['.html', '.haml']
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 INTERNAL_IPS = ['127.0.0.1', '192.168.33.1']
 
 
-#AWS_S3
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_LOCATION = 'static'
-DEFAULT_FILE_STORAGE = 'def_init.storage_backends.MediaStorage'
-AWS_STORAGE_BUCKET_NAME = 'def-init'
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+# #AWS_S3
+# # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',
+# }
+# AWS_LOCATION = 'static'
+# DEFAULT_FILE_STORAGE = 'def_init.storage_backends.MediaStorage'
+# AWS_STORAGE_BUCKET_NAME = 'def-init'
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'fenced_code', # コードブロック
@@ -223,6 +211,6 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
 ]
 
 try:
-    from .local_settings import *
+    from ..local_settings import *
 except ImportError:
     pass
