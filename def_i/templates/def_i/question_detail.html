@@ -50,13 +50,11 @@
         <article class="comment">
             <div class="comment-info">
                 <a href="{% url 'user_page' c.msg_from.pk %}">
-                    {#% if c.msg_from.user_image %#}
-                        <!-- <img src="{{c.msg_from.user_image.url}}" width="30" alt=""> -->
-                        aaaaaaaa
-                    {#% else %#}
-                    bbbbbbbbbb
-                        <!-- <img src="{#% static 'def_i/img/default.png' %#}" alt=""> -->
-                    {#% endif %#}
+                    {% if c.msg_from.user_image %}
+                        <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}" alt="">
+                    {% endif %}
                     <p>{{c.msg_from}}></p>
                 </a>
                 <p>{{c.time|date:"Y/n/j H:i"}}</p>
@@ -85,7 +83,7 @@
 
         <h3>投稿者</h3>
         <div class="sidebar-poster-info">
-            {% if contents.poster.user_image.url %}
+            {% if contents.poster.user_image %}
                 <img src="{{contents.poster.user_image.url}}" alt="">
             {% else %}
                 <img src="{% static 'def_i/img/default.png' %}" alt="">

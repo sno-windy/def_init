@@ -79,7 +79,7 @@
     <div class="sidebar-poster">
         <h3>投稿者</h3>
         <div class="sidebar-poster-info">
-            {% if contents.poster.user_image.url %}
+            {% if contents.poster.user_image %}
             <img src="{{contents.poster.user_image.url}}" alt="">
             {% else %}
             <img src="{% static 'def_i/img/default.png' %}" alt="">
