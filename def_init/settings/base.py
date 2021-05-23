@@ -108,14 +108,6 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.muumuu-mail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-
-# secret_settings.pyにEMAIL_HOST_USERとEMAIL_HOST_PASSWORDとDEFAULT_FROM_EMAILを設定
-# 登録済みのメールアドレスでないと送信できない
-
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = 'index'
 
@@ -173,11 +165,12 @@ STATICFILES_FINDERS = [
 ]
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'static'
+# ↓collectstaticしたときにstaticfilesディレクトリに集約される
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# STATICFILES_DIRS = (
-#     BASE_DIR / 'static'
-# )
+STATICFILES_DIRS = (
+    str(Path(BASE_DIR) / 'static'),
+)
 
 SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
@@ -188,21 +181,6 @@ SASS_TEMPLATE_EXTS = ['.html', '.haml']
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-INTERNAL_IPS = ['127.0.0.1', '192.168.33.1']
-
-
-# #AWS_S3
-# # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
-# AWS_S3_OBJECT_PARAMETERS = {
-#     'CacheControl': 'max-age=86400',
-# }
-# AWS_LOCATION = 'static'
-# DEFAULT_FILE_STORAGE = 'def_init.storage_backends.MediaStorage'
-# AWS_STORAGE_BUCKET_NAME = 'def-init'
-# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-# STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'fenced_code', # コードブロック
     'tables', # テーブル
@@ -210,7 +188,7 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'nl2br', # 改行
 ]
 
-try:
-    from ..local_settings import *
-except ImportError:
-    pass
+# try:
+#     from ..local_settings import *
+# except ImportError:
+#     pass
