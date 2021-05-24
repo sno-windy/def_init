@@ -23,6 +23,7 @@ $blue: #4e93e1;
   &-title {
     margin: 32px 0 26px 0;
     font-size: 22px;
+    word-break: break-word;
   }
   &-info {
     display: flex;
@@ -109,7 +110,6 @@ $blue: #4e93e1;
 }
 .comment {
   margin: 0 48px;
-  // background: #ffffff;
   border-bottom: 1px solid $line-gray;
 
   &-info {
@@ -237,6 +237,7 @@ $blue: #4e93e1;
     margin-top: 8px;
     &-title {
       padding: 16px 16px 0 16px;
+      word-break: break-word;
       a {
         display: block;
         height: 48px;
@@ -265,4 +266,7 @@ code{
     max-width:100%;
     word-break:break-all;
     word-wrap:break-word;
+}
+.no-contents {
+  margin: 32px 0 32px 48px;
 }

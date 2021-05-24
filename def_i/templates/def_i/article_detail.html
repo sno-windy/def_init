@@ -30,15 +30,19 @@
         </div>
         <div class="contents-images">
             {% if contents.article_image_1 %}
-            <img src="{{ contents.article_image_1_resize.url }}" alt="">
+            <a href="{{contents.article_image_1_resize.url}}">
+                <img src="{{ contents.article_image_1_resize.url }}" alt="">
+            </a>
             {% endif %}
             {% if contents.article_image_2 %}
-            <img src="{{ contents.article_image_2_resize.url }}" alt="">
+            <a href="{{contents.article_image_2_resize.url}}">
+                <img src="{{ contents.article_image_2_resize.url }}" alt="">
+            </a>
             {% endif %}
         </div>
 
+        {% if user == contents.poster %}
         <div class="contents-buttons">
-            {% if user == contents.poster %}
             <span class="btn-edit"><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
             <span class="btn-delete"><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
         </div>
@@ -53,7 +57,11 @@
             <article class="comment">
                 <div class="comment-info">
                     <a href="{% url 'user_page' c.msg_from.pk %}">
-                        <img src="{{c.msg_from.user_image.url}}" alt="">
+                        {% if c.msg_from.user_image %}
+                            <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+                        {% else %}
+                            <img src="{% static 'def_i/img/default.png' %}" alt="">
+                        {% endif %}
                         <p>{{c.msg_from}}</p>
                     </a>
                     <p>{{c.time|date:"Y/n/j H:i"}}</p>
@@ -61,7 +69,7 @@
                 <div class="comment-text">{{c.msg}}</div>
             </article>
             {% empty %}
-            <p>コメントがありません．</p>
+            <p class="no-contents">コメントがありません．</p>
             {% endfor %}
     </div>
 
@@ -81,7 +89,7 @@
     <div class="sidebar-poster">
         <h3>投稿者</h3>
         <div class="sidebar-poster-info">
-            {% if contents.poster.user_image.url %}
+            {% if contents.poster.user_image %}
                 <img src="{{contents.poster.user_image.url}}" alt="">
             {% else %}
                 <img src="{% static 'def_i/img/default.png' %}" alt="">
