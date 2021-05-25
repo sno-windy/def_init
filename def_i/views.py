@@ -255,6 +255,11 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
+        return context
+
 
 class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     model = Question
@@ -470,6 +475,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         question.poster = self.request.user
         question.lesson = question_at
         question.save()
+        self.question = question
         question.notify_new_question()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -479,7 +485,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_question_post',kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('question_post_suc',kwargs={"pk":self.question.pk})
 
 
 class TaskArticlePost(LoginRequiredMixin, CreateView):
@@ -510,6 +516,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         article.poster = self.request.user
         article.lesson = article_at
         article.save()
+        self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
@@ -518,7 +525,10 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_article_post', kwargs={"pk":self.kwargs['pk']})
+        if self.article.is_published:
+            return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
+        else:
+            return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
 
 
 def pass_courses():

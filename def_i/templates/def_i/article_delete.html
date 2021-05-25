@@ -1,12 +1,128 @@
 {% extends 'def_i/base.html' %}
-{% load static %}
+{% load static sass_tags %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_delete.scss' %}">
+{% endblock extra_style %}
+
 {% block menubar %}{% endblock menubar %}
+
 {% block contents %}
-<form action="" method="POST">
+<div class="main-bar">
+
+    <div id="note" class="contents">
+        <h1 class="contents-title">{{contents.title}}</h1>
+        <div class="contents-info">
+            <div class="like-outer">
+                {#% include 'def_i/like.html' %#}
+            </div>
+
+            <div class="contents-info-at">
+                <div class="contents-info-at-category">{{contents.category}}</div>
+                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+            </div>
+            <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
+        </div>
+
+        <div class="contents-text">
+            {{contents.formatted_markdown|safe}}
+        </div>
+        <div class="contents-images">
+            {% if contents.article_image_1 %}
+            <img src="{{ contents.article_image_1_resize.url }}" alt="">
+            {% endif %}
+            {% if contents.article_image_2 %}
+            <img src="{{ contents.article_image_2_resize.url }}" alt="">
+            {% endif %}
+        </div>
+
+        <div class="contents-buttons">
+            {% if user == contents.poster %}
+            <span class="btn-edit"><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
+            <span class="btn-delete"><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <div class="comments-wrapper">
+        <h2 class="comments-wrapper__title" id="comments">コメント</h2>
+
+        {% for c in comments %}
+        <article class="comment">
+            <div class="comment-info">
+                <a href="{% url 'user_page' c.msg_from.pk %}">
+                    <img src="{{c.msg_from.user_image.url}}" alt="">
+                    <p>{{c.msg_from}}</p>
+                </a>
+                <p>{{c.time|date:"Y/n/j H:i"}}</p>
+            </div>
+            <div class="comment-text">{{c.msg}}</div>
+        </article>
+        {% empty %}
+        <p>コメントがありません．</p>
+        {% endfor %}
+    </div>
+
+    <div class="form-wrapper">
+        <form method="POST">
+            {% csrf_token %}
+            {{comment_form.msg}}
+            <button type='submit' name="comment_form">
+                <img src="{% static 'def_i/img/send-icon.svg' %}" alt="コメントを送信">
+            </button>
+        </form>
+    </div>
+</div> --
+<!-- サイドバー -->
+<div class="sidebar">
+    <div class="sidebar-poster">
+        <h3>投稿者</h3>
+        <div class="sidebar-poster-info">
+            {% if contents.poster.user_image %}
+            <img src="{{contents.poster.user_image.url}}" alt="">
+            {% else %}
+            <img src="{% static 'def_i/img/default.png' %}" alt="">
+            {% endif %}
+            {{contents.poster}}
+        </div>
+        {% if user == contents.poster %}
+        <form name="publish_form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="publish_form">
+            {% if contents.is_published %}
+            <input type="checkbox" id="id_is_published" name="publish" checked>
+            {% else %}
+            <input type="checkbox" id="id_is_published" name="publish">
+            {% endif %}
+            <span>ノートを公開する</span>
+
+        </form>
+        {% endif %}
+    </div>
+    <div class="sidebar-move">
+        <div id="to_note">ノート</div>
+        <div id="to_comment">コメント</div>
+    </div>
+
+    <h3>関連したノート</h3>
+    <div class="related-contents">
+        {% for article in related_articles %}
+        <div class="related-contents-title">
+            <a href="{% url 'article_detail' article.pk %}">{{article.title|truncatechars:40}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div> -->
+
+<form action="" method="POST" class="popup">
     {% csrf_token %}
-    <p>タイトル：{{article.title}}</p>
-    <p>本当に削除しますか？</p>
-    <button class="button" type="submit">はい，削除します</button>
-    <a href="{% url 'article_detail' object.pk %}">やっぱりやめます</a>
+    <p>本当にノートを削除しますか？</p>
+    <div class="btns">
+        <button class="button" type="submit"><span>ノートを削除する</span></button>
+        <div class="cancel">
+            <a href="{% url 'article_detail' object.pk %}">キャンセル</a>
+        </div>
+    </div>
 </form>
 {% endblock contents %}
