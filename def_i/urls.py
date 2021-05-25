@@ -25,6 +25,7 @@ urlpatterns = [
 
     # コース系
     path('course/', views.course, name="course"),
+    path('studying_course/<int:cat_num>/',views.studying_category, name="studying_course"),
     path('course/<str:category>/',views.CourseList.as_view(),name='course_list'),
     path('task_backend/<int:pk>/', views.TaskDetail.as_view(), name='task_detail'),
     # path('task_backend/<int:pk>/memo', views.MemoView, name='task_memo'),
@@ -37,6 +38,7 @@ urlpatterns = [
 
     # マイページ系
     path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
+    path('notify_bell/',views.notify_bell,name='notify'),
     path('like/<int:pk>/',views.LikeView,name='like'),
     path('bookmark/<int:pk>/', views.BookMarkView, name='bookmark'),
     path('user_page/<int:pk>/',views.userpage_view,name='user_page'),

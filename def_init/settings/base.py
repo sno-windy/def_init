@@ -187,8 +187,3 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'toc', # 目次
     'nl2br', # 改行
 ]
-
-# try:
-#     from ..local_settings import *
-# except ImportError:
-#     pass

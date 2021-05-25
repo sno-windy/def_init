@@ -37,7 +37,7 @@
                 <p class="header-container__icon"><img src="{% static 'def_i/img/Free_Sample_By_Wix-2.jpg' %}"></p>
                 <p class="header-container__title">Def <span style="color:#3011ab;">Init</span></p>
             </a>
-            <a class="header-container__contents tasknow" href="{% url 'index' %}">コース</a>
+            <a class="header-container__contents tasknow" href="{% url 'course' %}">コース</a>
             <a class="header-container__contents studynow" href="{% url 'question_feed' %}?orderby=new">質問</a>
             <a class="header-container__contents studynow" href="{% url 'article_feed' %}?orderby=new">ノート</a>
             <div class="header-container__user" id="icon">
@@ -54,29 +54,7 @@
                 </div>
 
             </div>
-            <div class="header-container__notification-button" id="bell">
-                <p><img src="{% static 'def_i/img/bell-icon.svg' %}" alt=""></p>
-                <div class="header__notify hidden_class" id="hover_notify">
-                    <a href="{% url 'message_notification' %}">
-                        <h2>お知らせ</h2>
-                    </a>
-                    {% for like in new_likes %}
-                        <p>{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p>
-                    {% endfor %}
-
-                    {% for bookmark in new_bookmarks %}
-                        <p>{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p>
-                    {% endfor %}
-
-                    {% for comment in article_talk %}
-                        <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
-                    {% endfor %}
-
-                    {% for comment in question_talk %}
-                        <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
-                    {% endfor %}
-                </div>
-            </div>
+            {% include 'def_i/notify_bell.html' %}
         </div>
     </header>
     {% endblock header %}

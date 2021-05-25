@@ -29,16 +29,15 @@
 {% else %}
 {% endif %}
 <h1>質問</h1>
-{% if question %}
 <div class="choice-button">
+    {% if request.GET.orderby == 'like' %}
+    <p id="art-new"><a href="?orderby=new&q_page={{request.GET.a_page}}">あなたの質問</a></p>
+    <p id="like" class="here"><a href="?orderby=like&q_page={{request.GET.q_page}}">いいねした質問</a></p>
 
-    {% if request.GET.orderby == 'new' %}
+    {% else %}
     <p id="art-new" class="here"><a href="?orderby=new&a_page={{request.GET.a_page}}">あなたの質問</a></p>
     <p id="like"><a href="{% url 'my_page' %}?orderby=like&a_page={{request.GET.al_page}}">いいねした質問</a></p>
 
-    {% else %}
-    <p id="art-new"><a href="?orderby=new&q_page={{request.GET.a_page}}">あなたの質問</a></p>
-    <p id="like" class="here"><a href="?orderby=like&q_page={{request.GET.q_page}}">いいねした質問</a></p>
     {% endif %}
 </div>
 <div class="main-container__contents-article-container">
@@ -105,17 +104,15 @@
     </p>
     {% endif %}
 </div>
-{% endif %}
-{% if article %}
 <h1>ノート</h1>
 <div class="choice-button">
-    {% if request.GET.orderby == 'new' %}
-    <p id="art-new" class="here"><a href="?orderby=new&a_page={{request.GET.a_page}}">あなたのノート</a></p>
-    <p id="like"><a href="{% url 'my_page' %}?orderby=like&a_page={{request.GET.al_page}}">いいねしたノート</a></p>
-
-    {% else %}
+    {% if request.GET.orderby == 'like' %}
     <p id="art-new"><a href="?orderby=new&a_page={{request.GET.a_page}}">あなたのノート</a></p>
     <p id="like" class="here"><a href="?orderby=like&a_page={{request.GET.a_page}}">いいねしたノート</a></p>
+
+    {% else %}
+    <p id="art-new" class="here"><a href="?orderby=new&a_page={{request.GET.a_page}}">あなたのノート</a></p>
+    <p id="like"><a href="{% url 'my_page' %}?orderby=like&a_page={{request.GET.al_page}}">いいねしたノート</a></p>
     {% endif %}
 </div>
 
@@ -143,8 +140,8 @@
         <p class="btn2"><a href="{% url 'article_post' %}">ノートを書く</a></p>
     </div>
 </div>
-{% endif %}
 <div class="pagination">{% include 'def_i/pagination.html' %}</div>
+
 
 <p>{{learning_course}}</p>
 <p>{{learning_lesson}}</p>

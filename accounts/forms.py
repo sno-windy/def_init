@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from django.contrib.auth.forms import PasswordChangeForm,PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from allauth.account.forms import SignupForm, LoginForm
 from .models import User
 
@@ -34,9 +34,7 @@ class MyCustomSignupForm(SignupForm):
 
 class MyCustomLoginForm(LoginForm):
 
-
     def login(self, *args, **kwargs):
-
         return super(MyCustomLoginForm, self).login(*args, **kwargs)
 
 class UserChangeForm(forms.ModelForm):

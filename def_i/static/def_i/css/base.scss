@@ -215,9 +215,19 @@ h1{
                     h2{
                         margin-top: 24px;
                     }
-                    p{
-                        margin-top: 16px;
+                }
+                &-progress{
+                    margin-top: 16px;
+                    margin-bottom: 28px;
+                    span{
+                        font-size: 12px;
+                        color: #21212140;
                     }
+                }
+                &-lesson{
+                    font-size: 14px;
+                    color: #21212160;
+                    letter-spacing: 0.29px;
                 }
             }
             //ノートや質問などに使えます
@@ -486,11 +496,8 @@ h1{
         background-color: white;
         padding: 100px;
         word-break: break-all;
-
     }
-
 }
-
 
 a{
     text-decoration: none;
@@ -512,23 +519,23 @@ a{
         margin-right: 8px;
         width: 24px;
         background-color: #fff;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
         a{
-            color: #2f458e;
+            color: #4d45d5;
         }
     }
     &_num{
         a{
-            color: #2f458e;
+            color: #4d45d5;
         }
     }
     &_here{
         height: 32px;
         width: 32px;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
-        background-color: #2f458e;
+        background-color: #4d45d5;
         color: #fff;
         margin-right: 8px;
     }
@@ -536,22 +543,18 @@ a{
         height: 32px;
         width: 32px;
         background-color: #fff;
-        border: 1px solid #2f458e;
+        border: 1px solid #4d45d5;
         border-radius: 4px;
         margin-right: 8px;
 
         span{
-            color: #2f458e;
+            color: #4d45d5;
             font-size: 16px;
         }
     }
 }
 
-.alert{
-    font-size: 0.8rem;
-    margin-bottom: 0px;
-    color: white;
-}
+
 
 //ノート一覧を見る など
 .btn1{
@@ -560,6 +563,10 @@ a{
     background: #4D45D5 0% 0% no-repeat padding-box;
     box-shadow: 0px 1px 6px #21212119;
     border-radius: 4px;
+    &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 48px;
@@ -575,6 +582,10 @@ a{
     background: #76b2ea 0% 0% no-repeat padding-box;
     box-shadow: 0px 1px 6px #21212119;
     border-radius: 4px;
+    &:hover{
+        background-color: #5FA2E6;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 48px;
@@ -590,6 +601,10 @@ a{
     height: 40px;
     background: #4D45D5 0% 0% no-repeat padding-box;
     border-radius: 4px;
+    &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+    }
     a{
         display: inline-block;
         line-height: 40px;
@@ -609,7 +624,16 @@ a{
     border: 2px solid #76B2EA;
     line-height: 40px;
     :hover{
-        background: #76B2EA 0% 0% no-repeat padding-box;
-        border: 2px solid #76B2EA;
+        background: #5FA2E6 0% 0% no-repeat padding-box;
+        border: 2px solid #5FA2E6;
     }
+}
+.category_progress_bar{
+    span{
+        font-size: 10px;
+        color: #21212160;
+    }
+}
+#category_progress_bar{
+    width: 128px;
 }
