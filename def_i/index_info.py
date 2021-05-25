@@ -11,23 +11,45 @@ class GetIndexInfo:
         # 他の情報取得に使うため、進行中のコースを取得
         self.studying_category = Category.objects.filter(studying_category__user=user)[:1]
 
-        self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
-        try:
-            self.last_cleared_lesson = self.cleared_lesson[0]
-            next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
-            next_course_num = self.last_cleared_lesson.lesson.course.course_num + 1
-        except IndexError:
-            # まだ一つもレッスンを完了していない場合
-            self.last_cleared_lesson = 0
-            next_lesson_num = 1
-            next_course_num = 1
+        self.studying_course = Course.objects.filter(category=self.studying_category)
 
+        self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
+
+        self.last_cleared_lesson = self.cleared_lesson[0]
+
+        self.last_cleared_course = self.last_cleared_lesson.lesson.course.course_num
+
+        next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
         try:
-            next_course = Course.objects.get(course_num=next_course_num,category=self.studying_category)
-            self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course)
+            next_lesson = Lesson.objects.get(course__in=self.studying_course,lesson_num=next_lesson_num, course__course_num=self.last_cleared_course)
+
+            self.learning_lesson = next_lesson
+
         except ObjectDoesNotExist:
-            # 全てのレッスンを完了した場合
-            self.learning_lesson = 0
+
+            next_course_num = self.last_cleared_course + 1
+
+            try:
+                next_course = Course.objects.get(category=self.studying_category,course_num=next_course_num)
+
+                self.learning_lesson = Lesson.objects.get(course__in=self.studying_course,course=next_course,lesson_num=1)
+            except ObjectDoesNotExist:
+                self.learning_lesson = None
+        # try:
+        #     self.last_cleared_lesson = self.cleared_lesson[0]
+        #     next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+        # except IndexError:
+        #     # まだ一つもレッスンを完了していない場合
+        #     self.last_cleared_lesson = 0
+        #     next_lesson_num = 1
+        #     next_course_num = 1
+
+        # try:
+        #     next_course = Course.objects.get(course_num=next_course_num,category=self.studying_category)
+        #     self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course)
+        # except ObjectDoesNotExist:
+        #     # 全てのレッスンを完了した場合
+        #     self.learning_lesson = 0
 
 
 

@@ -12,8 +12,16 @@
 <img src="{{studying.category.category_image.url}}">
 <div class="main-container__contents-studying-info">
     <h2>{{studying.category}}</h2>
-    <p>進捗率</p>
-    <p>学習中コース</p>
+    <div class="main-container__contents-studying-progress">
+    {% for cat,prog in progress %}
+    {% if cat == studying.category %}
+        <progress id="progress_bar"
+       min="0" max="100"
+       value="{{prog}}"></progress><span>{{prog}}% 達成済み</span>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
 </div>
 
 <p class="btn1"><a href="">続きからはじめる</a></p>
@@ -28,11 +36,33 @@
     <div class="indexbox-container-box">
         <h1>{{cat.title}}</h1>
         <img src="{{cat.category_image.url}}" alt="">
-        <div class="progress_bar">{{prog}}</div>
-        <p>{{cat.description}}</p>
+        <div class="category_progress_bar">
+            <progress id="category_progress_bar"
+                min="0" max="100"
+                value="{{prog}}">
+            </progress>
+            <span><br>{{prog}}% 達成済み</span>
+        </div>
+
+        <p class="category_description">{{cat.description}}</p>
         <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
-        <p class="btn4">学習中にする</p>
+        <p class="btn4" id="studying-{{cat.pk}}">学習中にする</p>
     </div>
     {% endfor %}
     </div>
 {% endblock contents %}
+{% block javascript %}
+<script>
+let range = {{progress|length}}
+{% for cat,_ in progress %}
+
+document.getElementById('studying-{{cat.pk}}').addEventListener('click',()=>{
+    for(let i = 1;i<=range;i++){
+        document.getElementById('studying-'+i).classList.remove('btn4-studying')
+    }
+    document.getElementById('studying-{{cat.pk}}').classList.toggle('btn4-studying')
+})
+
+{% endfor %}
+</script>
+{% endblock javascript %}
