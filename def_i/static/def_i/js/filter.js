@@ -8,16 +8,13 @@ function filterCourse() {
     }
     const categoryId = categorySelect.value;
     const newCourseSelect = courses[categoryId];
-    console.log('newCourseSelect:' + newCourseSelect);
 
     for (const course of newCourseSelect) {
         const option = document.createElement("option");
         option.text = course.title;
         option.value = course.pk;
         courseSelect.appendChild(option);
-        console.log('8');
     }
-    console.log('10');
 };
 
 function filterLesson() {
@@ -26,7 +23,6 @@ function filterLesson() {
     }
     const courseId = courseSelect.value;
     const newlessonSelect = lessons[courseId];
-    console.log('newlessonSelect:' + newlessonSelect);
 
     for (const lesson of newlessonSelect) {
         const option = document.createElement("option");
@@ -36,10 +32,13 @@ function filterLesson() {
     }
 };
 
-document.getElementById("id_category").onchange = function () {
+categorySelect.onchange = function () {
     filterCourse();
+    filterLesson();
+    courseSelect.removeAttribute('disabled');
 };
 
-document.getElementById("id_course").onchange = function () {
+courseSelect.onchange = function () {
     filterLesson();
+    lessonSelect.removeAttribute('disabled');
 }

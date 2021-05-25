@@ -20,8 +20,8 @@ class ArticleTalkForm(forms.ModelForm):
 
 class ArticlePostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='コースをタブから選択')
-    course = forms.ModelChoiceField(Course.objects.all(), empty_label='レッスンをタブから選択')
-    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='セクションをタブから選択')
+    course = forms.ModelChoiceField(Course.objects.all(), empty_label='レッスンをタブから選択', disabled=True)
+    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='セクションをタブから選択', disabled=True)
 
     class Meta:
         model = Article
@@ -57,8 +57,8 @@ class QuestionTalkForm(forms.ModelForm):
 
 class QuestionPostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
-    course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択')
-    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択')
+    course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択', disabled=True)
+    lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択', disabled=True)
 
     class Meta:
         model = Question

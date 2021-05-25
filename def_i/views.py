@@ -188,10 +188,6 @@ class ArticlePost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         article = form.save(commit=False)
         article.poster = self.request.user
-        course,_ = Course.objects.get_or_create(title='public')
-        article_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
-        article.lesson = article_at
-        article.save()
         self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
@@ -399,9 +395,6 @@ class QuestionPost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
-        course,_ = Course.objects.get_or_create(title='public')
-        question_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
-        question.lesson = question_at
         question.save()
         self.question = question
         #push通知
@@ -471,17 +464,15 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         pk = self.kwargs['pk']
-        question_at = Lesson.objects.get(pk=pk)
         question = form.save(commit=False)
         question.poster = self.request.user
-        question.lesson = question_at
         question.save()
         self.question = question
         question.notify_new_question()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'質問作成に失敗しました．')
         return super().form_invalid(form)
 
@@ -512,16 +503,14 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         pk = self.kwargs['pk']
-        article_at = Lesson.objects.get(pk=pk)
         article = form.save(commit=False)
         article.poster = self.request.user
-        article.lesson = article_at
         article.save()
         self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'ノート保存に失敗しました．')
         return super().form_invalid(form)
 
