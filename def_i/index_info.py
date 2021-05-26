@@ -135,7 +135,7 @@ class GetIndexInfo:
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
         if self.last_cleared_lesson:
-            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:6]
+            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
             return colleague_data
         else:
             colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)

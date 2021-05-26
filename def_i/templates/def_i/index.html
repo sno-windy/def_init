@@ -175,15 +175,24 @@
     </div>
 </div>
 </div>
-{% comment %}
-<h2>進捗が近いユーザー</h2>
-<div>
-    <h3>ユーザー</h3>
+
+<h1 class="index_title">進捗が近いユーザー</h1>
+<div class="colleague_wrapper">
     {% for colleague in colleagues %}
-        <a href="{% url 'user_page' colleague.pk %}">{{colleague}}</a>
+    <div class="colleague_box">
+        {% if colleague.user_image %}
+            <img src="{{colleague.user_image.url}}" width="30">
+        {% else %}
+            <img src="{% static 'def_i/img/default.png' %}">
+        {% endif %}
+            <a href="{% url 'user_page' colleague.pk %}"><p class="colleague_name">{{colleague}}</p></a>
+            <p>{{colleague.studying_category}}</p> <!--表示されない．-->
+            <p></p>
+    </div>
+    {% empty %}
+    <p>進捗が近いユーザーはいません．</p>
     {% endfor %}
-    <p>ユーザーの進捗</p>
-</div> {% endcomment %}
+</div>
 <div>
 <h1 class="index_title">コース一覧</h1>
     {% comment %} <p>完了率：{{all_progress|floatformat}}%</p> {% endcomment %}
@@ -206,17 +215,7 @@
     {% endfor %}
     </div>
     </p>
-    {% comment %} {% if not learning_lesson %}
-        <p>全てのレッスンを完了しました。</p>
-    {% else %}
-        <p>勉強するレッスン：<a href="{% url 'task_detail' learning_lesson.pk %}">{{learning_lesson}}</a></p>
-    {% endif %}
-
-    <a href="{% url 'course' %}">
-        <p>講座一覧へ</p>
-    </a>
-</div>
-
+    {% comment %}
 <a href="{% url 'message_notification' %}">
     <h2>お知らせ</h2>
 </a>
