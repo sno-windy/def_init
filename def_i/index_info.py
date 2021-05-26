@@ -1,6 +1,9 @@
+import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Count, OuterRef, Subquery
+from django.utils.timezone import make_aware
 
 from .models import *
 
@@ -14,12 +17,22 @@ class GetIndexInfo:
         self.studying_course = Course.objects.filter(category=self.studying_category)
 
         self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
+        try:
+            self.last_cleared_lesson = self.cleared_lesson[0]
 
-        self.last_cleared_lesson = self.cleared_lesson[0]
+            self.last_cleared_course = self.last_cleared_lesson.lesson.course.course_num
 
-        self.last_cleared_course = self.last_cleared_lesson.lesson.course.course_num
+            next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
 
-        next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+        except IndexError: #ひとつも取り組んでいない
+            self.last_cleared_lesson = 0
+
+            self.last_cleared_course = 0
+
+            next_lesson_num = 1
+
+            next_course_num = 1
+
         try:
             next_lesson = Lesson.objects.get(course__in=self.studying_course,lesson_num=next_lesson_num, course__course_num=self.last_cleared_course)
 
@@ -55,10 +68,14 @@ class GetIndexInfo:
 
     # ユーザーのランキング情報を取得
     def get_ranking(self):
+        date = make_aware(timezone.datetime.today())
+        a_week_ago = date + datetime.timedelta(days=-7)
+        print(a_week_ago)
         ranking = User.objects.annotate(
             cleared_lesson_num = Subquery(
                 ClearedLesson.objects
                     .filter(user=OuterRef('pk'))
+                    .filter(cleared_at__gte=a_week_ago)
                     .values('user')
                     .annotate(count = Count('pk'))
                     .values('count')
@@ -66,6 +83,7 @@ class GetIndexInfo:
             note_num = Subquery(
                 Article.objects
                     .filter(poster=OuterRef('pk'))
+                    .filter(created_at__gte=a_week_ago)
                     .values('poster')
                     .annotate(count = Count('pk'))
                     .values('count')
