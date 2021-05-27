@@ -1,47 +1,26 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
+{% load sass_tags %}
 {% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/task_detail.scss' %}">
 {% endblock extra_style %}
 {% block contents %}
-{% block menubar %}
-<div class="main-container__menubar">
-    <a href="{% url 'task_detail' lesson.pk %}" class="main-container__menubar-link now-here">
-        <h1>機能</h1>
-    </a>
-    <a href="{% url 'task_question' lesson.pk %}" class="main-container__menubar-link">
-        <h1>過去の質問</h1>
-    </a>
-    <a href="{% url 'task_question' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_question' lesson.pk %}?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──未回答</p>
-    </a>
-    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
-        <h1>過去のまとめ</h1>
-    </a>
-    <a href="{% url 'task_article' lesson.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_article' lesson.pk %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──いいね順</p>
-    </a>
-    {% comment %} <a href="{% url 'task_memo' lesson.pk %}" class="main-container__menubar-link">
-        <h1>メモ帳</h1>
-    </a> {% endcomment %}
-</div>
-{% endblock menubar %}
-<div class="detail">
-    <h1>{{ lesson.title }}</h1>
-    <p class="task_contents">{{ lesson.contents }}</p>
-    <div class="buttons">
-        <a class="button"  href="{% url 'task_article_post'  lesson.pk %}"><p>まとめる</p></a>
-        <a class="button" href="{% url 'task_question_post' lesson.pk %}"><p>質問する</p></a>
+<div class="main-container__contents-menubar">
+    <div class="main-container__contents-menubar-title">
+        <p>レッスン{{course.course_num}}</p>
     </div>
-</div>
-
-
-
-
-
+    {% for course,_ in course_and_progress %}
+    <a href="" class="main-container__contents-menubar-lesson">
+        <div class="lesson_checkbox">
+        </div>
+        <p>{{lesson.lesson_num}}. {{lesson}}</p>
+    </a>
+    {% endfor %}
+    <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
+        <p>質問する</p>
+    </a>
+    <a href="{% url 'article_post' %}" class="main-container__contents-menubar-q">
+        <p>ノートを書く</p>
+    </a>
+    </div>
 {% endblock contents %}
