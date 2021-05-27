@@ -1,48 +1,74 @@
 {% extends 'def_i/base.html' %}
 {% load static %}
+{% load sass_tags %}
 {% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/base-task.scss' %}">
 {% endblock extra_style %}
 {% block contents %}
-<h1>課題</h1>
-<div class="main-container__contents-taskboxies">
-{% for course,prog in course_and_progress %}
-{% if course.title == 'public' %}
-{% else %}
-<div class ="main-container__contents-taskbox js-accordion-title">
-    <p class="main-container__contents-taskbox-tag ">課題{{course.course_num}}:進捗{{prog}}%</p>
-    <p class="main-container__contents-taskbox-descript">{{ course.title }}</p>
-</div>
-<div class="main-container__contents-taskbox-details accordion__content">
-    {% for lesson in course.lessons.all %}
-    <a href="{% url 'task_detail' lesson.pk %}">
-        <div class="main-container__contents-taskbox-detail">
-          <p class="main-container__contents-taskbox-detail-tag">
-            課題{{ course.course_num }}-{{ lesson.lesson_num }}</p>
-          <p class="main-container__contents-taskbox-detail-descript">{{ lesson.title }}</p>
-        </div>
+  <div class="main-container__contents-menubar">
+    <div class="main-container__contents-menubar-title">
+      <p>コース内容</p>
+    </div>
+    {% for course,_ in course_and_progress %}
+    <a href="" class="main-container__contents-menubar-lesson">
+      <div class="lesson_checkbox">
+      </div>
+      <p>レッスン{{course.course_num}}</p>
     </a>
     {% endfor %}
-    <p>{{course.}}</p>
-</div>
-{% endif %}
-{% endfor %}
-
-</div>
+    <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
+      <p>質問する</p>
+    </a>
+    <a href="{% url 'article_post' %}" class="main-container__contents-menubar-q">
+      <p>ノートを書く</p>
+    </a>
+  </div>
+  <div class="main-container__contents-task-boxies">
+    <div class=main-container__contents-task-title>
+      {{category}}
+    </div>
+    {% for course,prog in course_and_progress %}
+    {% if course.title == 'public' %}
+    {% else %}
+    
+    <div class="main-container__contents-task-box js-accordion-title">
+      <div class="main-container__contents-task-box-top">
+        <div class="main-container__contents-task-box-checkbox">
+        </div>
+        <p class="main-container__contents-task-box-title">レッスン{{course.course_num}}</p>
+        <a class="main-container__contents-task-box-arrow">
+        <img src="def_i/static/def_i/img/expand-less.svg" width="40" height="40">
+        </a>
+      </div>
+      <div class="main-container__contents-task-box-detail">
+        <p class="category-description">{{category.description}}</p>
+        <div class="main-container__contents-task-box-detail-sub">
+          <div class="progress_bar">{{prog}}</div>
+          <p class="clear-text">{{prog}} %達成済み</p>
+          <a  href="" class="btn-start-lesson"><p>はじめる</p></a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <!--main-container__contents-task-boxies-->
+  </div>
 {% endblock contents %}
 {% block javascript %}
 <script>
-document.addEventListener("DOMContentLoaded",() => {
-  const title = document.querySelectorAll('.js-accordion-title');
+  document.addEventListener("DOMContentLoaded", () => {
+    const title = document.querySelectorAll('.js-accordion-title');
 
-  for (let i = 0; i < title.length; i++){
-    let titleEach = title[i];
-    let content = titleEach.nextElementSibling;
-    titleEach.addEventListener('click', () => {
-      titleEach.classList.toggle('is-active');
-      content.classList.toggle('is-open');
-    });
-  }
+    for (let i = 0; i < title.length; i++) {
+      let titleEach = title[i];
+      let content = titleEach.nextElementSibling;
+      titleEach.addEventListener('click', () => {
+        titleEach.classList.toggle('is-active');
+        content.classList.toggle('is-open');
+      });
+    }
 
-});
+  });
 </script>
 {% endblock javascript %}

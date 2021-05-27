@@ -528,6 +528,11 @@ class CourseList(LoginRequiredMixin,ListView):
         print(course_and_progress)
         return course_and_progress
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.kwargs["category"]
+        return context
+    
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
