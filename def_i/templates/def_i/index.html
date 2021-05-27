@@ -8,16 +8,15 @@
 {% block menubar %}
 {% endblock menubar %}
 {% block contents %}
-{% comment %} <h2>ユーザーのランキング</h2>
-{% for rank in ranking %}
+<h1 class="index_title">今週のランキング</h1>{% for rank in ranking %}
     {% ifchanged rank.cleared_lesson_num rank.note_num %}
         <p>{{forloop.counter}}位：{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s)
         , wrote {{rank.note_num}} note(s)
         </p>
     {% else %}
-        <p>(同率）{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s), wrote {{rank.note_num}}</p>
+        <p>(同率）{{rank}}: cleared {{rank.cleared_lesson_num}} lesson(s), wrote {{rank.note_num}} note(s)</p>
     {% endifchanged %}
-{% endfor %} {% endcomment %}
+{% endfor %}
 
 {% if studying %}
 <h1 class="index_title">学習中のコース</h1>
@@ -25,8 +24,16 @@
 <img src="{{studying.category.category_image.url}}">
 <div class="main-container__contents-studying-info">
     <h2>{{studying.category}}</h2>
-    <p>進捗率</p>
-    <p>学習中コース</p>
+    <div class="main-container__contents-studying-progress">
+    {% for cat,prog in each_progress %}
+    {% if cat == studying.category %}
+        <progress id="progress_bar"
+       min="0" max="100"
+       value="{{prog}}"></progress><span>{{prog}}% 達成済み</span>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
 </div>
 
 <p class="btn1"><a href="">続きからはじめる</a></p>
@@ -145,10 +152,16 @@
     <div class="indexbox-container-box">
         <h1>{{cat.title}}</h1>
         <img src="{{cat.category_image.url}}" alt="">
-        <div class="progress_bar">{{prog}}</div>
-        <p>{{category.description}}</p>
+        <div class="category_progress_bar">
+            <progress id="category_progress_bar"
+                min="0" max="100"
+                value="{{prog}}">
+            </progress>
+            <span><br>{{prog}}% 達成済み</span>
+        </div>
+        <p class="category_description">{{cat.description}}</p>
         <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
-        <p class="btn4">学習中にする</p>
+        <p class="btn4" id="studying-{{cat.pk}}">学習中にする</p>
     </div>
     {% endfor %}
     </div>
@@ -184,3 +197,17 @@
 {% endfor %}
 {% endcomment %}
 {% endblock contents %}
+{% block javascript %}
+<script>
+let range = {{each_progress|length}}
+{% for cat,_ in each_progress %}
+document.getElementById('studying-{{cat.pk}}').addEventListener('click',()=>{
+    for(let i = 1;i<=range;i++){
+        document.getElementById('studying-'+i).classList.remove('btn4-studying')
+    }
+    document.getElementById('studying-{{cat.pk}}').classList.toggle('btn4-studying')
+})
+
+{% endfor %}
+</script>
+{% endblock javascript %}

@@ -1,4 +1,4 @@
-{% extends 'def_i/base.html' %}
+<!-- {% extends 'def_i/base.html' %}
 {% comment %} {% load static %}
 {% load sass_tags %}
 {% block extra_style %}
@@ -7,29 +7,7 @@
 {% block contents %}
 {% block menubar %}
 {% endblock menubar %}
-<div class="main-container__menubar">
-    <a href="{% url 'task_detail' pk.pk %}" class="main-container__menubar-link">
-        <h1>機能</h1>
-    </a>
-    <a href="{% url 'task_question' pk.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
-        <h1>過去の質問</h1>
-    </a>
-    <!--<div class="">box</div>-->
-    <a href="{% url 'task_question' pk.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_question' pk.pk %}?orderby=unanswered&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──未回答</p>
-    </a>
-    <a href="{% url 'task_article' pk.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-link">
-        <h1>過去のまとめ</h1>
-    </a>
-    <a href="{% url 'task_article' pk.pk %}?orderby=new&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──新着順</p>
-    </a>
-    <a href="{% url 'task_article' pk.pk %}?orderby=like&keyword={{request.GET.keyword}}" class="main-container__menubar-sublink">
-        <p><span style="visibility:hidden;">──</span>──いいね順</p>
-    </a>
+
     <a href="{% url 'task_memo' pk.pk %}" class="now-here">
         <h1>メモ帳</h1>
     </a>
@@ -41,4 +19,4 @@
     <input  type="submit" value="保存する" >
 </form>
 
-{% endblock contents %} {% endcomment %}
+{% endblock contents %} {% endcomment %} -->

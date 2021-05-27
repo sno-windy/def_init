@@ -35,7 +35,7 @@ class ArticlePostForm(forms.ModelForm):
                 attrs={'placeholder':'記事タイトル：30文字以内'}
             ),
             'content': MarkdownxWidget(
-                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;&#10; * 実現したいこと &#13;&#10; * 試したこと <br> * 出力されたエラー &#13;&#10; などを書きましょう'}
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）'}
             )
         }
 
@@ -73,7 +73,7 @@ class QuestionPostForm(forms.ModelForm):
         # emply_label = '選択してください'
         widgets = {
             'title': forms.TextInput(
-                attrs={'placeholder':'質問タイトル：30文字以内'}
+                attrs={'placeholder':'タイトルを入力：わからないことを書いてください'}
             ),
             'content': MarkdownxWidget(
                 attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう'}

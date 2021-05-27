@@ -5,10 +5,41 @@
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
-<h1>記事編集</h1>
-<form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
-{% csrf_token %}
-{{form}}
-<button type="submit" class="postform-btn">保存</button>
+
+<form action="" method="POST" class="postform-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="postnow">
+        <label class="post_checkbox" for="id_is_published">
+            <input type="checkbox" name="is_published" id="id_is_published">
+            <span class="checkbox_is_published"></span>
+            <span>ノートを公開する</span>
+        </label>
+    </div>
+    <div>{{form.title}}</div>
+    <div class="note-at">
+        {{form.category}}
+        {{form.course}}
+        {{form.lesson}}
+    </div>
+
+    <div class="content">
+        {{form.content}}
+        <label>
+            <div class="article_image_icon">
+                <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+            </div>
+            <input type="file" name="article_image_1" id="id_article_image_1" accept="image/*">
+        </label>
+    </div>
+    <button type="submit" class="postform-btn">ノートを投稿する</button>
 </form>
 {% endblock contents %}
+
+{% block javascript %}
+<script>
+    const courses = JSON.parse('{{course_dict|escapejs}}');
+    console.log("courses: " + courses);
+    const lessons = JSON.parse('{{lesson_dict|escapejs}}');
+</script>
+<script src="{% static 'def_i/js/filter.js' %}"></script>
+{% endblock javascript %}

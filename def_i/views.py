@@ -2,6 +2,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -14,6 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
                                   ListView, TemplateView, UpdateView)
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic.base import View
 from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
@@ -55,6 +57,20 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
         return context
+
+
+def notify_bell(request):
+    if request.method =="GET":
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
+        params={
+            'new_likes': new_likes,
+            'new_bookmarks': new_bookmarks,
+            'article_talk': article_talk,
+            'question_talk':question_talk,
+        }
+        return JsonResponse(params)
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
@@ -155,8 +171,13 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
 class ArticlePost(LoginRequiredMixin,CreateView):
     form_class = ArticlePostForm
     template_name = 'def_i/article_post.html'
-    success_url = reverse_lazy('article_post')
     #form_valid()を使わない場合，get_initial()で初期値をユーザーにすればよい
+
+    def get_success_url(self):
+        if self.article.is_published:
+            return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
+        else:
+            return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -171,6 +192,7 @@ class ArticlePost(LoginRequiredMixin,CreateView):
         article_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
         article.lesson = article_at
         article.save()
+        self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
@@ -179,16 +201,45 @@ class ArticlePost(LoginRequiredMixin,CreateView):
         return super().form_invalid(form)
 
 
+class ArticlePublishedView(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/article_post_suc.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "ノートを投稿しました。"
+        context["form"] = ArticlePostForm()
+        return context
+
+
+class ArticleSavedView(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/article_post_suc.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "下書きを保存しました。"
+        context["form"] = ArticlePostForm()
+        return context
+
 class ArticleUpdateView(LoginRequiredMixin,UpdateView):
     model = Article
     form_class = ArticlePostForm
     template_name = 'def_i/article_edit.html'
 
     def get_success_url(self):
-        return reverse_lazy('article_detail',kwargs={"pk":self.kwargs['pk']})
+        if self.article.is_published:
+            return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
+        else:
+            return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course_dict"] = pass_courses
+        context["lesson_dict"] = pass_lessons
+        return context
 
     def form_valid(self,form):
         messages.success(self.request,'記事を編集しました．')
+        self.article = form.save()
         return super().form_valid(form)
 
     def form_invalid(self,form):
@@ -204,6 +255,11 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
     def delete(self,request,*args,**kwargs):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
+        return context
 
 
 class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
@@ -280,7 +336,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
                 question.is_answered = True
                 question.save()
 
-            return redirect("question_talk_suc",pk=pk)
+            return redirect("question_detail",pk=pk)
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
@@ -318,16 +374,21 @@ def BookMarkView(request, pk):
 
         return JsonResponse(params)
 
-class QuestionTalkSuc(LoginRequiredMixin,TemplateView):
-    template_name = "question_talk_suc.html"
-    def get(self,request,pk):
-        return redirect("question_detail",pk=pk)
+class QuestionPostSuc(LoginRequiredMixin,TemplateView):
+    template_name = "def_i/question_post_suc.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pk"] = self.kwargs["pk"]
+        context["form"] = QuestionPostForm()
+        return context
 
 
 class QuestionPost(LoginRequiredMixin,CreateView):
     form_class = QuestionPostForm
     template_name = 'def_i/question_post.html'
-    success_url = reverse_lazy('question_post')
+
+    def get_success_url(self):
+        return reverse_lazy('question_post_suc', kwargs={'pk': self.question.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -342,6 +403,7 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
         question.lesson = question_at
         question.save()
+        self.question = question
         #push通知
         question.browser_push(self.request)
         question.notify_new_question()
@@ -388,7 +450,7 @@ class QuestionDeleteView(LoginRequiredMixin,DeleteView):
 
 class TaskQuestionPost(LoginRequiredMixin, CreateView):
     form_class = QuestionPostForm
-    template_name = 'def_i/task_question_post.html'
+    template_name = 'def_i/question_post.html'
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -414,6 +476,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         question.poster = self.request.user
         question.lesson = question_at
         question.save()
+        self.question = question
         question.notify_new_question()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -423,12 +486,12 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_question_post',kwargs={"pk":self.kwargs['pk']})
+        return reverse_lazy('question_post_suc',kwargs={"pk":self.question.pk})
 
 
 class TaskArticlePost(LoginRequiredMixin, CreateView):
     form_class = ArticlePostForm
-    template_name = 'def_i/task_article_post.html'
+    template_name = 'def_i/article_post.html'
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super().get_form_kwargs(*args, **kwargs)
@@ -454,6 +517,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         article.poster = self.request.user
         article.lesson = article_at
         article.save()
+        self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
@@ -462,7 +526,10 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse_lazy('task_article_post',kwargs={"pk":self.kwargs['pk']})
+        if self.article.is_published:
+            return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
+        else:
+            return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
 
 
 def pass_courses():
@@ -502,9 +569,12 @@ def course(request):
 
         info = GetIndexInfo(request.user)
         _,progress = info.get_progress(request.user)
+        learning_lesson = info.learning_lesson
+
         params = {
             "progress":progress,
             "studying":studying,
+            "learning_lesson":learning_lesson
         }
     return render(request, "def_i/course.html",params)
 
@@ -671,47 +741,6 @@ def LikeView(request,pk):
 
         return JsonResponse(params)
 
-# class UserPageView(LoginRequiredMixin,ListView):
-#     model = Article
-#     context_object_name = "articles"
-#     template_name = 'def_i/user_page.html'
-#     paginate_by = 5
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = User.objects.get(pk=self.kwargs['pk'])
-#         context["user_data"] = user
-#         context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:5]
-#         return context
-
-#     def get_queryset(self,**kwargs):
-#         articles = Article.objects.filter(poster=self.kwargs['pk']).order_by('-created_at')
-#         return articles
-
-# class MyPageView(LoginRequiredMixin,ListView):
-#     model = Article
-#     context_object_name = "articles"
-#     template_name = 'def_i/my_page.html'
-#     paginate_by = 5 #標準ではobject_listをうけとる
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = self.request.user
-#         info = GetIndexInfo(user)
-#         # like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
-#         # article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
-#         article_list = Article.objects.filter(like__user=user) #逆参照を使いましょう．
-#         question_list = Question.objects.filter(poster=user).order_by('-created_at')
-#         learning_lesson = info.learning_lesson
-#         context["learning_lesson"] = learning_lesson
-#         context["articles_like"] = article_list #いいねした記事リスト
-#         context["questions"] = question_list
-#         # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
-#         return context
-
-#     def get_queryset(self,**kwargs):
-#         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
-#         return articles
 
 def mypage_view(request):
     user = request.user
@@ -809,3 +838,8 @@ def userpage_view(request,pk):
 @csrf_exempt
 def callback(request):
     return handle_callback(request)
+
+
+def studying_category(request):
+
+    return JsonResponse()

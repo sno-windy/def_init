@@ -6,12 +6,13 @@
 {% endblock extra_style %}
 
 {% block contents %}
+{% comment %}
 {% if messages %}
-    {% for message in messages %}
-        <!-- CSSで投稿後の画面を作るため -->
+    {#% for message in messages %#}
         <span{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</span>
-    {% endfor %}
+    {#% endfor %#}
 {% endif %}
+{% endcomment %}
 
 <!-- 質問検索窓 -->
 <div class="note_top">
@@ -82,7 +83,7 @@
             </div>
         </article>
         {% empty %}
-        <p>質問がありません．</p>
+        <p class="no-contents">質問がありません．</p>
         {% endfor %}
     </div>
 </div>
