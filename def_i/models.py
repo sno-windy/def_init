@@ -12,7 +12,7 @@ from imagekit.processors import ResizeToFill
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
-from markdownx.utils import markdownify
+from .markdown import markdownify
 from taggit.managers import TaggableManager
 
 from def_init.secret_settings import *
