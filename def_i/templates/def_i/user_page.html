@@ -11,7 +11,12 @@
 {% endblock menubar %}
 {% block contents %}
 <div class="main-container__contents-userdata">
-<img src="{{user_data.user_image.url}}">
+{% if user_data.user_image %}
+    <img src="{{user_data.user_image.url}}" width="30">
+{% else %}
+    <img src="{% static 'def_i/img/default.png' %}">
+{% endif %}
+
 <p>{{user_data.username}}</p>
 </div>
 {% if studying %}
@@ -20,8 +25,17 @@
 <img src="{{studying.category.category_image.url}}">
 <div class="main-container__contents-studying-info">
     <h2>{{studying.category}}</h2>
-    <p>進捗率</p>
-    <p>学習中コース</p>
+    <div class="main-container__contents-studying-progress">
+    {% for cat,prog in each_progress %}
+    {% if cat == studying.category %}
+        <progress id="progress_bar"
+       min="0" max="100"
+       value="{{prog}}"></progress><span>{{prog}}% 達成済み</span>
+    {% endif %}
+    {% endfor %}
+    </div>
+    <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
+</div>
 </div>
 </div>
 {% else %}
@@ -37,7 +51,13 @@
             </a>
             <div class="main-container__contents-article-data">
                 {{q.category.title}} レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}
-                <a href="{% url 'user_page' q.poster.pk %}" class="user-disp"><img src="{{q.poster.user_image.url}}">
+                <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
+                {% if q.poster.user_image %}
+                    <img src="{{q.poster.user_image.url}}">
+                {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}">
+                {% endif %}
+
                     <p>{{q.poster}}</p>
                 </a>
                 <p class="post-date">{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
@@ -93,7 +113,6 @@
     {% endif %}
 </div>
 {% endif %}
-{% if article %}
 <h1>公開したノート</h1>
 
 <div class="main-container__contents-article-container">
@@ -120,11 +139,7 @@
         <p class="btn2"><a href="{% url 'article_post' %}">ノートを書く</a></p>
     </div>
 </div>
-{% endif %}
 <div class="pagination">{% include 'def_i/pagination.html' %}</div>
-
-<p>{{learning_course}}</p>
-<p>{{learning_lesson}}</p>
 {% endblock contents %}
 {% block member_list %}{% endblock member_list %}
 {% block javascript %}

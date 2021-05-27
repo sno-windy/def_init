@@ -784,11 +784,16 @@ def mypage_view(request):
         studying = StudyingCategory.objects.get(user=user)
     except ObjectDoesNotExist:
         studying = None
-    print(studying)
+
+    info = GetIndexInfo(request.user)
+    _,progress = info.get_progress(request.user)
+    learning_lesson = info.learning_lesson
     params = {
+        'each_progress':progress,
         'question':question,
         'article':article,
-        'studying':studying
+        'studying':studying,
+        'learning_lesson':learning_lesson
     }
     return render(request, 'def_i/my_page.html', params)
 
@@ -824,8 +829,12 @@ def userpage_view(request,pk):
         studying = StudyingCategory.objects.get(user=user)
     except ObjectDoesNotExist:
         studying = None
-
+    info = GetIndexInfo(user)
+    _,progress = info.get_progress(user)
+    learning_lesson = info.learning_lesson
     params = {
+        'each_progress':progress,
+        'learning_lesson':learning_lesson,
         'question':question,
         'article':article,
         'user_data':user,
