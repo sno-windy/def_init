@@ -24,15 +24,22 @@
 
     <div class="content">
         {{form.content}}
-        <label>
+        <label id="label_image_1">
             <div class="article_image_icon">
                 <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
             </div>
             <input type="file" name="article_image_1" id="id_article_image_1" accept="image/*">
         </label>
+        <label id="label_image_2" class="hidden_class">
+            <div class="article_image_icon">
+                <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+            </div>
+            <input type="file" name="article_image_2" id="id_article_image_2" accept="image/*">
+        </label>
     </div>
     <button type="submit" class="postform-btn">ノートを投稿する</button>
 </form>
+<div id="preview"></div>
 {% endblock contents %}
 
 {% block javascript %}
@@ -42,4 +49,5 @@
     const lessons = JSON.parse('{{lesson_dict|escapejs}}');
 </script>
 <script src="{% static 'def_i/js/filter.js' %}"></script>
+<script src="{% static 'def_i/js/upload_img.js' %}"></script>
 {% endblock javascript %}

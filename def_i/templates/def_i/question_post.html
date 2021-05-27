@@ -18,15 +18,22 @@
 
 <div class="content">
     <textarea name="content" id="id_content" cols="40" rows="10" placeholder="本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう"></textarea>
-    <label>
+    <label id="label_image_1">
         <div class="article_image_icon">
             <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
         </div>
         <input type="file" name="question_image_1" id="id_question_image_1" accept="image/*">
     </label>
+    <label id="label_image_2" class="hidden_class">
+        <div class="article_image_icon">
+            <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+        </div>
+        <input type="file" name="question_image_2" id="id_question_image_2" accept="image/*">
+    </label>
 </div>
 <button type="submit" class="postform-btn">投稿する</button>
 </form>
+<div id="preview"></div>
 {% endblock contents %}
 
 {% block javascript %}
@@ -36,4 +43,5 @@
     const lessons = JSON.parse('{{lesson_dict|escapejs}}');
 </script>
 <script src="{% static 'def_i/js/filter.js' %}"></script>
+<script src="{% static 'def_i/js/upload_img.js' %}"></script>
 {% endblock javascript %}

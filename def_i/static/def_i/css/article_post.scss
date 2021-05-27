@@ -1,5 +1,5 @@
 .main-container {
-    height: 768px;
+    height: 820px;
 }
 .postform-form{
     position: relative;
@@ -109,7 +109,7 @@ input#id_is_published {
     width: 32px;
     height: 32px;
 }
-#id_article_image_1, #id_question_image_1 {
+input[id*="_image_"] {
     display: none;
 }
 
@@ -128,4 +128,28 @@ input#id_is_published {
 ::placeholder {
     color: #bdbdbd;
     font-family: 'Noto Sans JP', sans-serif;
+}
+#preview {
+    display: flex;
+    width: 672px;
+    margin-top: 16px;
+    justify-content: space-around;
+    .new_img_wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+        img {
+            width: 250px;
+            height: 250px;
+            object-fit: contain;
+        }
+        .img_delete_btn {
+            height: 48px;
+            margin-top: 16px;
+            background-color: #ffffff;
+            color: #4e93e1;
+            box-shadow: 0px 1px 6px #21212119;
+            border: 1px solid #4E93E1;
+            border-radius: 4px;
+        }
+    }
 }

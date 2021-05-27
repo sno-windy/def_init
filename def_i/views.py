@@ -192,9 +192,21 @@ class ArticlePost(LoginRequiredMixin,CreateView):
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'ノート保存に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        return redirect("article_failed")
+
+
+class ArticlePostFailed(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/post_failed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "ノート保存に失敗しました。"
+        context["form"] = ArticlePostForm(self.request.POST)
+        context["next_page"] = "article_post"
+        return context
 
 
 class ArticlePublishedView(LoginRequiredMixin, TemplateView):
@@ -404,10 +416,23 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
-        messages.error(self.request,'質問作成に失敗しました．')
-        return super().form_invalid(form)
+    def form_invalid(self,form):
 
+        messages.error(self.request,'質問作成に失敗しました．')
+        print(form.errors)
+        super().form_invalid(form)
+        return redirect("question_failed")
+
+
+class QuestionPostFailed(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/post_failed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "質問の投稿に失敗しました。"
+        context["form"] = QuestionPostForm(self.request.POST)
+        context["next_page"] = "question_post"
+        return context
 
 class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     model = Question
