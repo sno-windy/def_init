@@ -2,6 +2,7 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -568,9 +569,12 @@ def course(request):
 
         info = GetIndexInfo(request.user)
         _,progress = info.get_progress(request.user)
+        learning_lesson = info.learning_lesson
+
         params = {
             "progress":progress,
             "studying":studying,
+            "learning_lesson":learning_lesson
         }
     return render(request, "def_i/course.html",params)
 
@@ -594,6 +598,11 @@ class CourseList(LoginRequiredMixin,ListView):
         print(course_and_progress)
         return course_and_progress
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.kwargs["category"]
+        return context
+    
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -732,47 +741,6 @@ def LikeView(request,pk):
 
         return JsonResponse(params)
 
-# class UserPageView(LoginRequiredMixin,ListView):
-#     model = Article
-#     context_object_name = "articles"
-#     template_name = 'def_i/user_page.html'
-#     paginate_by = 5
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = User.objects.get(pk=self.kwargs['pk'])
-#         context["user_data"] = user
-#         context["articles_like"] = Article.objects.filter(poster=self.kwargs['pk']).order_by('-like_count')[:5]
-#         return context
-
-#     def get_queryset(self,**kwargs):
-#         articles = Article.objects.filter(poster=self.kwargs['pk']).order_by('-created_at')
-#         return articles
-
-# class MyPageView(LoginRequiredMixin,ListView):
-#     model = Article
-#     context_object_name = "articles"
-#     template_name = 'def_i/my_page.html'
-#     paginate_by = 5 #標準ではobject_listをうけとる
-
-#     def get_context_data(self,**kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = self.request.user
-#         info = GetIndexInfo(user)
-#         # like_article = Like.objects.filter(user=user).values('article') #<QuerySet [{'article': 1}, {'article': 2}]>
-#         # article_list = Article.objects.filter(pk__in = like_article).order_by('-created_at')
-#         article_list = Article.objects.filter(like__user=user) #逆参照を使いましょう．
-#         question_list = Question.objects.filter(poster=user).order_by('-created_at')
-#         learning_lesson = info.learning_lesson
-#         context["learning_lesson"] = learning_lesson
-#         context["articles_like"] = article_list #いいねした記事リスト
-#         context["questions"] = question_list
-#         # context["learning_course"] = Course.objects.get(lesson=learning_lesson)
-#         return context
-
-#     def get_queryset(self,**kwargs):
-#         articles = Article.objects.filter(poster=self.request.user).order_by('-created_at')
-#         return articles
 
 def mypage_view(request):
     user = request.user
@@ -816,11 +784,16 @@ def mypage_view(request):
         studying = StudyingCategory.objects.get(user=user)
     except ObjectDoesNotExist:
         studying = None
-    print(studying)
+
+    info = GetIndexInfo(request.user)
+    _,progress = info.get_progress(request.user)
+    learning_lesson = info.learning_lesson
     params = {
+        'each_progress':progress,
         'question':question,
         'article':article,
-        'studying':studying
+        'studying':studying,
+        'learning_lesson':learning_lesson
     }
     return render(request, 'def_i/my_page.html', params)
 
@@ -856,8 +829,12 @@ def userpage_view(request,pk):
         studying = StudyingCategory.objects.get(user=user)
     except ObjectDoesNotExist:
         studying = None
-
+    info = GetIndexInfo(user)
+    _,progress = info.get_progress(user)
+    learning_lesson = info.learning_lesson
     params = {
+        'each_progress':progress,
+        'learning_lesson':learning_lesson,
         'question':question,
         'article':article,
         'user_data':user,
@@ -870,3 +847,8 @@ def userpage_view(request,pk):
 @csrf_exempt
 def callback(request):
     return handle_callback(request)
+
+
+def studying_category(request):
+
+    return JsonResponse()

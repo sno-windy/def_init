@@ -1,0 +1,163 @@
+$black: #212121;
+
+.main {
+  background-color: #FBFCFE;
+  color: $black;
+  width: 100vw;
+}
+
+.main-container__contents-menubar{
+  position: fixed;
+  left: 0;
+  width: 256px;
+  height: 100vh;
+  margin-top: -48px;
+  background-color: #eeeeee;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  &-title, &-q{
+    height: 48px;
+    background-color: #FBFCFE;
+    color: $black;
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      border-left: 8px solid #76b2ea;
+      p {
+        position: relative;
+        left: -8px;
+      }
+    }
+  }
+
+  &-title {
+    border-left: 8px solid #76b2ea;
+    p {
+      position: relative;
+      left: -8px;
+    }
+  }
+
+  &-lesson {
+    background-color: #eeeeee;
+    height: 40px;
+    padding-left: 32px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    color: $black;
+
+    .lesson_checkbox{
+      height: 16px;
+      width: 16px;
+      margin-right: 16px;
+      background-color: black;
+    }
+
+    &:hover{
+      background-color: #f5f5f5;
+    }
+  }
+}
+
+.main-container__contents-task{
+  &-boxies{
+    margin-left: calc(192px + 100vw*0.0625);
+    margin-right: 100vw*0.03125;
+    margin-bottom: 48px;
+    box-sizing: border-box;
+  }
+
+  &-title{
+    font-size: 22px;
+    margin-top: 96px;
+    margin-bottom: 16px;
+  }
+
+  &-box{
+    height: 192px;
+    box-shadow: 0 1px 6px #21212119;
+    border-radius: 8px;
+    margin-top: 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  &-box-top {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  &-box-checkbox {
+    width: 24px;
+    height: 24px;
+    margin: 0 24px 0 16px;
+    background-color: black;
+  }
+
+  &-box-title {
+    color: $black;
+  }
+
+  &-box-arrow {
+    margin: 0 16px 0 auto;
+  }
+
+  &-box-detail {
+    color: $black;
+    width: calc(100%-128px);
+    margin: 0 64px 16px 64px;
+
+    .category-description {
+      height: 72px;
+    }
+  }
+
+  &-box-detail-sub {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    width: 100%;
+
+    .progress_bar {
+      width: 144px;
+      margin-right: 16px;
+      margin-left: 64px;
+    }
+
+    .clear-text {
+      font-size: 12px;
+    }
+
+    .btn-start-lesson {
+      width: 168px;
+      height: 40px;
+      margin: 0 64px 0 auto;
+      background-color: #4d45d5;
+      color: #fafafa;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      p {
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
+
+}

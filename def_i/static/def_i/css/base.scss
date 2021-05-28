@@ -215,9 +215,19 @@ h1{
                     h2{
                         margin-top: 24px;
                     }
-                    p{
-                        margin-top: 16px;
+                }
+                &-progress{
+                    margin-top: 16px;
+                    margin-bottom: 28px;
+                    span{
+                        font-size: 12px;
+                        color: #21212140;
                     }
+                }
+                &-lesson{
+                    font-size: 14px;
+                    color: #21212160;
+                    letter-spacing: 0.29px;
                 }
             }
             //ノートや質問などに使えます
@@ -486,11 +496,8 @@ h1{
         background-color: white;
         padding: 100px;
         word-break: break-all;
-
     }
-
 }
-
 
 a{
     text-decoration: none;
@@ -620,4 +627,13 @@ a{
         background: #5FA2E6 0% 0% no-repeat padding-box;
         border: 2px solid #5FA2E6;
     }
+}
+.category_progress_bar{
+    span{
+        font-size: 10px;
+        color: #21212160;
+    }
+}
+#category_progress_bar{
+    width: 128px;
 }

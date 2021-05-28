@@ -181,6 +181,9 @@ SASS_TEMPLATE_EXTS = ['.html', '.haml']
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
+
+MARKDOWNX_MARKDOWNIFY_FUNCTION = 'def_i.markdown.markdownify'
+
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'fenced_code', # コードブロック
     'tables', # テーブル
@@ -188,7 +191,41 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'nl2br', # 改行
 ]
 
-# try:
-#     from ..local_settings import *
-# except ImportError:
-#     pass
+MARKDOWNIFY_WHITELIST_TAGS = [
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'a',
+    'abbr',
+    'acronym',
+    'b',
+    'blockquote',
+    'em',
+    'i',
+    'li',
+    'ol',
+    'p',
+    'strong',
+    'ul',
+    'pre',
+    'code',
+]
+
+MARKDOWNIFY_WHITELIST_PROTOCOLS = [
+    'http',
+    'https',
+]
+
+MARKDOWNIFY_LINKIFY_PARSE_EMAIL = True
+
+MARKDOWNIFY_LINKIFY_SKIP_TAGS = ['pre', 'code', ]
+
+MARKDOWNIFY_WHITELIST_ATTRS = [
+    'href',
+    'src',
+    'alt',
+    'class',
+]
