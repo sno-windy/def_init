@@ -1,8 +1,12 @@
 const categorySelect = document.getElementById("id_category");
 const courseSelect = document.getElementById("id_course");
 const lessonSelect = document.getElementById("id_lesson");
-courseSelect.setAttribute("disabled", true);
-lessonSelect.setAttribute("disabled", true);
+if (!courseSelect.value) {
+    courseSelect.setAttribute("disabled", true);
+}
+if (!lessonSelect.value) {
+    lessonSelect.setAttribute("disabled", true);
+}
 
 function filterCourse() {
     while (courseSelect.lastChild) {

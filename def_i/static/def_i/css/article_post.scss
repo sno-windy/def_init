@@ -109,7 +109,7 @@ input#id_is_published {
     width: 32px;
     height: 32px;
 }
-input[id*="_image_"] {
+input[id$="_image_1"], input[id$=_image_2] {
     display: none;
 }
 
@@ -134,7 +134,7 @@ input[id*="_image_"] {
     width: 672px;
     margin-top: 16px;
     justify-content: space-around;
-    .new_img_wrapper {
+    div[id^=new_img_wrapper_] {
         display: flex;
         flex-direction: column-reverse;
         img {

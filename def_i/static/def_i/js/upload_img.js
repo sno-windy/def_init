@@ -1,54 +1,103 @@
-let firstImg;
-let secondImg;
+let image1;
+let image2;
 
 if (document.getElementById("id_article_image_1")) {
-     firstImg = document.getElementById("id_article_image_1");
-     secondImg = document.getElementById("id_article_image_2");
+    image1 = document.getElementById("id_article_image_1");
+    image2 = document.getElementById("id_article_image_2");
+    clearBtn1 = document.getElementById("article_image_1-clear_id");
+    clearBtn2 = document.getElementById("article_image_2-clear_id");
 } else {
-     firstImg = document.getElementById("id_question_image_1");
-     secondImg = document.getElementById("id_question_image_2");
+    image1 = document.getElementById("id_question_image_1");
+    image2 = document.getElementById("id_question_image_2");
+    clearBtn1 = document.getElementById("question_image_1-clear_id");
+    clearBtn2 = document.getElementById("question_image_2-clear_id");
 }
-const imgs = [firstImg, secondImg];
-const previewSpace = document.getElementById("preview");
 
-for (let img of imgs) {
-    img.addEventListener('change', function (e) {
-        if (previewSpace.childElementCount == 2) {
+const previewSpaceFor1 = document.getElementById("new_img_wrapper_1");
+const previewSpaceFor2 = document.getElementById("new_img_wrapper_2");
+
+const imgLabel1 = document.getElementById("label_image_1");
+const imgLabel2 = document.getElementById("label_image_2");
+
+handleImage(image1, previewSpaceFor1);
+handleImage(image2, previewSpaceFor2);
+
+function handleImage(image, previewSpace) {
+    image.addEventListener("change", function (e) {
+        if (previewSpaceFor1.hasChildNodes() && previewSpaceFor2.hasChildNodes()) {
             window.alert("添付できる画像は2枚までです。");
         } else {
-            const newImgWrapper = previewImg(e);
-            document.getElementById("label_image_1").classList.toggle("hidden_class");
-            document.getElementById("label_image_2").classList.toggle("hidden_class");
-            addDeleteBtn(newImgWrapper);
+            previewImg(e, previewSpace);
+            imgLabel1.classList.toggle("hidden_class");
+            imgLabel2.classList.toggle("hidden_class");
         }
-    });
-}
+    })
+};
 
-function previewImg (e){
+function previewImg(e, previewSpace) {
     const fileReader = new FileReader();
-    const newImgWrapper = document.createElement('div');
-    newImgWrapper.setAttribute("class", "new_img_wrapper");
     fileReader.addEventListener('load', function (e) {
         const newImg = document.createElement('img');
         newImg.src = e.target.result;
-
-        newImgWrapper.appendChild(newImg);
-        previewSpace.appendChild(newImgWrapper);
+        previewSpace.appendChild(newImg);
     });
     fileReader.readAsDataURL(e.target.files[0]);
-    return newImgWrapper;
+    addDeleteBtn(previewSpace);
 };
 
-function addDeleteBtn(newImgWrapper) {
+// プレビュー用削除ボタン
+function addDeleteBtn(previewSpace) {
     const btn = document.createElement('button');
     btn.setAttribute("class", "img_delete_btn");
     btn.innerText = "削除する";
+    previewSpace.appendChild(btn);
+
     btn.addEventListener('click', function () {
-        newImgWrapper.firstElementChild.value = '';
-        while (newImgWrapper.lastChild) {
-            newImgWrapper.removeChild(newImgWrapper.lastChild);
+        previewSpace.firstElementChild.value = "";
+        while (previewSpace.lastChild) {
+            previewSpace.removeChild(previewSpace.lastChild);
         }
-        newImgWrapper.remove();
+        if (previewSpace == document.getElementById("new_img_wrapper_1")) {
+            imgLabel1.classList.remove("hidden_class");
+            imgLabel2.classList.add("hidden_class");
+        } else {
+            imgLabel2.classList.remove("hidden_class");
+            imgLabel1.classList.add("hidden_class");
+        }
     });
-    newImgWrapper.appendChild(btn);
+};
+
+// 編集ページ用削除ボタン
+const deleteBtn1 = document.getElementById("delete_image_1");
+const deleteBtn2 = document.getElementById("delete_image_2");
+
+if (deleteBtn1) {
+    deleteSavedImg(deleteBtn1, clearBtn1);
+}
+if (deleteBtn2) {
+    deleteSavedImg(deleteBtn2, clearBtn2);
+}
+
+function deleteSavedImg(deleteBtn, clearBtn) {
+    deleteBtn.addEventListener('click', function () {
+        clearBtn.checked = true;
+        const wrapper = deleteBtn.parentNode;
+
+        while (wrapper.lastChild) {
+            wrapper.removeChild(wrapper.lastChild);
+        }
+
+        // previewSpaceを作り直す
+        if (deleteBtn == deleteBtn1) {
+            imgLabel1.classList.add("hidden_class");
+            // previewSpaceFor1 = document.createElement('div');
+            // previewSpaceFor1.setAttribute("id", "new_img_wrapper_1");
+        } else {
+            imgLabel2.classList.add("hidden_class");
+            // previewSpaceFor2 = document.createElement('div');
+            // previewSpaceFor2.setAttribute("id", "new_img_wrapper_2");
+        }
+
+
+    });
 };

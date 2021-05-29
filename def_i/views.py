@@ -246,13 +246,17 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
         return context
 
     def form_valid(self,form):
-        messages.success(self.request,'記事を編集しました．')
+        article = form.save(commit=False)
+        article.poster = self.request.user
         self.article = form.save()
+        messages.success(self.request,'記事を編集しました．')
         return super().form_valid(form)
 
     def form_invalid(self,form):
         messages.error(self.request,'記事更新に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        print(form.errors)
+        return redirect("article_failed")
 
 
 class ArticleDeleteView(LoginRequiredMixin,DeleteView):
@@ -442,6 +446,12 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         return reverse_lazy('question_detail',kwargs={"pk":self.kwargs['pk']})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course_dict"] = pass_courses
+        context["lesson_dict"] = pass_lessons
+        return context
+
     def form_valid(self,form):
         if uploaded := self.request.POST.get('question_image_1'):
             print('file')
@@ -616,7 +626,7 @@ class CourseList(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         context["category"] = self.kwargs["category"]
         return context
-    
+
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
