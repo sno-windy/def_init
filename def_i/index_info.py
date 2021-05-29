@@ -34,7 +34,7 @@ class GetIndexInfo:
             next_course_num = 1
 
         try:
-            next_lesson = Lesson.objects.get(course__in=self.studying_course,lesson_num=next_lesson_num, course__course_num=self.last_cleared_course)
+            next_lesson = Lesson.objects.get(course__in=self.studying_course,lesson_num=next_lesson_num, course__course_num=self.last_cleared_course) #この場合ほしいのは一つなわけだから、filter().first()でいいよね
 
             self.learning_lesson = next_lesson
 
