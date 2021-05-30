@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
@@ -37,7 +37,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["studying"] = studying
         info = GetIndexInfo(self.request.user)
 
-        context["ranking"] = info.get_ranking()
+        context["ranking"], context["user_ranking"] = info.get_ranking(self.request.user)
         context["learning_lesson"] = info.learning_lesson
         all_progress,each_progress = info.get_progress(self.request.user)
         context["all_progress"] = all_progress
@@ -136,7 +136,7 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
                 'comment_form': ArticleTalkForm(),
             })
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
         if 'comment_form' in request.POST:
             comment_form = ArticleTalkForm(request.POST)
             if comment_form.is_valid():

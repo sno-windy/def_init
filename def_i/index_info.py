@@ -67,7 +67,7 @@ class GetIndexInfo:
 
 
     # ユーザーのランキング情報を取得
-    def get_ranking(self):
+    def get_ranking(self,user):
         date = make_aware(timezone.datetime.today())
         a_week_ago = date + datetime.timedelta(days=-7)
         print(a_week_ago)
@@ -88,10 +88,28 @@ class GetIndexInfo:
                     .annotate(count = Count('pk'))
                     .values('count')
             )
-            # Noneのとき０にしたい
+        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？
 
-        ).order_by('-note_num').order_by('-cleared_lesson_num')[:3]  # 何位まで表示する？
-        return ranking
+        ranking_zip = list(zip(range(1,len(ranking)+1),ranking))
+
+        top_ranking = ranking_zip[:3]
+        user_rank = -1
+        for index,obj in ranking_zip:
+            if obj == user:
+                user_rank = index + 1 #userの順位
+        if user_rank == 1:
+                user_ranking = top_ranking
+        elif user_rank <= 0:
+            return IndexError
+        elif user_rank == len(ranking):
+            if len(ranking) >= 3:
+                user_ranking = ranking_zip[user_rank-3:user_rank]
+            else:
+                user_ranking = top_ranking
+        else:
+            user_ranking = ranking_zip[user_rank-2:user_rank+1]
+        return top_ranking, user_ranking
+        # return ranking_zip
 
     # 進捗状況を取得
     def get_progress(self, user):
@@ -135,7 +153,7 @@ class GetIndexInfo:
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
         if self.last_cleared_lesson:
-            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
+            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
             return colleague_data
         else:
             colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
