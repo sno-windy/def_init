@@ -5,15 +5,18 @@
 <link rel="stylesheet" href="{% sass_src 'def_i/css/task_detail.scss' %}">
 {% endblock extra_style %}
 {% block contents %}
+<div class="breadcrumbs">
+    <a class="breadcrumbs-category"><p>{{category}}</p></a>
+</div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
         <p>レッスン{{course.course_num}}</p>
     </div>
     {% for course,_ in course_and_progress %}
-    <a href="" class="main-container__contents-menubar-lesson">
-        <div class="lesson_checkbox">
-        </div>
-        <p>{{lesson.lesson_num}}. {{lesson}}</p>
+    <a href="{% url 'task_detail' course.pk %}" class="main-container__contents-menubar-lesson">
+      <div class="lesson_checkbox">
+      </div>
+      <p>レッスン{{course.course_num}}</p>
     </a>
     {% endfor %}
     <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">

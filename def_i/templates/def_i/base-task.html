@@ -10,7 +10,7 @@
       <p>コース内容</p>
     </div>
     {% for course,_ in course_and_progress %}
-    <a href="" class="main-container__contents-menubar-lesson">
+    <a href="{% url 'task_detail' course.pk %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
       </div>
       <p>レッスン{{course.course_num}}</p>
@@ -24,7 +24,7 @@
     </a>
   </div>
   <div class="main-container__contents-task-boxies">
-    <div class=main-container__contents-task-title>
+    <div class="main-container__contents-task-title">
       {{category}}
     </div>
     {% for course,prog in course_and_progress %}
@@ -45,7 +45,7 @@
         <div class="main-container__contents-task-box-detail-sub">
           <div class="progress_bar">{{prog}}</div>
           <p class="clear-text">{{prog}} %達成済み</p>
-          <a  href="" class="btn-start-lesson"><p>はじめる</p></a>
+          <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson"><p>はじめる</p></a>
         </div>
       </div>
     </div>
