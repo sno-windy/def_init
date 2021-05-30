@@ -1,13 +1,71 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/question_post.scss' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_post.scss' %}">
 {% endblock extra_style %}
 {% block menubar %}{% endblock menubar %}
 {% block contents %}
+
 <form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
 {% csrf_token %}
-{{form}}
-<button type="submit" class="postform-btn">編集を保存する</button>
+
+<div class="question-title">{{form.title}}</div>
+<div class="note-at">
+    {{form.category}}
+    {{form.course}}
+    {{form.lesson}}
+</div>
+
+<div class="content">
+    {{form.content}}
+    <label id="label_image_1" {% if form.question_image_1.value %}class="hidden_class"{% endif %}>
+        <div {% if form.question_image_1.value or form.question_image_2.value %}class="article_image_icon icon_with_preview"{% else %}class="article_image_icon" {% endif %}>
+            <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+        </div>
+        <input type="file" name="question_image_1" id="id_question_image_1" accept="image/*">
+        <input type="checkbox" name="question_image_1-clear" id="question_image_1-clear_id" class="hidden_class">
+    </label>
+    <label id="label_image_2" {% if form.question_image_2.value %}class="hidden_class"{% endif %}>
+        <div {% if form.question_image_1.value or form.question_image_2.value %}class="article_image_icon icon_with_preview"{% else %}class="article_image_icon" {% endif %}>
+            <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+        </div>
+        <input type="file" name="question_image_2" id="id_question_image_2" accept="image/*">
+        <input type="checkbox" name="question_image_2-clear" id="question_image_2-clear_id" class="hidden_class">
+    </label>
+</div>
+<div id="preview" {% if form.question_image_1.value or form.question_image_2.value %}class="preview preview_space"{% else %}class="preview" {% endif %}>
+    {% if form.question_image_1.value %}
+    <div id="new_img_wrapper_1">
+        <button type="button" class="img_delete_btn" id="delete_image_1">削除する</button>
+        <img src="/media/{{form.question_image_1.value}}" alt="">
+    </div>
+    {% else %}
+    <div id="new_img_wrapper_1"></div>
+    {% endif %}
+    {% if form.question_image_2.value %}
+    <div id="new_img_wrapper_2">
+        <button type="button" class="img_delete_btn" id="delete_image_2">削除する</button>
+        <img src="/media/{{form.question_image_2.value}}" alt="">
+    </div>
+    {% else %}
+    <div id="new_img_wrapper_2"></div>
+    {% endif %}
+</div>
+<button type="submit" class="postform-btn">保存する</button>
 </form>
 {% endblock contents %}
+
+{% block javascript %}
+<script>
+    const courses = JSON.parse('{{course_dict|escapejs}}');
+    const lessons = JSON.parse('{{lesson_dict|escapejs}}');
+    const newImgWrapper1 = document.getElementById("new_img_wrapper_1");
+    const newImgWrapper2 = document.getElementById("new_img_wrapper_2");
+
+    if (newImgWrapper1.hasChildNodes() || newImgWrapper2.hasChildNodes()) {
+        document.getElementById("id_content").classList.add("add_preview_space");
+    }
+</script>
+<script src="{% static 'def_i/js/filter.js' %}"></script>
+<script src="{% static 'def_i/js/upload_img.js' %}"></script>
+{% endblock javascript %}
