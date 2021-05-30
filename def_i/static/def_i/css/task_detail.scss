@@ -9,13 +9,33 @@ $black: #212121;
 .breadcrumbs {
   width: 100vw;
   height: 48px;
+  background-color: #ffffff;
   position: fixed;
   top: 48px;
   left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  color: #4173c0;
+  box-shadow: 0px 4px 6px #2121211A;
+
+  &-category {
+    margin: 14px 8px 14px 32px;
+  }
+
+  &-course {
+    margin: 14px 8px;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .main-container__contents-menubar{
   position: fixed;
+  top: 96px;
   left: 0;
   width: 256px;
   height: 100vh;
