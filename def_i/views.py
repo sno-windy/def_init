@@ -602,7 +602,6 @@ class CourseList(LoginRequiredMixin,ListView):
         context = super().get_context_data(**kwargs)
         context["category"] = self.kwargs["category"]
         return context
-    
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -673,11 +672,6 @@ class TaskArticle(LoginRequiredMixin, ListView):
         context['my_article_list'] = my_article_list
 
         return context
-
-
-class FrontendTaskList(LoginRequiredMixin,ListView):
-    model = Course
-    template_name = "def_i/base-task.html"
 
 
 @login_required(login_url ='accounts/login/')
