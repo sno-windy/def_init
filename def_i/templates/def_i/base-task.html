@@ -51,12 +51,16 @@
             </progress>
           </div>
           <p class="clear-text">{{prog}} %達成済み</p>
+<<<<<<< HEAD
           <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson">
           <p>
             {% if prog == 0 %}はじめる
             {% elif prog == 100 %}復習する
             {% else %}続きから始める{% endif %}
           </p></a>
+=======
+          <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson"><p>はじめる</p></a>
+>>>>>>> d66c4e88560152be7eef941e20afb5248d391f28
         </div>
       </div>
     </div>
