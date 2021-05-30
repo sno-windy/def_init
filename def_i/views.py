@@ -279,7 +279,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     form_class = QuestionSearchForm
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         order_by = self.request.GET.get('orderby')
@@ -304,6 +304,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['orderby'] = self.request.GET.get('orderby')
+        context['article'] = context["page_obj"]
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
                 Article.objects.filter(
@@ -453,17 +454,15 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
         return context
 
     def form_valid(self,form):
-        if uploaded := self.request.POST.get('question_image_1'):
-            print('file')
-            print(uploaded)
-        else:
-            print('no file')
+        # if uploaded := self.request.POST.get('question_image_1'):
         messages.success(self.request,'質問を編集しました．')
         return super().form_valid(form)
 
     def form_invalid(self,form):
         messages.error(self.request,'質問更新に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        print(form.errors)
+        return redirect("question_failed")
 
 
 class QuestionDeleteView(LoginRequiredMixin,DeleteView):

@@ -70,13 +70,12 @@ class QuestionPostForm(forms.ModelForm):
             'course': '',
             'content':'',
         }
-        # emply_label = '選択してください'
         widgets = {
             'title': forms.TextInput(
                 attrs={'placeholder':'タイトルを入力：わからないことを書いてください'}
             ),
             'content': MarkdownxWidget(
-                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう'}
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください） &#13;・実現したいこと &#13;・試したこと &#13;・出力されたエラー &#13;などを書きましょう'}
             )
         }
 
