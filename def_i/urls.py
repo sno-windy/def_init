@@ -1,6 +1,12 @@
 from django.urls import path
 from . import views
-from django.contrib import admin
+from . import sitemaps
+from django.contrib.sitemaps.views import sitemap
+from django.views.generic import TemplateView
+
+sitemaps = {
+'index': sitemaps.IndexSitemap,
+}
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
@@ -35,7 +41,6 @@ urlpatterns = [
     path('task_backend/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_backend/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),
     path('task_backend/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
-    path('task_frontend/',views.FrontendTaskList.as_view(),name='task_frontend'),
     path('note_list/', views.note_list, name = 'note_list'),
 
     # マイページ系
@@ -48,4 +53,10 @@ urlpatterns = [
 
     # LINE関連
     path('callback/', views.callback, name='callback'),
+
+    #robots
+    path('robots.txt',TemplateView.as_view(template_name='def_i/robots.txt', content_type='text/plain')),
+
+    #sitemaps
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
 ]

@@ -81,7 +81,7 @@ $black: #212121;
   }
 
   &-box{
-    height: 192px;
+    height: 56px;
     box-shadow: 0 1px 6px #21212119;
     border-radius: 8px;
     margin-top: 16px;
@@ -89,15 +89,36 @@ $black: #212121;
     display: flex;
     flex-direction: column;
     position: relative;
+    transition: 0.1s;
+    &-title{
+      font-size: 16px;
+      margin-top: 0;
+    }
+    &-top {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-top: 16px;
+    //   height: 56px;
+      width: 100%;
+    }
+    &-arrow{
+      img{
+        position: absolute;
+        top: -4px;
+        right: 16px;
+      }
+      .hidden-img{
+        opacity: 0;
+      }
+    }
+    .hidden{
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
-  &-box-top {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    width: 100%;
-    margin-top: 4px;
-  }
+
 
   &-box-checkbox {
     width: 24px;
@@ -106,37 +127,31 @@ $black: #212121;
     background-color: black;
   }
 
-  &-box-title {
-    color: $black;
-  }
-
-  &-box-arrow {
-    margin: 0 16px 0 auto;
-  }
 
   &-box-detail {
+    width: 100%;
+    position: absolute;
+    top: 56px;
+    left: 0px;
     color: $black;
-    width: calc(100%-128px);
-    margin: 0 64px 16px 64px;
-
     .category-description {
       height: 72px;
+      margin-left: 64px;
     }
   }
 
   &-box-detail-sub {
+    width: 100%;
+    padding-left: 64px;
     display: flex;
     align-items: center;
     margin-top: 16px;
-    position: absolute;
-    bottom: 16px;
-    left: 0;
-    width: 100%;
+    margin-bottom: 16px;
 
     .progress_bar {
       width: 144px;
       margin-right: 16px;
-      margin-left: 64px;
+      // margin-left: 64px;
     }
 
     .clear-text {
@@ -146,7 +161,9 @@ $black: #212121;
     .btn-start-lesson {
       width: 168px;
       height: 40px;
-      margin: 0 64px 0 auto;
+      margin-right: 128px;
+      margin-left: auto;
+      margin-bottom: 16px;
       background-color: #4d45d5;
       color: #fafafa;
       border-radius: 4px;
@@ -159,5 +176,4 @@ $black: #212121;
       }
     }
   }
-
 }

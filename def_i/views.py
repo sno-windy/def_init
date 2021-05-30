@@ -2,20 +2,16 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import F, OuterRef, Q, Subquery
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
-                                  ListView, TemplateView, UpdateView)
 from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
-from django.views.generic.base import View
 from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
@@ -627,7 +623,6 @@ class CourseList(LoginRequiredMixin,ListView):
         return context
 
 
-
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Lesson
     context_object_name = 'lesson'
@@ -696,11 +691,6 @@ class TaskArticle(LoginRequiredMixin, ListView):
         context['my_article_list'] = my_article_list
 
         return context
-
-
-class FrontendTaskList(LoginRequiredMixin,ListView):
-    model = Course
-    template_name = "def_i/base-task.html"
 
 
 @login_required(login_url ='accounts/login/')
