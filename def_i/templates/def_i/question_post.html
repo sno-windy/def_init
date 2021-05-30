@@ -7,36 +7,36 @@
 
 {% block contents %}
 <form action = "" method = "POST" class="postform-form" enctype="multipart/form-data">
-{% csrf_token %}
+    {% csrf_token %}
 
-<div class="question-title">{{form.title}}</div>
-<div class="note-at">
-    {{form.category}}
-    {{form.course}}
-    {{form.lesson}}
-</div>
+    <div class="question-title">{{form.title}}</div>
+    <div class="note-at">
+        {{form.category}}
+        {{form.course}}
+        {{form.lesson}}
+    </div>
 
-<div class="content">
-    <textarea name="content" id="id_content" cols="40" rows="10" placeholder="本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう"></textarea>
-    <label id="label_image_1">
-        <div class="article_image_icon">
-            <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+    <div class="content">
+        <textarea name="content" id="id_content" cols="40" rows="10" placeholder="本文を入力（コードを含む場合はMarkdown記法をご使用ください）&#13;・実現したいこと&#13;・試したこと&#13;・出力されたエラー&#13;などを書きましょう"></textarea>
+        <label id="label_image_1">
+            <div class="article_image_icon">
+                <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+            </div>
+            <input type="file" name="question_image_1" id="id_question_image_1" accept="image/*">
+        </label>
+        <label id="label_image_2" class="hidden_class">
+            <div class="article_image_icon">
+                <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
+            </div>
+            <input type="file" name="question_image_2" id="id_question_image_2" accept="image/*">
+        </label>
+        <div id="preview" class="preview">
+            <div id="new_img_wrapper_1"></div>
+            <div id="new_img_wrapper_2"></div>
         </div>
-        <input type="file" name="question_image_1" id="id_question_image_1" accept="image/*">
-    </label>
-    <label id="label_image_2" class="hidden_class">
-        <div class="article_image_icon">
-            <img src="{% static 'def_i/img/img-icon.svg' %}" alt="">
-        </div>
-        <input type="file" name="question_image_2" id="id_question_image_2" accept="image/*">
-    </label>
-</div>
-<button type="submit" class="postform-btn">投稿する</button>
+    </div>
+    <button type="submit" class="postform-btn">投稿する</button>
 </form>
-<div id="preview">
-    <div id="new_img_wrapper_1"></div>
-    <div id="new_img_wrapper_2"></div>
-</div>
 {% endblock contents %}
 
 {% block javascript %}

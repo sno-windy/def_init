@@ -41,6 +41,13 @@ function previewImg(e, previewSpace) {
         newImg.src = e.target.result;
         previewSpace.appendChild(newImg);
     });
+    document.getElementById("id_content").classList.add("add_preview_space");
+    document.getElementById("preview").classList.add("preview_space");
+    const imageIcon = document.getElementsByClassName("article_image_icon");
+    Array.prototype.forEach.call(imageIcon, function (icon) {
+        icon.classList.add("icon_with_preview");
+    });
+    console.log('added');
     fileReader.readAsDataURL(e.target.files[0]);
     addDeleteBtn(previewSpace);
 };
@@ -63,6 +70,15 @@ function addDeleteBtn(previewSpace) {
         } else {
             imgLabel2.classList.remove("hidden_class");
             imgLabel1.classList.add("hidden_class");
+        }
+
+        if (!previewSpaceFor1.hasChildNodes() && !previewSpaceFor2.hasChildNodes()) {
+            document.getElementById("id_content").classList.remove("add_preview_space");
+            document.getElementById("preview").classList.remove("preview_space");
+            const imageIcon = document.getElementsByClassName("article_image_icon");
+            Array.prototype.forEach.call(imageIcon, function (icon) {
+                icon.classList.remove("icon_with_preview");
+            });
         }
     });
 };
@@ -90,14 +106,9 @@ function deleteSavedImg(deleteBtn, clearBtn) {
         // previewSpaceを作り直す
         if (deleteBtn == deleteBtn1) {
             imgLabel1.classList.add("hidden_class");
-            // previewSpaceFor1 = document.createElement('div');
-            // previewSpaceFor1.setAttribute("id", "new_img_wrapper_1");
         } else {
             imgLabel2.classList.add("hidden_class");
-            // previewSpaceFor2 = document.createElement('div');
-            // previewSpaceFor2.setAttribute("id", "new_img_wrapper_2");
         }
-
 
     });
 };
