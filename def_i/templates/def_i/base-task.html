@@ -9,9 +9,12 @@
     <div class="main-container__contents-menubar-title">
       <p>コース内容</p>
     </div>
-    {% for course,_ in course_and_progress %}
-    <a href="" class="main-container__contents-menubar-lesson">
+    {% for course,prog in course_and_progress %}
+    <a href="{% url 'task_detail' course.pk %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
+        {% if prog == 100 %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+        {% endif %}
       </div>
       <p>レッスン{{course.course_num}}</p>
     </a>
@@ -24,28 +27,42 @@
     </a>
   </div>
   <div class="main-container__contents-task-boxies">
-    <div class=main-container__contents-task-title>
+    <div class="main-container__contents-task-title">
       {{category}}
     </div>
     {% for course,prog in course_and_progress %}
     {% if course.title == 'public' %}
     {% else %}
-    
+
     <div class="main-container__contents-task-box js-accordion-title">
       <div class="main-container__contents-task-box-top">
         <div class="main-container__contents-task-box-checkbox">
+        {% if prog == 100 %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+        {% endif %}
         </div>
         <p class="main-container__contents-task-box-title">レッスン{{course.course_num}}</p>
         <a class="main-container__contents-task-box-arrow">
-        <img src="def_i/static/def_i/img/expand-less.svg" width="40" height="40">
+          <img class="more" src="{% static 'def_i/img/expand-more.svg' %}" width="40" height="40">
+          <img class="less hidden-img" src="{% static 'def_i/img/expand-less.svg' %}" width="40" height="40">
         </a>
       </div>
-      <div class="main-container__contents-task-box-detail">
-        <p class="category-description">{{category.description}}</p>
+      <div class="main-container__contents-task-box-detail hidden">
+        <p class="category-description">{{course.title}}</p>
         <div class="main-container__contents-task-box-detail-sub">
-          <div class="progress_bar">{{prog}}</div>
+          <div class="progress_bar">
+            <progress id="category_progress_bar"
+                min="0" max="100"
+                value="{{prog}}">
+            </progress>
+          </div>
           <p class="clear-text">{{prog}} %達成済み</p>
-          <a  href="" class="btn-start-lesson"><p>はじめる</p></a>
+          <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson">
+          <p>
+            {% if prog == 0 %}はじめる
+            {% elif prog == 100 %}復習する
+            {% else %}続きから始める{% endif %}
+          </p></a>
         </div>
       </div>
     </div>
@@ -59,16 +76,30 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const title = document.querySelectorAll('.js-accordion-title');
-
+    const arrowMore = document.querySelectorAll('.more');
+    const arrowLess = document.querySelectorAll('.less');
     for (let i = 0; i < title.length; i++) {
       let titleEach = title[i];
-      let content = titleEach.nextElementSibling;
+      let arrowM = arrowMore[i];
+      let arrowL = arrowLess[i];
+      let hiddenItem = document.querySelectorAll('.main-container__contents-task-box-detail')[i];
       titleEach.addEventListener('click', () => {
         titleEach.classList.toggle('is-active');
-        content.classList.toggle('is-open');
+
+        hiddenItem.classList.toggle('hidden');
+        if (titleEach.classList.contains('is-active')){
+          titleEach.style.height = 192 + 'px';
+          arrowM.classList.add('hidden-img');
+          arrowL.classList.remove('hidden-img');
+        }
+        else{
+          titleEach.style.height = 56 + 'px';
+          arrowL.classList.add('hidden-img');
+          arrowM.classList.remove('hidden-img');
+        }
       });
     }
-
   });
+
 </script>
 {% endblock javascript %}

@@ -1,5 +1,5 @@
 .main-container {
-    height: 768px;
+    height: 820px;
 }
 .postform-form{
     position: relative;
@@ -91,7 +91,7 @@ input#id_is_published {
     margin: 0 14px;
 }
 #id_content{
-    height: 248px;
+    min-height: 248px;
     width: 99.6%;
     box-sizing: border-box;
     padding: 19px 16px;
@@ -101,6 +101,7 @@ input#id_is_published {
 }
 .content {
     position: relative;
+    height: 416px;
 }
 .article_image_icon img {
     position: absolute;
@@ -109,7 +110,7 @@ input#id_is_published {
     width: 32px;
     height: 32px;
 }
-#id_article_image_1, #id_question_image_1 {
+input[id$="_image_1"], input[id$=_image_2] {
     display: none;
 }
 
@@ -128,4 +129,46 @@ input#id_is_published {
 ::placeholder {
     color: #bdbdbd;
     font-family: 'Noto Sans JP', sans-serif;
+}
+.preview {
+    display: flex;
+    width: 672px;
+    height: 0px;
+    margin: 16px 0 16px 32px;
+    div[id^=new_img_wrapper_] {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        margin-right: 16px;
+        img {
+            width: 160px;
+            height: 120px;
+            object-fit: cover;
+        }
+        .img_delete_btn {
+            height: 28px;
+            width: 90px;
+            margin-top: 16px;
+            background-color: #ffffff;
+            color: #4e93e1;
+            box-shadow: 0px 1px 6px #21212119;
+            border: 1px solid #4E93E1;
+            border-radius: 4px;
+        }
+    }
+}
+
+// プレビュー時
+.add_preview_space {
+    height: 428px;
+}
+.icon_with_preview img {
+    top: 384px;
+    right: 16px;
+}
+.preview_space {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 180px;
 }

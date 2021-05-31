@@ -41,6 +41,14 @@
             </a>
             {% endif %}
         </div>
+
+        {% if user == contents.poster %}
+        <div class="contents-buttons">
+            <span class="btn-edit"><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>
+            <span class="btn-delete"><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
+        </div>
+
+        {% endif %}
     </div>
 
     <div class="comments-wrapper">

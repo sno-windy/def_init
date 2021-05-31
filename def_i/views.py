@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import TemplateSendMessage, TextSendMessage
@@ -37,7 +37,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["studying"] = studying
         info = GetIndexInfo(self.request.user)
 
-        context["ranking"] = info.get_ranking()
+        context["ranking"], context["user_ranking"] = info.get_ranking(self.request.user)
         context["learning_lesson"] = info.learning_lesson
         all_progress,each_progress = info.get_progress(self.request.user)
         context["all_progress"] = all_progress
@@ -136,7 +136,7 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
                 'comment_form': ArticleTalkForm(),
             })
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
         if 'comment_form' in request.POST:
             comment_form = ArticleTalkForm(request.POST)
             if comment_form.is_valid():
@@ -184,17 +184,25 @@ class ArticlePost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         article = form.save(commit=False)
         article.poster = self.request.user
-        course,_ = Course.objects.get_or_create(title='public')
-        article_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
-        article.lesson = article_at
-        article.save()
         self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'ノート保存に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        return redirect("article_failed")
+
+
+class ArticlePostFailed(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/post_failed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "ノート保存に失敗しました。"
+        context["form"] = ArticlePostForm(self.request.POST)
+        context["next_page"] = "article_post"
+        return context
 
 
 class ArticlePublishedView(LoginRequiredMixin, TemplateView):
@@ -234,13 +242,17 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
         return context
 
     def form_valid(self,form):
-        messages.success(self.request,'記事を編集しました．')
+        article = form.save(commit=False)
+        article.poster = self.request.user
         self.article = form.save()
+        messages.success(self.request,'記事を編集しました．')
         return super().form_valid(form)
 
     def form_invalid(self,form):
         messages.error(self.request,'記事更新に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        print(form.errors)
+        return redirect("article_failed")
 
 
 class ArticleDeleteView(LoginRequiredMixin,DeleteView):
@@ -263,7 +275,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     form_class = QuestionSearchForm
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         order_by = self.request.GET.get('orderby')
@@ -288,6 +300,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context['orderby'] = self.request.GET.get('orderby')
+        context['article'] = context["page_obj"]
         context['member'] = User.objects.annotate(
             latest_post_time=Subquery(
                 Article.objects.filter(
@@ -395,9 +408,6 @@ class QuestionPost(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         question = form.save(commit=False)
         question.poster = self.request.user
-        course,_ = Course.objects.get_or_create(title='public')
-        question_at,_ = Lesson.objects.get_or_create(title='public',contents='',course=course)
-        question.lesson = question_at
         question.save()
         self.question = question
         #push通知
@@ -407,10 +417,23 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
-        messages.error(self.request,'質問作成に失敗しました．')
-        return super().form_invalid(form)
+    def form_invalid(self,form):
 
+        messages.error(self.request,'質問作成に失敗しました．')
+        print(form.errors)
+        super().form_invalid(form)
+        return redirect("question_failed")
+
+
+class QuestionPostFailed(LoginRequiredMixin, TemplateView):
+    template_name = 'def_i/post_failed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "質問の投稿に失敗しました。"
+        context["form"] = QuestionPostForm(self.request.POST)
+        context["next_page"] = "question_post"
+        return context
 
 class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     model = Question
@@ -420,18 +443,22 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         return reverse_lazy('question_detail',kwargs={"pk":self.kwargs['pk']})
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["course_dict"] = pass_courses
+        context["lesson_dict"] = pass_lessons
+        return context
+
     def form_valid(self,form):
-        if uploaded := self.request.POST.get('question_image_1'):
-            print('file')
-            print(uploaded)
-        else:
-            print('no file')
+        # if uploaded := self.request.POST.get('question_image_1'):
         messages.success(self.request,'質問を編集しました．')
         return super().form_valid(form)
 
     def form_invalid(self,form):
         messages.error(self.request,'質問更新に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        print(form.errors)
+        return redirect("question_failed")
 
 
 class QuestionDeleteView(LoginRequiredMixin,DeleteView):
@@ -467,17 +494,15 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         pk = self.kwargs['pk']
-        question_at = Lesson.objects.get(pk=pk)
         question = form.save(commit=False)
         question.poster = self.request.user
-        question.lesson = question_at
         question.save()
         self.question = question
         question.notify_new_question()
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'質問作成に失敗しました．')
         return super().form_invalid(form)
 
@@ -508,16 +533,14 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         pk = self.kwargs['pk']
-        article_at = Lesson.objects.get(pk=pk)
         article = form.save(commit=False)
         article.poster = self.request.user
-        article.lesson = article_at
         article.save()
         self.article = article
         messages.success(self.request,'ノートを保存しました．')
         return super().form_valid(form)
 
-    def form_invalid(self,form): #すでにCreateViewでバリデーションされているような気もする
+    def form_invalid(self,form):
         messages.error(self.request,'ノート保存に失敗しました．')
         return super().form_invalid(form)
 
@@ -600,7 +623,6 @@ class CourseList(LoginRequiredMixin,ListView):
         return context
 
 
-
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Lesson
     context_object_name = 'lesson'
@@ -669,11 +691,6 @@ class TaskArticle(LoginRequiredMixin, ListView):
         context['my_article_list'] = my_article_list
 
         return context
-
-
-class FrontendTaskList(LoginRequiredMixin,ListView):
-    model = Course
-    template_name = "def_i/base-task.html"
 
 
 @login_required(login_url ='accounts/login/')
