@@ -17,6 +17,9 @@ class GetIndexInfo:
         self.studying_course = Course.objects.filter(category=self.studying_category)
 
         self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
+
+        #↓この辺三項式でやれば簡潔にできそうだね
+
         try:
             self.last_cleared_lesson = self.cleared_lesson[0]
 
@@ -135,7 +138,13 @@ class GetIndexInfo:
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
         if self.last_cleared_lesson:
-            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
+            colleague_data = User.objects.annotate(
+                colleague_studying = Subquery(
+                    StudyingCategory.objects.filter(user=OuterRef('pk'))
+                        .values('category')[:1]
+                )
+            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
+
             return colleague_data
         else:
             colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
