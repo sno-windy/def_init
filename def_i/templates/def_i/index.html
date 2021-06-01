@@ -218,7 +218,7 @@
 
 <h1 class="index_title">進捗が近いユーザー</h1>
 <div class="colleague_wrapper">
-    {% for colleague in colleagues %}
+    {% for colleague,prog in colleagues %}
     <div class="colleague_box">
         {% if colleague.user_image %}
             <img src="{{colleague.user_image.url}}" width="30">
@@ -226,8 +226,8 @@
             <img src="{% static 'def_i/img/default.png' %}">
         {% endif %}
             <a href="{% url 'user_page' colleague.pk %}"><p class="colleague_name">{{colleague}}</p></a>
-            <p>{{colleague.studying_category}}</p> <!--表示されない．-->
-            <p></p>
+            <p>{% if studying %}{{studying.category}}{% endif %}</p>
+            <p>{{prog}}%</p>
     </div>
     {% empty %}
     <p>進捗が近いユーザーはいません．</p>

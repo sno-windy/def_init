@@ -83,7 +83,7 @@ class GetIndexInfo:
         user_rank = -1
         for index,obj in ranking_zip:
             if obj == user:
-                user_rank = index + 1 #userの順位
+                user_rank = index #userの順位
         if user_rank == 1:
                 user_ranking = top_ranking
         elif user_rank <= 0:
@@ -139,17 +139,34 @@ class GetIndexInfo:
 
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
+        studying = list(self.studying_category)[0]
+        print(studying)
         if self.last_cleared_lesson:
-            colleague_data = User.objects.annotate(
-                colleague_studying = Subquery(
-                    StudyingCategory.objects.filter(user=OuterRef('pk'))
-                        .values('category')[:1]
-                )
-            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
+            colleague_list = User.objects.annotate(
+                #別のカテゴリで競合している人を取りたい場合、必要
+                # colleague_studying = Subquery(
+                #     StudyingCategory.objects.filter(user=OuterRef('pk'))
+                #         .values('category__title')[:1]
+                # )
+            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
+
+        #colleagueの進捗情報をとってきている。
+            colleague_studying_progress = []
+
+            for data in colleague_list:
+                _,colleague_progress = self.get_progress(data)
+                for co in colleague_progress:
+                    #別のカテゴリで競合している人を取りたい場合、必要
+                    # if co[0].title == data.colleague_studying:
+                    if co[0] == studying:
+                        colleague_studying_progress.append(co[1])
+            colleague_data = [[colleague,prog] for colleague,prog in zip(colleague_list,colleague_studying_progress)]
 
             return colleague_data
+
         else:
             colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
+
             return colleague_data
 
 
