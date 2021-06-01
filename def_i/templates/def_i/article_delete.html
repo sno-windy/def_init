@@ -8,74 +8,74 @@
 {% block menubar %}{% endblock menubar %}
 
 {% block contents %}
-<div class="main-bar">
+<!-- <div class="main-bar"> -->
 
-    <div id="note" class="contents">
-        <h1 class="contents-title">{{contents.title}}</h1>
-        <div class="contents-info">
-            <div class="like-outer">
-                {#% include 'def_i/like.html' %#}
-            </div>
+    <!-- <div id="note" class="contents"> -->
+        <!-- <h1 class="contents-title">{{contents.title}}</h1> -->
+        <!-- <div class="contents-info"> -->
+            <!-- <div class="like-outer"> -->
+                <!-- {#% include 'def_i/like.html' %#} -->
+            <!-- </div> -->
 
-            <div class="contents-info-at">
-                <div class="contents-info-at-category">{{contents.category}}</div>
-                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
-            </div>
-            <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
-        </div>
+            <!-- <div class="contents-info-at"> -->
+                <!-- <div class="contents-info-at-category">{{contents.category}}</div> -->
+                <!-- <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div> -->
+            <!-- </div> -->
+            <!-- <div>{{contents.created_at|date:"Y/n/j H:i"}}</div> -->
+        <!-- </div> -->
 
-        <div class="contents-text">
-            {{contents.formatted_markdown|safe}}
-        </div>
-        <div class="contents-images">
-            {% if contents.article_image_1 %}
-            <img src="{{ contents.article_image_1_resize.url }}" alt="">
-            {% endif %}
-            {% if contents.article_image_2 %}
-            <img src="{{ contents.article_image_2_resize.url }}" alt="">
-            {% endif %}
-        </div>
+        <!-- <div class="contents-text"> -->
+            <!-- {{contents.formatted_markdown|safe}} -->
+        <!-- </div> -->
+        <!-- <div class="contents-images"> -->
+            <!-- {% if contents.article_image_1 %} -->
+            <!-- <img src="{{ contents.article_image_1_resize.url }}" alt=""> -->
+            <!-- {% endif %} -->
+            <!-- {% if contents.article_image_2 %} -->
+            <!-- <img src="{{ contents.article_image_2_resize.url }}" alt=""> -->
+            <!-- {% endif %} -->
+        <!-- </div> -->
 
-        <div class="contents-buttons">
-            {% if user == contents.poster %}
-            <span class="btn-edit"><a href="{% url 'article_edit' contents.pk %}">編集する</a></span>
-            <span class="btn-delete"><a href="{% url 'article_delete' contents.pk %}">削除する</a></span>
-        </div>
+        <!-- <div class="contents-buttons"> -->
+            <!-- {% if user == contents.poster %} -->
+            <!-- <span class="btn-edit"><a href="{% url 'article_edit' contents.pk %}">編集する</a></span> -->
+            <!-- <span class="btn-delete"><a href="{% url 'article_delete' contents.pk %}">削除する</a></span> -->
+        <!-- </div> -->
 
-        {% endif %}
-    </div>
+        <!-- {% endif %} -->
+    <!-- </div> -->
 
-    <div class="comments-wrapper">
-        <h2 class="comments-wrapper__title" id="comments">コメント</h2>
+    <!-- <div class="comments-wrapper"> -->
+        <!-- <h2 class="comments-wrapper__title" id="comments">コメント</h2> -->
 
-        {% for c in comments %}
-        <article class="comment">
-            <div class="comment-info">
-                <a href="{% url 'user_page' c.msg_from.pk %}">
-                    <img src="{{c.msg_from.user_image.url}}" alt="">
-                    <p>{{c.msg_from}}</p>
-                </a>
-                <p>{{c.time|date:"Y/n/j H:i"}}</p>
-            </div>
-            <div class="comment-text">{{c.msg}}</div>
-        </article>
-        {% empty %}
-        <p>コメントがありません．</p>
-        {% endfor %}
-    </div>
+        <!-- {% for c in comments %} -->
+        <!-- <article class="comment"> -->
+            <!-- <div class="comment-info"> -->
+                <!-- <a href="{% url 'user_page' c.msg_from.pk %}"> -->
+                    <!-- <img src="{{c.msg_from.user_image.url}}" alt=""> -->
+                    <!-- <p>{{c.msg_from}}</p> -->
+                <!-- </a> -->
+                <!-- <p>{{c.time|date:"Y/n/j H:i"}}</p> -->
+            <!-- </div> -->
+            <!-- <div class="comment-text">{{c.msg}}</div> -->
+        <!-- </article> -->
+        <!-- {% empty %} -->
+        <!-- <p>コメントがありません．</p> -->
+        <!-- {% endfor %} -->
+    <!-- </div> -->
 
-    <div class="form-wrapper">
-        <form method="POST">
-            {% csrf_token %}
-            {{comment_form.msg}}
-            <button type='submit' name="comment_form">
-                <img src="{% static 'def_i/img/send-icon.svg' %}" alt="コメントを送信">
-            </button>
-        </form>
-    </div>
-</div> --
+    <!-- <div class="form-wrapper"> -->
+        <!-- <form method="POST"> -->
+            <!-- {% csrf_token %} -->
+            <!-- {{comment_form.msg}} -->
+            <!-- <button type='submit' name="comment_form"> -->
+                <!-- <img src="{% static 'def_i/img/send-icon.svg' %}" alt="コメントを送信"> -->
+            <!-- </button> -->
+        <!-- </form> -->
+    <!-- </div> -->
+<!-- </div>  -->
 <!-- サイドバー -->
-<div class="sidebar">
+<!-- <div class="sidebar">
     <div class="sidebar-poster">
         <h3>投稿者</h3>
         <div class="sidebar-poster-info">
@@ -114,15 +114,18 @@
         {% endfor %}
     </div>
 </div> -->
+<div class="background">
 
-<form action="" method="POST" class="popup">
-    {% csrf_token %}
-    <p>本当にノートを削除しますか？</p>
-    <div class="btns">
-        <button class="button" type="submit"><span>ノートを削除する</span></button>
-        <div class="cancel">
-            <a href="{% url 'article_detail' object.pk %}">キャンセル</a>
+
+    <form action="" method="POST" class="popup">
+        {% csrf_token %}
+        <p>本当にノートを削除しますか？</p>
+        <div class="btns">
+            <button class="button" type="submit"><span>ノートを削除する</span></button>
+            <div class="cancel">
+                <a href="{% url 'article_detail' object.pk %}">キャンセル</a>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 {% endblock contents %}

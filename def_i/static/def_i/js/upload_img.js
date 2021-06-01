@@ -47,7 +47,6 @@ function previewImg(e, previewSpace) {
     Array.prototype.forEach.call(imageIcon, function (icon) {
         icon.classList.add("icon_with_preview");
     });
-    console.log('added');
     fileReader.readAsDataURL(e.target.files[0]);
     addDeleteBtn(previewSpace);
 };
