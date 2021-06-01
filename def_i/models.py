@@ -3,6 +3,7 @@ import requests
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import validate_image_file_extension
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import resolve_url
@@ -16,6 +17,7 @@ from .markdown import markdownify
 from taggit.managers import TaggableManager
 
 from def_init.secret_settings import *
+from .validators import FileSizeValidator
 
 User = get_user_model()
 
@@ -82,8 +84,18 @@ class Article(models.Model):
     tags = TaggableManager(blank=True)
     is_published = models.BooleanField(default=False)
     # 画像を添付する
-    article_image_1 = models.ImageField(upload_to="def_i/img",null=True,blank=True)
-    article_image_2 = models.ImageField(upload_to="def_i/img",null=True,blank=True)
+    article_image_1 = models.ImageField(
+        upload_to="def_i/img",
+        null=True,
+        blank=True,
+        validators=[validate_image_file_extension, FileSizeValidator()]
+    )
+    article_image_2 = models.ImageField(
+        upload_to="def_i/img",
+        null=True,
+        blank=True,
+        validators=[validate_image_file_extension, FileSizeValidator()]
+    )
     article_image_1_resize = ImageSpecField(source='article_image_1',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
@@ -114,8 +126,18 @@ class Question(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     # 画像を添付する
-    question_image_1 = models.ImageField(upload_to="def_i/img", null=True, blank=True)
-    question_image_2 = models.ImageField(upload_to="def_i/img", null=True, blank=True)
+    question_image_1 = models.ImageField(
+        upload_to="def_i/img",
+        null=True,
+        blank=True,
+        validators=[validate_image_file_extension, FileSizeValidator()]
+    )
+    question_image_2 = models.ImageField(
+        upload_to="def_i/img",
+        null=True,
+        blank=True,
+        validators=[validate_image_file_extension, FileSizeValidator()]
+    )
     question_image_1_resize = ImageSpecField(source='question_image_1',
         processors=[ResizeToFill(250,250)],
         format='JPEG',
