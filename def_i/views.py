@@ -496,7 +496,6 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        pk = self.kwargs['pk']
         question = form.save(commit=False)
         question.poster = self.request.user
         question.save()
@@ -535,7 +534,6 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        pk = self.kwargs['pk']
         article = form.save(commit=False)
         article.poster = self.request.user
         article.save()
@@ -632,14 +630,23 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if lesson_num := kwargs["lesson_num"]:
-            lesson = Lesson.objects.filter(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        if (lesson_num := kwargs.get("lesson_num")):
+            lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         else:
-            lesson = Lesson.objects.filter(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category']).first()
+            lesson = Lesson.objects.get(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         context["lesson"] = lesson
+        context['lesson_list'] = lesson_list
         context["category"] = Category.objects.filter(title=kwargs['category']).first()
         return context
 
+
+def lesson_complete(request,pk):
+    if request.method == "GET":
+        user = request.user
+        lesson = Lesson.objects.get(pk=pk)
+        ClearedLesson.objects.get_or_create(user=user,lesson=lesson)
+    return redirect('task_article_post',pk)
 
 
 class TaskQuestion(LoginRequiredMixin, ListView):

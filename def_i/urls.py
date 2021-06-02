@@ -42,7 +42,8 @@ urlpatterns = [
     path('task_detail/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_detail/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),
     path('task_detail/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
-    path('note_list/', views.note_list, name = 'note_list'),
+    path('note_list/', views.note_list, name='note_list'),
+    path('complete/<int:pk>/', views.lesson_complete, name="complete"),
 
     # マイページ系
     path('message_notification/',views.MessageNotification.as_view(),name='message_notification'),
