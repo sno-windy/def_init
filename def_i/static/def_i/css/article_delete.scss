@@ -14,9 +14,13 @@
   z-index: -10;
   background-color: rgba($color: #262626, $alpha: 0.4);
 }
-.main-bar, .sidebar, #note {
-  z-index: -5;
-  opacity: 0.5;
+// .main-bar, .sidebar, #note {
+  //   z-index: -5;
+  //   opacity: 0.5;
+  // }
+
+  .background {
+    height: 100vh;
 }
 
 .popup {

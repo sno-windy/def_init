@@ -264,10 +264,10 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
+    #     return context
 
 
 class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
@@ -276,6 +276,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     context_object_name = "questions"
     template_name = "def_i/question_feed.html"
     paginate_by = 5
+    page_kwarg = "a_page"
 
     def get_queryset(self):
         order_by = self.request.GET.get('orderby')
@@ -464,11 +465,16 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
 class QuestionDeleteView(LoginRequiredMixin,DeleteView):
     model = Question
     template_name = 'def_i/question_delete.html'
-    success_url = reverse_lazy('question_feed_new')
+    success_url = reverse_lazy('question_feed')
 
     def delete(self,request,*args,**kwargs):
         messages.success(self.request,'質問を削除しました．')
         return super().delete(request,*args,**kwargs)
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["contents"] = Question.objects.get(pk=self.kwargs["pk"])
+    #     return context
 
 
 class TaskQuestionPost(LoginRequiredMixin, CreateView):

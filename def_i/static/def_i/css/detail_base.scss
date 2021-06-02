@@ -37,7 +37,7 @@ $blue: #4e93e1;
     }
   }
   &-text {
-    margin-top: 50px;
+    margin: 50px 0 32px 0;
     color: $contents-black;
     font-size: 12px;
     text-align: left;
@@ -48,7 +48,7 @@ $blue: #4e93e1;
   &-images {
     display: flex;
     justify-content: space-around;
-    margin-top: 32px;
+    margin: 32px 0;
 
     img {
       width: 160px;
