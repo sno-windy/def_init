@@ -6,20 +6,20 @@
 {% endblock extra_style %}
 {% block contents %}
 <div class="breadcrumbs">
-    <a class="breadcrumbs-category"><p>バックエンド</p></a>
+    <a class="breadcrumbs-category"><p>{{category.title}}</p></a>
     <img src="">
-    <a class="breadcrumbs-course"><p>レッスン</p></a>
+    <a class="breadcrumbs-course"><p>レッスン{{course_num}}</p></a>
     <img src="">
-    <a class="breadcrumbs-course"><p>１.</p></a>
+    <a class="breadcrumbs-course"><p>{{lesson_num}}</p></a>
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>レッスン{{course.course_num}}</p>
+        <p>レッスン{{lesson_num}}</p>
     </div>
     <a href="" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
       </div>
-      <p>１.{{course.course_num}}</p>
+      <p>{{lesson_num}}</p>
     </a>
     <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
         <p>質問する</p>
@@ -28,4 +28,5 @@
         <p>ノートを書く</p>
     </a>
     </div>
+    <div class="">aaa</div>
 {% endblock contents %}

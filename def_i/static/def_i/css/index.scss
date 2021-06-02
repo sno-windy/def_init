@@ -67,6 +67,10 @@
     width: 144px;
     margin-right: 20px;
 }
+#colleague_progress_bar{
+    width: 128px;
+    margin-top: 8px;
+}
 
 .ranking{
     &_wrapper{
@@ -142,10 +146,17 @@
             margin-top: 16px;
             margin-bottom: 8px;
         }
+        span{
+            font-size: 10px;
+            color: #21212160;
+        }
     }
     &_name{
         color: #4e93e1;
         font-size: 16px;
         line-height: 24px;
+    }
+    &_category{
+        margin-top: 16px;
     }
 }

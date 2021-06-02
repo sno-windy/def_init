@@ -107,9 +107,10 @@
     <div class="main-container__contents-studying-progress">
     {% for cat,prog in each_progress %}
     {% if cat == studying.category %}
-        <progress id="progress_bar"
+    <progress id="progress_bar"
        min="0" max="100"
-       value="{{prog}}"></progress><span>{{prog}}% 達成済み</span>
+       value="{{prog}}">
+    </progress><span>{{prog}}% 達成済み</span>
     {% endif %}
     {% endfor %}
     </div>
@@ -226,8 +227,11 @@
             <img src="{% static 'def_i/img/default.png' %}">
         {% endif %}
             <a href="{% url 'user_page' colleague.pk %}"><p class="colleague_name">{{colleague}}</p></a>
-            <p>{% if studying %}{{studying.category}}{% endif %}</p>
-            <p>{{prog}}%</p>
+            <p class="colleague_category">{% if studying %}{{studying.category}}{% endif %}</p>
+            <progress id="colleague_progress_bar"
+                min="0" max="100"
+                value="{{prog}}">
+            </progress><span>{{prog}}% 達成済</span>
     </div>
     {% empty %}
     <p>進捗が近いユーザーはいません．</p>

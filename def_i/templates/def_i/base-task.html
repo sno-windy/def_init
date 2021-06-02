@@ -10,7 +10,7 @@
       <p>コース内容</p>
     </div>
     {% for course,prog in course_and_progress %}
-    <a href="{% url 'task_detail' course.pk %}" class="main-container__contents-menubar-lesson">
+    <a href="{% url 'task_detail' category.title course.pk %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
         {% if prog == 100 %}
           <img src="{% static 'def_i/img/check.svg' %}" alt="">
@@ -57,7 +57,7 @@
             </progress>
           </div>
           <p class="clear-text">{{prog}} %達成済み</p>
-          <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson">
+          <a href="{% url 'task_detail' category.title course.course_num %}" class="btn-start-lesson">
           <p>
             {% if prog == 0 %}はじめる
             {% elif prog == 100 %}復習する

@@ -13,8 +13,6 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
-from linebot import LineBotApi, WebhookHandler
-from linebot.models import TemplateSendMessage, TextSendMessage
 
 from .forms import *
 from .index_info import GetIndexInfo
@@ -56,17 +54,16 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 
 def notify_bell(request):
-    if request.method =="GET":
-        info = GetIndexInfo(request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+    info = GetIndexInfo(request.user)
+    new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
 
-        params={
+    params={
             'new_likes': new_likes,
             'new_bookmarks': new_bookmarks,
             'article_talk': article_talk,
             'question_talk':question_talk,
-        }
-        return JsonResponse(params)
+    }
+    return JsonResponse(params)
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
@@ -629,11 +626,20 @@ class CourseList(LoginRequiredMixin,ListView):
         return context
 
 
-class TaskDetail(LoginRequiredMixin, DetailView):
-    model = Lesson
+class TaskDetailView(LoginRequiredMixin, TemplateView):
     context_object_name = 'lesson'
-    fields = ['title','contents',]
     template_name = 'def_i/task_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if lesson_num := kwargs["lesson_num"]:
+            lesson = Lesson.objects.filter(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        else:
+            lesson = Lesson.objects.filter(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category']).first()
+        context["lesson"] = lesson
+        context["category"] = Category.objects.filter(title=kwargs['category']).first()
+        return context
+
 
 
 class TaskQuestion(LoginRequiredMixin, ListView):
