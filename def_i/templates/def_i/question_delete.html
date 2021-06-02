@@ -1,12 +1,130 @@
 {% extends 'def_i/base.html' %}
-{% load static %}
+{% load static sass_tags %}
+{% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_delete.scss' %}">
+{% endblock extra_style %}
+
 {% block menubar %}{% endblock menubar %}
+
 {% block contents %}
-<form action="" method="POST">
-{% csrf_token %}
-<p>タイトル：{{question.title}}</p>
-<p>本当に削除しますか？</p>
-<button class="button" type="submit">はい，削除します</button>
-<a href="{% url 'article_detail' question.pk %}">やっぱりやめます</a>
-</form>
+
+<!-- <div class="main-bar">
+
+    <div id="question" class="contents">
+
+        <h1 class="contents-title">{{contents.title}}</h1>
+        <div class="contents-info">
+            <div class="like-outer">
+                {#% include 'def_i/bookmark.html' %#}
+            </div>
+
+            <div class="contents-info-at">
+                <div class="contents-info-at-category">{{contents.category}}</div>
+                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+            </div>
+            <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
+        </div>
+
+        <div class="contents-text">
+            {{contents.formatted_markdown|safe}}
+        </div>
+        <div class="contents-images">
+            {% if contents.question_image_1 %}
+            <a href="{{contents.question_image_1_resize.url}}">
+                <img src="{{ contents.question_image_1_resize.url }}" alt="">
+            </a>
+            {% endif %}
+            {% if contents.question_image_2 %}
+            <a href="{{contents.question_image_2_resize.url}}">
+                <img src="{{ contents.question_image_2_resize.url }}" alt="">
+            </a>
+            {% endif %}
+        </div>
+
+        {% if user == contents.poster %}
+        <div class="contents-buttons">
+            <span class="btn-edit"><a href="{% url 'question_edit' contents.pk %}">編集する</a></span>
+            <span class="btn-delete"><a href="{% url 'question_delete' contents.pk %}">削除する</a></span>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <div class="comments-wrapper">
+        <h2 class="comments-wrapper__title" id="answers">回答</h2>
+
+        {% for c in comments %}
+        <article class="comment">
+            <div class="comment-info">
+                <a href="{% url 'user_page' c.msg_from.pk %}">
+                    {% if c.msg_from.user_image %}
+                    <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
+                    {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}" alt="">
+                    {% endif %}
+                    <p>{{c.msg_from}}></p>
+                </a>
+                <p>{{c.time|date:"Y/n/j H:i"}}</p>
+            </div>
+            <div class="comment-text">{{c.msg}}</div>
+        </article>
+        {% empty %}
+        <p class="no-contents">コメントがありません．</p>
+        {% endfor %}
+    </div>
+
+    <div class="form-wrapper">
+        <form method="POST">
+            {% csrf_token %}
+            {{form.msg}}
+            <button type='submit' name="answer_form">
+                <img src="{% static 'def_i/img/send-icon.svg' %}" alt="回答を送信">
+            </button>
+        </form>
+    </div>
+</div> -->
+
+<!-- サイドバー -->
+<!-- <div class="sidebar">
+    <div class="sidebar-poster">
+
+        <h3>投稿者</h3>
+        <div class="sidebar-poster-info">
+            {% if contents.poster.user_image %}
+            <img src="{{contents.poster.user_image.url}}" alt="">
+            {% else %}
+            <img src="{% static 'def_i/img/default.png' %}" alt="">
+            {% endif %}
+            {{contents.poster}}
+        </div>
+    </div>
+    <div class="sidebar-move">
+        <div id="to_question">質問</div>
+        <div id="to_answer">回答</div>
+    </div>
+
+    <h2>関連した質問</h2>
+    <div class="related-contents">
+        {% for question in related_questions %}
+        <div class="related-contents-title">
+            <a href="{% url 'question_detail' question.pk %}">{{question.title|truncatechars:40}}</a>
+        </div>
+        {% endfor %}
+    </div>
+</div> -->
+
+<div class="background">
+
+    <form action="" method="POST" class="popup">
+        {% csrf_token %}
+        <p>本当に質問を削除しますか？</p>
+        <div class="btns">
+            <button class="button" type="submit"><span>質問を削除する</span></button>
+            <div class="cancel">
+                <a href="{% url 'question_detail' question.pk %}">キャンセル</a>
+            </div>
+        </div>
+    </form>
+</div>
 {% endblock contents %}
