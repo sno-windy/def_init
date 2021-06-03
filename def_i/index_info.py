@@ -170,8 +170,8 @@ class GetIndexInfo:
             return colleague_data
 
         else:
-            colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
-
+            colleague_data = None
+            # User.objects.filter(cleared_user__isnull=True).exclude(username=user)
             return colleague_data
 
 
