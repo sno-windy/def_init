@@ -12,7 +12,7 @@ INSTALLED_APPS += ["debug_toolbar"]
 # )
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+print("デブ")
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
