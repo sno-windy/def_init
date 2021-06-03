@@ -12,7 +12,7 @@
     <div class="ranking_container">
         <h1 class="index_title">今週のランキング</h1>
         <div class="ranking_box">
-            {% for rank in ranking %}
+            {% for _,rank in ranking %}
                 {% ifchanged rank.cleared_lesson_num rank.note_num %}
                     <div class="ranking_contents">
                         <p class="rank_num">{{forloop.counter}}</p>
@@ -55,7 +55,47 @@
     </div>
     <div class="ranking_container">
         <h2 class="index_title">自分の順位</h2>
-        <div class="ranking_box">調整中</div>
+        <div class="ranking_box">
+        {% for rank_num,rank in user_ranking %}
+        {% ifchanged rank.cleared_lesson_num rank.note_num %}
+                <div class="ranking_contents">
+                    <p class="rank_num">{{rank_num}}</p>
+                    {% if rank.user_image %}
+                        <img src="{{rank.user_image.url}}" width="30">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                    <a href="{% url 'user_page' rank.pk %}">
+                        <p class="rank_user">{{rank}}</p>
+                    </a>
+                    <p class="rank_point">
+                        {% if rank.cleared_lesson_num == None %}0
+                        {% else %}{{rank.cleared_lesson_num}}
+                        {% endif %} Pt
+                    </p>
+                    {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
+                </div>
+            {% else %}
+                <div class="ranking_contents">
+                    <p class="rank_num">(同率)</p>
+                    {% if rank.user_image %}
+                        <img src="{{rank.user_image.url}}" width="30">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                    <a href="{% url 'user_page' rank.pk %}">
+                        <p class="rank_user">{{rank}}</p>
+                    </a>
+                    <p class="rank_point">
+                        {% if rank.cleared_lesson_num == None %}0
+                        {% else %}{{rank.cleared_lesson_num}}
+                        {% endif %} Pt
+                    </p>
+                    {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
+                </div>
+            {% endifchanged %}
+        {% endfor %}
+        </div>
     </div>
 </div>
 {% if studying %}
@@ -67,9 +107,10 @@
     <div class="main-container__contents-studying-progress">
     {% for cat,prog in each_progress %}
     {% if cat == studying.category %}
-        <progress id="progress_bar"
+    <progress id="progress_bar"
        min="0" max="100"
-       value="{{prog}}"></progress><span>{{prog}}% 達成済み</span>
+       value="{{prog}}">
+    </progress><span>{{prog}}% 達成済み</span>
     {% endif %}
     {% endfor %}
     </div>
@@ -178,7 +219,7 @@
 
 <h1 class="index_title">進捗が近いユーザー</h1>
 <div class="colleague_wrapper">
-    {% for colleague in colleagues %}
+    {% for colleague,prog in colleagues %}
     <div class="colleague_box">
         {% if colleague.user_image %}
             <img src="{{colleague.user_image.url}}" width="30">
@@ -186,8 +227,11 @@
             <img src="{% static 'def_i/img/default.png' %}">
         {% endif %}
             <a href="{% url 'user_page' colleague.pk %}"><p class="colleague_name">{{colleague}}</p></a>
-            <p>{{colleague.studying_category}}</p> <!--表示されない．-->
-            <p></p>
+            <p class="colleague_category">{% if studying %}{{studying.category}}{% endif %}</p>
+            <progress id="colleague_progress_bar"
+                min="0" max="100"
+                value="{{prog}}">
+            </progress><span>{{prog}}% 達成済</span>
     </div>
     {% empty %}
     <p>進捗が近いユーザーはいません．</p>

@@ -57,7 +57,7 @@ $black: #212121;
       height: 16px;
       width: 16px;
       margin-right: 16px;
-      background-color: black;
+      background-color: #eee;
     }
 
     &:hover{
@@ -83,6 +83,7 @@ $black: #212121;
   &-box{
     height: 56px;
     box-shadow: 0 1px 6px #21212119;
+    background-color: #fff;
     border-radius: 8px;
     margin-top: 16px;
     padding: 0;
@@ -124,7 +125,7 @@ $black: #212121;
     width: 24px;
     height: 24px;
     margin: 0 24px 0 16px;
-    background-color: black;
+    background-color: #FBFCFE;
   }
 
 

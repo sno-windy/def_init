@@ -11,10 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView,DetailView,FormView,TemplateView,CreateView,UpdateView,DeleteView
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
-from linebot import LineBotApi, WebhookHandler
-from linebot.models import TemplateSendMessage, TextSendMessage
 
 from .forms import *
 from .index_info import GetIndexInfo
@@ -37,7 +35,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["studying"] = studying
         info = GetIndexInfo(self.request.user)
 
-        context["ranking"] = info.get_ranking()
+        context["ranking"], context["user_ranking"] = info.get_ranking(self.request.user)
         context["learning_lesson"] = info.learning_lesson
         all_progress,each_progress = info.get_progress(self.request.user)
         context["all_progress"] = all_progress
@@ -56,17 +54,16 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
 
 def notify_bell(request):
-    if request.method =="GET":
-        info = GetIndexInfo(request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+    info = GetIndexInfo(request.user)
+    new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
 
-        params={
+    params={
             'new_likes': new_likes,
             'new_bookmarks': new_bookmarks,
             'article_talk': article_talk,
             'question_talk':question_talk,
-        }
-        return JsonResponse(params)
+    }
+    return JsonResponse(params)
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
@@ -136,7 +133,7 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
                 'comment_form': ArticleTalkForm(),
             })
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, pk):
         if 'comment_form' in request.POST:
             comment_form = ArticleTalkForm(request.POST)
             if comment_form.is_valid():
@@ -499,7 +496,6 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        pk = self.kwargs['pk']
         question = form.save(commit=False)
         question.poster = self.request.user
         question.save()
@@ -538,7 +534,6 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        pk = self.kwargs['pk']
         article = form.save(commit=False)
         article.poster = self.request.user
         article.save()
@@ -629,11 +624,29 @@ class CourseList(LoginRequiredMixin,ListView):
         return context
 
 
-class TaskDetail(LoginRequiredMixin, DetailView):
-    model = Lesson
+class TaskDetailView(LoginRequiredMixin, TemplateView):
     context_object_name = 'lesson'
-    fields = ['title','contents',]
     template_name = 'def_i/task_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        if (lesson_num := kwargs.get("lesson_num")):
+            lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        else:
+            lesson = Lesson.objects.get(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        context["lesson"] = lesson
+        context['lesson_list'] = lesson_list
+        context["category"] = Category.objects.filter(title=kwargs['category']).first()
+        return context
+
+
+def lesson_complete(request,pk):
+    if request.method == "GET":
+        user = request.user
+        lesson = Lesson.objects.get(pk=pk)
+        ClearedLesson.objects.get_or_create(user=user,lesson=lesson)
+    return redirect('task_article_post',pk)
 
 
 class TaskQuestion(LoginRequiredMixin, ListView):

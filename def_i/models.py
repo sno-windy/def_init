@@ -25,12 +25,6 @@ User = get_user_model()
 class Category(models.Model):
     title = models.CharField(max_length=10)
     category_image = models.FileField(upload_to='def_i/img')
-    # category_image = ProcessedImageField(upload_to="def_i/img",
-    #     processors=[ResizeToFill(250,250)],
-    #     format='JPEG',
-    #     options={'quality':60},
-    #     blank=True
-    #     )
     description = models.TextField(max_length=100, null=True)
 
     def __str__(self):
@@ -150,7 +144,7 @@ class Question(models.Model):
         )
     bookmark_count = models.PositiveIntegerField(default=0)
 
-    def browser_push(self, request):
+    def browser_push(self):
         data = {
             'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
             'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",

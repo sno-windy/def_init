@@ -9,9 +9,12 @@
     <div class="main-container__contents-menubar-title">
       <p>コース内容</p>
     </div>
-    {% for course,_ in course_and_progress %}
-    <a href="{% url 'task_detail' course.pk %}" class="main-container__contents-menubar-lesson">
+    {% for course,prog in course_and_progress %}
+    <a href="{% url 'task_detail' category.title course.pk %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
+        {% if prog == 100 %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+        {% endif %}
       </div>
       <p>レッスン{{course.course_num}}</p>
     </a>
@@ -34,6 +37,9 @@
     <div class="main-container__contents-task-box js-accordion-title">
       <div class="main-container__contents-task-box-top">
         <div class="main-container__contents-task-box-checkbox">
+        {% if prog == 100 %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+        {% endif %}
         </div>
         <p class="main-container__contents-task-box-title">レッスン{{course.course_num}}</p>
         <a class="main-container__contents-task-box-arrow">
@@ -51,7 +57,7 @@
             </progress>
           </div>
           <p class="clear-text">{{prog}} %達成済み</p>
-          <a href="{% url 'task_detail' course.pk %}" class="btn-start-lesson">
+          <a href="{% url 'task_detail' category.title course.course_num %}" class="btn-start-lesson">
           <p>
             {% if prog == 0 %}はじめる
             {% elif prog == 100 %}復習する
@@ -74,7 +80,6 @@
     const arrowLess = document.querySelectorAll('.less');
     for (let i = 0; i < title.length; i++) {
       let titleEach = title[i];
-      // let arrowImage =
       let arrowM = arrowMore[i];
       let arrowL = arrowLess[i];
       let hiddenItem = document.querySelectorAll('.main-container__contents-task-box-detail')[i];

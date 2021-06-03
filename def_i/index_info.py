@@ -17,6 +17,9 @@ class GetIndexInfo:
         self.studying_course = Course.objects.filter(category=self.studying_category)
 
         self.cleared_lesson = ClearedLesson.objects.filter(user=user).order_by('-cleared_at')
+
+        #↓この辺三項式でやれば簡潔にできそうだね
+
         try:
             self.last_cleared_lesson = self.cleared_lesson[0]
 
@@ -48,26 +51,10 @@ class GetIndexInfo:
                 self.learning_lesson = Lesson.objects.get(course__in=self.studying_course,course=next_course,lesson_num=1)
             except ObjectDoesNotExist:
                 self.learning_lesson = None
-        # try:
-        #     self.last_cleared_lesson = self.cleared_lesson[0]
-        #     next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
-        # except IndexError:
-        #     # まだ一つもレッスンを完了していない場合
-        #     self.last_cleared_lesson = 0
-        #     next_lesson_num = 1
-        #     next_course_num = 1
-
-        # try:
-        #     next_course = Course.objects.get(course_num=next_course_num,category=self.studying_category)
-        #     self.learning_lesson = Lesson.objects.get(lesson_num=next_lesson_num,course=next_course)
-        # except ObjectDoesNotExist:
-        #     # 全てのレッスンを完了した場合
-        #     self.learning_lesson = 0
-
 
 
     # ユーザーのランキング情報を取得
-    def get_ranking(self):
+    def get_ranking(self,user):
         date = make_aware(timezone.datetime.today())
         a_week_ago = date + datetime.timedelta(days=-7)
         print(a_week_ago)
@@ -88,10 +75,28 @@ class GetIndexInfo:
                     .annotate(count = Count('pk'))
                     .values('count')
             )
-            # Noneのとき０にしたい
+        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？
 
-        ).order_by('-note_num').order_by('-cleared_lesson_num')[:3]  # 何位まで表示する？
-        return ranking
+        ranking_zip = list(zip(range(1,len(ranking)+1),ranking))
+
+        top_ranking = ranking_zip[:3]
+        user_rank = -1
+        for index,obj in ranking_zip:
+            if obj == user:
+                user_rank = index #userの順位
+        if user_rank == 1:
+                user_ranking = top_ranking
+        elif user_rank <= 0:
+            return IndexError
+        elif user_rank == len(ranking):
+            if len(ranking) >= 3:
+                user_ranking = ranking_zip[user_rank-3:user_rank]
+            else:
+                user_ranking = top_ranking
+        else:
+            user_ranking = ranking_zip[user_rank-2:user_rank+1]
+        return top_ranking, user_ranking
+        # return ranking_zip
 
     # 進捗状況を取得
     def get_progress(self, user):
@@ -134,11 +139,34 @@ class GetIndexInfo:
 
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
+        studying = list(self.studying_category)[0]
+        print(studying)
         if self.last_cleared_lesson:
-            colleague_data = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at').prefetch_related('studying_category_set')[:3]
+            colleague_list = User.objects.annotate(
+                #別のカテゴリで競合している人を取りたい場合、必要
+                # colleague_studying = Subquery(
+                #     StudyingCategory.objects.filter(user=OuterRef('pk'))
+                #         .values('category__title')[:1]
+                # )
+            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
+
+        #colleagueの進捗情報をとってきている。
+            colleague_studying_progress = []
+
+            for data in colleague_list:
+                _,colleague_progress = self.get_progress(data)
+                for co in colleague_progress:
+                    #別のカテゴリで競合している人を取りたい場合、必要
+                    # if co[0].title == data.colleague_studying:
+                    if co[0] == studying:
+                        colleague_studying_progress.append(co[1])
+            colleague_data = [[colleague,prog] for colleague,prog in zip(colleague_list,colleague_studying_progress)]
+
             return colleague_data
+
         else:
             colleague_data = User.objects.filter(cleared_user__isnull=True).exclude(username=user)
+
             return colleague_data
 
 
@@ -166,15 +194,3 @@ class GetIndexInfo:
             talk.save()
 
         return new_likes, new_bookmarks, article_talk, question_talk
-
-    # def get_course_list(self,user,category):
-    #     courses = Course.objects.filter(category__title=category).order_by('course_num')
-    #     progress_percent_list = []
-    #     for course in courses:
-    #         lessons = Lesson.objects.
-    #         cleared_lessons = ClearedLesson.objects.filter(user=user,lesson__in=lessons)
-    #         if lessons:
-    #             progress_percent = round(cleared_lessons * 100 / lessons,1)
-    #             progress_percent_list.append(progress_percent)
-    #     print(progress_percent_list)
-    #     return courses

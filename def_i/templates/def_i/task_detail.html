@@ -3,24 +3,28 @@
 {% load sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/task_detail.scss' %}">
+
+
 {% endblock extra_style %}
 {% block contents %}
 <div class="breadcrumbs">
-    <a class="breadcrumbs-category"><p>バックエンド</p></a>
+    <a class="breadcrumbs-category"><p>{{category.title}}</p></a>
     <img src="">
-    <a class="breadcrumbs-course"><p>レッスン</p></a>
+    <a class="breadcrumbs-course"><p>レッスン{{course_num}}</p></a>
     <img src="">
-    <a class="breadcrumbs-course"><p>１.</p></a>
+    <a class="breadcrumbs-course"><p>レッスン{{course_num}}-{% if lesson_num %}{{ lesson_num }}{% else %}1{% endif %}</p></a>
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>レッスン{{course.course_num}}</p>
+        <p>レッスン{% if lesson_num %}{{lesson_num}}{% else %}1{% endif %}</p>
     </div>
-    <a href="" class="main-container__contents-menubar-lesson">
+    {% for item in lesson_list %}
+    <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
       </div>
-      <p>１.{{course.course_num}}</p>
+      <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter}}{% endif %}</p>
     </a>
+    {% endfor %}
     <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
         <p>質問する</p>
     </a>
@@ -28,4 +32,15 @@
         <p>ノートを書く</p>
     </a>
     </div>
+    <div class="course-container">
+        <div class="course-container__contents">
+            <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
+            <p class="course-container__contents-text">{{ lesson.contents }}</p>
+            <form action="{% url 'complete' lesson.pk %}" method="GET">
+                <button class="btn1">ノートを書いて<br>クリアする</button>
+            </form>
+        </div>
+    </div>
 {% endblock contents %}
+{% block javascript %}
+{% endblock javascript %}
