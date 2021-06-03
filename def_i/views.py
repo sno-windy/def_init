@@ -20,7 +20,7 @@ from .models import *
 from .line import *
 
 
-#反省 Controllerに処理を書きすぎない
+# 反省 Controllerに処理を書きすぎない
 
 # def notify_bell(request):
 #     info = GetIndexInfo(request.user)
@@ -371,7 +371,6 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
             question_poster = question.poster
             msg = self.model.objects.create(msg=messages, msg_from=request.user, msg_to=question_poster, msg_at=question)
             msg.save()
-            print('saved')
             msg.notify_new_comment()
             if not question.is_answered: #コメントの時にブール値を編集する
                 question.is_answered = True
@@ -659,11 +658,16 @@ def course(request):
         info = GetIndexInfo(request.user)
         _,progress = info.get_progress(request.user)
         learning_lesson = info.learning_lesson
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
 
         params = {
             "progress":progress,
             "studying":studying,
-            "learning_lesson":learning_lesson
+            "learning_lesson":learning_lesson,
+            'new_likes': new_likes,
+            'new_bookmarks': new_bookmarks,
+            'article_talk': article_talk,
+            'question_talk':question_talk,
         }
     return render(request, "def_i/course.html",params)
 
@@ -679,12 +683,11 @@ class CourseList(LoginRequiredMixin,ListView):
         for course in course_list:
             lessons = course.lessons.all()
             lesson_count = lessons.count()
-            cleared_lesson_count = ClearedLesson.objects.filter(lesson__in = lessons).count()
+            cleared_lesson_count = ClearedLesson.objects.filter(user=self.request.user,lesson__in=lessons).count()
             if lessons:
                 progress_percent = round(cleared_lesson_count * 100 / lesson_count,1)
                 progress_percent_list.append(progress_percent)
         course_and_progress = [[crs,per] for crs,per in zip(course_list,progress_percent_list)]
-        print(course_and_progress)
         return course_and_progress
 
     def get_context_data(self, **kwargs):
