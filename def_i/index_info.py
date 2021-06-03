@@ -139,8 +139,10 @@ class GetIndexInfo:
 
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
-        studying = list(self.studying_category)[0]
-        print(studying)
+        if self.studying_category:
+            studying = list(self.studying_category)[0]
+        else:
+            studying = None
         if self.last_cleared_lesson:
             colleague_list = User.objects.annotate(
                 #別のカテゴリで競合している人を取りたい場合、必要
@@ -158,8 +160,11 @@ class GetIndexInfo:
                 for co in colleague_progress:
                     #別のカテゴリで競合している人を取りたい場合、必要
                     # if co[0].title == data.colleague_studying:
-                    if co[0] == studying:
-                        colleague_studying_progress.append(co[1])
+                    if studying is not None:
+                        if co[0] == studying:
+                            colleague_studying_progress.append(co[1])
+                    else:
+                        colleague_studying_progress.append(0)
             colleague_data = [[colleague,prog] for colleague,prog in zip(colleague_list,colleague_studying_progress)]
 
             return colleague_data
