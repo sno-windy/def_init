@@ -7,9 +7,9 @@ ALLOWED_HOSTS = "*"
 
 INSTALLED_APPS += ["debug_toolbar"]
 
-# STATICFILES_DIRS = (
-#     str(Path(BASE_DIR) / 'static'),
-# )
+STATICFILES_DIRS = (
+    str(Path(BASE_DIR) / 'static'),
+)
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'

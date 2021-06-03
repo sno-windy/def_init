@@ -141,6 +141,8 @@ class GetIndexInfo:
     def get_colleagues(self, user):
         if self.studying_category:
             studying = list(self.studying_category)[0]
+        else:
+            studying = None
         if self.last_cleared_lesson:
             colleague_list = User.objects.annotate(
                 #別のカテゴリで競合している人を取りたい場合、必要
