@@ -10,20 +10,20 @@
         {% endif %}</p>
         <div class="header__notify hidden_class" id="hover_notify">
                 {% for like in new_likes %}
-                    <div class="notify_contents"><p>{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p></div>
+                    <div class="notify_contents"><p class="notify_comments">{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p></div>
                 {% endfor %}
                 {% for bookmark in new_bookmarks %}
-                    <div class="notify_contents"><p>{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p></div>
+                    <div class="notify_contents"><p class="notify_comments">{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p></div>
                 {% endfor %}
                 {% for comment in article_talk %}
-                    <div class="notify_contents"><p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
+                    <div class="notify_contents"><p class="notify_comments">{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
                 {% endfor %}
                 {% for comment in question_talk %}
-                    <div class="notify_contents"><p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
+                    <div class="notify_contents"><p class="notify_comments">{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
                 {% endfor %}
-                <a href="{% url 'message_notification' %}">
+                {% comment %} <a href="{% url 'message_notification' %}">
                     <h2>お知らせ</h2>
-                </a>
+                </a> {% endcomment %}
 
         </div>
     </div>

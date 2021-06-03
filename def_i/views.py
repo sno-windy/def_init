@@ -354,6 +354,8 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         comments = question.talkatquestion_set.all().order_by('-time')
 
         related_questions = Question.objects.filter(course=question.course).exclude(pk=question.pk).order_by('-created_at')[:5]
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
 
         return render(request, self.template_name, {
             "contents": question,
@@ -361,6 +363,12 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
             "comments": comments,
             "form": form,
             "related_questions": related_questions,
+
+            'new_likes': new_likes,
+            'new_bookmarks': new_bookmarks,
+            'article_talk': article_talk,
+            'question_talk':question_talk,
+
         })
 
     def post(self, request, pk):
