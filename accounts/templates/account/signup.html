@@ -29,11 +29,13 @@
                 <p class="normal_box"><span>メールアドレス</span>{{ form.email }}</p>
                 <p class="normal_box"><span>パスワード</span>{{ form.password1 }}</p>
                 <p class="normal_box"><span>パスワード(確認用)</span>{{ form.password2 }}</p>
-                {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                    <p class="alert alert-danger">{{ error }}</p>
+                <div class="error-box">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                        <p class="alert alert-danger">{{ error }}</p>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
+                </div>
                 <p class="change-btn"><input class="button" type="submit" value="アカウントを作成する"></p>
             </form>
         </div>

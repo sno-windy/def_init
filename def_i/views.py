@@ -22,6 +22,18 @@ from .line import *
 
 #反省 Controllerに処理を書きすぎない
 
+# def notify_bell(request):
+#     info = GetIndexInfo(request.user)
+#     new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
+#         'new_likes': new_likes,
+#         'new_bookmarks': new_bookmarks,
+#         'article_talk': article_talk,
+#         'question_talk':question_talk,
+
+
+
+
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = "def_i/index.html"
 
@@ -44,26 +56,12 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["article"] = info.get_related_articles()
 
         context["colleagues"] = info.get_colleagues(self.request.user)
-
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
         context["new_bookmarks"] = new_bookmarks
         context["new_likes"] = new_likes
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
         return context
-
-
-def notify_bell(request):
-    info = GetIndexInfo(request.user)
-    new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
-
-    params={
-            'new_likes': new_likes,
-            'new_bookmarks': new_bookmarks,
-            'article_talk': article_talk,
-            'question_talk':question_talk,
-    }
-    return JsonResponse(params)
 
 
 class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
@@ -106,6 +104,12 @@ class ArticleFeed(LoginRequiredMixin,FormMixin,ListView):
             latest_post_time=Subquery(
             Article.objects.filter(poster=OuterRef('pk'), is_published=True).values('created_at')[:1],
         )).order_by('-latest_post_time')[:30] #最大表示数を指定
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
 
         return context
 
@@ -123,6 +127,9 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
         comments_count = comments.count() #lenにしてQuerysetが走っている回数を数える．
 
         related_articles = Article.objects.exclude(pk=article.pk).filter(course=article.course).filter(is_published=True).order_by('-created_at')[:5]
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
         return render(request,self.template_name,
             {
                 'contents': article,
@@ -131,7 +138,13 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
                 'comments':comments,
                 'related_articles': related_articles,
                 'comment_form': ArticleTalkForm(),
-            })
+
+                'new_likes': new_likes,
+                'new_bookmarks': new_bookmarks,
+                'article_talk': article_talk,
+                'question_talk':question_talk,
+            }
+        )
 
     def post(self, request, pk):
         if 'comment_form' in request.POST:
@@ -174,6 +187,13 @@ class ArticlePost(LoginRequiredMixin,CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
         return context
@@ -234,6 +254,13 @@ class ArticleUpdateView(LoginRequiredMixin,UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
         return context
@@ -297,6 +324,13 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
 
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context['orderby'] = self.request.GET.get('orderby')
         context['article'] = context["page_obj"]
         context['member'] = User.objects.annotate(
@@ -385,6 +419,13 @@ class QuestionPostSuc(LoginRequiredMixin,TemplateView):
     template_name = "def_i/question_post_suc.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["pk"] = self.kwargs["pk"]
         context["form"] = QuestionPostForm()
         return context
@@ -409,8 +450,8 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question.save()
         self.question = question
         #push通知
-        question.browser_push(self.request)
-        question.notify_new_question()
+        # question.browser_push(self.request)
+        # question.notify_new_question()
 
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -428,6 +469,13 @@ class QuestionPostFailed(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["message"] = "質問の投稿に失敗しました。"
         context["form"] = QuestionPostForm(self.request.POST)
         context["next_page"] = "question_post"
@@ -443,6 +491,13 @@ class QuestionUpdateView(LoginRequiredMixin,UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
         return context
@@ -490,6 +545,13 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
         context["pk"] = self.kwargs["pk"]
@@ -528,6 +590,13 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["course_dict"] = pass_courses()
         context["lesson_dict"] = pass_lessons()
         context["pk"] = self.kwargs["pk"]
@@ -620,6 +689,13 @@ class CourseList(LoginRequiredMixin,ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
+
         context["category"] = self.kwargs["category"]
         return context
 
@@ -630,6 +706,12 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
         lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         if (lesson_num := kwargs.get("lesson_num")):
             lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
@@ -667,6 +749,12 @@ class TaskQuestion(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
         context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
         lesson = Lesson.objects.get(pk=self.kwargs['pk'])
@@ -701,6 +789,12 @@ class TaskArticle(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context["new_bookmarks"] = new_bookmarks
+        context["new_likes"] = new_likes
+        context["article_talk"] = article_talk
+        context["question_talk"] = question_talk
         context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
         pk = self.kwargs['pk']
@@ -820,12 +914,19 @@ def mypage_view(request):
     info = GetIndexInfo(request.user)
     _,progress = info.get_progress(request.user)
     learning_lesson = info.learning_lesson
+    new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
     params = {
         'each_progress':progress,
         'question':question,
         'article':article,
         'studying':studying,
-        'learning_lesson':learning_lesson
+        'learning_lesson':learning_lesson,
+
+        'new_likes': new_likes,
+        'new_bookmarks': new_bookmarks,
+        'article_talk': article_talk,
+        'question_talk':question_talk,
     }
     return render(request, 'def_i/my_page.html', params)
 
@@ -864,13 +965,21 @@ def userpage_view(request,pk):
     info = GetIndexInfo(user)
     _,progress = info.get_progress(user)
     learning_lesson = info.learning_lesson
+    new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+
     params = {
         'each_progress':progress,
         'learning_lesson':learning_lesson,
         'question':question,
         'article':article,
         'user_data':user,
-        'studying':studying
+        'studying':studying,
+
+        'new_likes': new_likes,
+        'new_bookmarks': new_bookmarks,
+        'article_talk': article_talk,
+        'question_talk':question_talk,
+
     }
     return render(request, 'def_i/user_page.html', params)
 

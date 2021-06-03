@@ -50,6 +50,15 @@ h1{
         right: 0;
         width: 288px;
         box-shadow: 0 2px 6px #21212140;
+        background-color: #fff;
+        z-index:2;
+        .notify_contents{
+            height: 48px;
+            margin: 16px;
+            p{
+                font-size: 14px;
+            }
+        }
     }
     &-container{
         width:100%;
