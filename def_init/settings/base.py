@@ -168,9 +168,6 @@ STATICFILES_FINDERS = [
 STATIC_URL = '/static/'
 # ↓collectstaticしたときにstaticfilesディレクトリに集約される
 
-STATICFILES_DIRS = (
-    str(Path(BASE_DIR) / 'static'),
-)
 
 SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
 SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.(sass|scss)$'
