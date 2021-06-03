@@ -139,8 +139,8 @@ class GetIndexInfo:
 
     # 進捗が近いユーザーを取得
     def get_colleagues(self, user):
-        studying = list(self.studying_category)[0]
-        print(studying)
+        if self.studying_category:
+            studying = list(self.studying_category)[0]
         if self.last_cleared_lesson:
             colleague_list = User.objects.annotate(
                 #別のカテゴリで競合している人を取りたい場合、必要
