@@ -160,8 +160,11 @@ class GetIndexInfo:
                 for co in colleague_progress:
                     #別のカテゴリで競合している人を取りたい場合、必要
                     # if co[0].title == data.colleague_studying:
-                    if co[0] == studying:
-                        colleague_studying_progress.append(co[1])
+                    if studying is not None:
+                        if co[0] == studying:
+                            colleague_studying_progress.append(co[1])
+                    else:
+                        colleague_studying_progress.append(0)
             colleague_data = [[colleague,prog] for colleague,prog in zip(colleague_list,colleague_studying_progress)]
 
             return colleague_data
