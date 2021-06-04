@@ -171,40 +171,6 @@ h1{
         height: 100%;
         width: calc(100% - 128px);
         margin: 0 auto;
-        &__menubar{
-            // position: fixed;
-            // left: 5%;
-            // top: 7rem;
-            // width: 10rem;
-            // height: 70%;
-            // border-right: $button-gray 3px solid;
-            a{
-                text-decoration: none;
-                // display: inline-block;
-            }
-            // h1{
-            //     font-weight: normal;
-            //     margin: 0.2rem 0;
-            //     font-size: 1rem;
-            //     color: $list-stay;
-            //     transition: 0.5s;
-            //     &:hover{
-            //         color: #f4f4f4;
-            //         background-color: $list-stay;
-            //     }
-            // }
-            // p{
-            //     font-size: 0.75rem;
-            //     color: $list-stay;
-            //     margin: 0;
-            //     padding: 0.5rem 0;
-            //     transition: 0.5s;
-            //     &:hover{
-            //         color: #f4f4f4;
-            //         background-color: $list-hover;
-            //     }
-            // }
-        }
         &__contents{
             margin: 0;
             &-studying{
@@ -247,7 +213,7 @@ h1{
             //ノートや質問などに使えます
             &-article-box{
                 width: 640px;
-                height: 416px;
+                height: 400px;
                 background-color: #fff;
                 border-radius: 0px 4px 4px 4px;
                 border: 1px solid #EEEEEE;
@@ -257,10 +223,13 @@ h1{
                 border-bottom: 1px #eeeeee solid;
                 margin: 16px 32px 0 32px;
                 // background-color: #fcfcfc;
+                &:nth-of-type(5){
+                    border-bottom: 0;
+                }
                 h2{
                     margin: 0 0 16px 0;
                     color: #4e93e1;
-                    font-size: 14px;
+                    font-size: 16px;
                     line-height: 20px;
                 }
                 &-data{
@@ -311,56 +280,6 @@ h1{
                 position: relative;
                 cursor: pointer;
                 user-select: none;
-
-            // &-taskbox::before, .accordion__title::after {
-            //     content: '';
-            //     display: block;
-            //     background-color: #fff;
-            //     position: absolute;
-            //     top: 50%;
-            //     width: 15px;
-            //     height: 2px;
-            //     right: 25px;
-            //     }
-
-            // &-taskbox::after {
-            //     transform: rotate(90deg);
-            //     transition-duration: .3s;
-            //     }
-
-            // &-taskbox:hover,
-            // &-taskbox:active,
-            // &-taskbox.is-active {
-            //     background-color: #00aaa7;
-            //     }
-
-            // &-taskbox.is-active::before {
-            //     opacity: 0;
-            //     }
-
-            // &-taskbox.is-active::after {
-            //     transform: rotate(0);
-            //     }
-
-            //     &-details{
-            //         border-left: 1px solid transparent;
-            //         border-right: 1px solid transparent;
-            //         padding: 0 1.5em;
-            //         line-height: 0;
-            //         height: 0;
-            //         overflow: hidden;
-            //         opacity: 0;
-            //         transition-duration: .3s;
-            //     }
-
-            //     &-details.is-open {
-            //         border: 1px solid $list-stay;
-            //         padding: .625em 1.5em;
-            //         line-height: normal; /* numberに書き換える*/
-            //         height: auto;
-            //         opacity: 1;
-            //     }
-
                 &-detail{
                     display: flex;
 
@@ -625,6 +544,7 @@ a{
         text-align: center;
         width: 100%;
         color: #fafafa;
+        font-size: 16px;
     }
 }
 
@@ -644,7 +564,7 @@ a{
 }
 .category_progress_bar{
     span{
-        font-size: 10px;
+        font-size: 12px;
         color: #21212160;
     }
 }

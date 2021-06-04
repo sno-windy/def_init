@@ -37,9 +37,9 @@
                 <p class="header-container__icon"><img src="{% static 'def_i/img/definit-logo.svg' %}"></p>
                 <p class="header-container__title">Def <span style="color:#3011ab;">Init</span></p>
             </a>
-            <a class="header-container__contents tasknow" href="{% url 'course' %}">コース</a>
-            <a class="header-container__contents studynow" href="{% url 'question_feed' %}?orderby=new">質問</a>
-            <a class="header-container__contents studynow" href="{% url 'article_feed' %}?orderby=new">ノート</a>
+            <a id="tasknow" class="header-container__contents" href="{% url 'course' %}">コース</a>
+            <a id="questionnow" class="header-container__contents" href="{% url 'question_feed' %}?orderby=new">質問</a>
+            <a id="notenow" class="header-container__contents" href="{% url 'article_feed' %}?orderby=new">ノート</a>
             <div class="header-container__user" id="icon">
                 {% if user.user_image %}
                     <img src="{{ user.user_image.url }}" width="30">

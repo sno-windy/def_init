@@ -2,6 +2,7 @@
 {% load static sass_tags %}
 {% block extra_style %}
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock extra_style %}
@@ -124,18 +125,6 @@
         {% endfor %}
     </div>
 </div>
-    <!-- 画像を挿入する場合
-        {% if contents.article_image %}
-        <button id="popup-btn">画像を表示する</button>
-        <div class="popup" id="popup">
-            <div class="popup-inner">
-                <div class="close-btn" id="close-btn"><i class="fas fa-times"></i></div>
-                <a href="#"><img src="./img/popup.jpg" alt="ポップアップ画像"></a>
-            </div>
-            <div class="black-background" id="black-bg"></div>
-        </div>
-        {% endif %}
-    -->
 {% endblock contents %}
 {% block javascript %}
 <script>
@@ -160,11 +149,16 @@
             })
         })
     })
+const toNote = document.getElementById("to_note");
+const toComments = document.getElementById("to_comment");
 
 // ノート本体へスクロール
 document.getElementById("to_note").addEventListener('click', function(){
     const note = document.getElementById("note");
     const note_position = note.getBoundingClientRect();
+    //classList.addとremoveでやると丁寧
+    toComments.style.backgroundColor = '#fbfcfe'
+    toNote.style.backgroundColor = "#f5f5f5"
     window.scrollTo(0, note_position.top);
 });
 
@@ -172,6 +166,8 @@ document.getElementById("to_note").addEventListener('click', function(){
 document.getElementById("to_comment").addEventListener('click', function(){
     const comments = document.getElementById("comments");
     const comments_position = comments.getBoundingClientRect();
+    toNote.style.backgroundColor = '#fbfcfe';
+    toComments.style.backgroundColor = '#f5f5f5'
     window.scrollTo(0, comments_position.top);
 });
 
@@ -179,14 +175,6 @@ document.getElementById("to_comment").addEventListener('click', function(){
 document.getElementById("id_is_published").addEventListener('change', function(){
     document.publish_form.submit();
 });
-
-
-//画像が存在する場合にpopupする物を作りたかった残骸
-{% comment %} document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('popup-btn').addEventListener('click',()=>{
-
-    })
-}) {% endcomment %}
 
 </script>
 {% endblock javascript %}

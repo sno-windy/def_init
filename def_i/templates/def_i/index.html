@@ -260,10 +260,10 @@
                 min="0" max="100"
                 value="{{prog}}">
             </progress>
-            <span><br>{{prog}}% 達成済み</span>
+            <span><br>{{prog}}% 達成済</span>
         </div>
         <p class="category_description">{{cat.description}}</p>
-        <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
+        <p class="btn3"><a href="{% url 'course_list' cat.title %}">はじめる</a></p>
         <p {% if studying.category == cat %}class="btn4 btn4-studying"{% else %}class="btn4"{% endif %} id="studying-{{cat.pk}}">学習中にする</p>
     </div>
     {% endfor %}

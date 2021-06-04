@@ -3,13 +3,18 @@ $title-black: #1c1e21;
 $info-black: #212121;
 $contents-black: #262626;
 $blue: #4e93e1;
-
+// .main-container__contents{
+//   position: relative;
+//   width: 896px;
+//   margin: 0 auto;
+// }
 .main-container {
   margin-top: 96px;
   margin-right: 48px;
   background: #fbfcfe;
   &__contents {
     display: flex;
+    position: relative;
   }
 }
 .main-bar {
@@ -17,6 +22,7 @@ $blue: #4e93e1;
 }
 .contents {
   border: 1px solid $line-gray;
+  border-radius: 4px;
   background: #ffffff;
   padding: 0 48px;
 
@@ -39,11 +45,13 @@ $blue: #4e93e1;
   &-text {
     margin: 50px 0 32px 0;
     color: $contents-black;
-    font-size: 12px;
     text-align: left;
     letter-spacing: 0.22px;
     line-height: 24px;
     word-break: break-word;
+    p{
+      font-size: 16px;
+    }
   }
   &-images {
     display: flex;
@@ -102,6 +110,7 @@ $blue: #4e93e1;
   margin-top: 91px;
   background: #ffffff;
   border: 1px solid $line-gray;
+  border-radius: 4px;
   &__title {
     font-size: 22px;
     margin: 32px 0 0 48px;
@@ -111,7 +120,6 @@ $blue: #4e93e1;
 .comment {
   margin: 0 48px;
   border-bottom: 1px solid $line-gray;
-
   &-info {
     margin-top: 34px;
     display: flex;
@@ -150,6 +158,7 @@ $blue: #4e93e1;
 
   form {
     border: 1px solid $line-gray;
+    border-radius: 4px;
     height: 145px;
     background: #ffffff;
     position: relative;
@@ -166,6 +175,7 @@ $blue: #4e93e1;
       letter-spacing: 0.22px;
       color: #9e9e9e;
       opacity: 1;
+      resize: vertical;
     }
     button {
       background: #ffffff;
@@ -185,12 +195,15 @@ $blue: #4e93e1;
 
 .sidebar {
   width: 240px;
+  height: 600px;
   margin-left: 32px;
   letter-spacing: 0.38px;
   color: $info-black;
   text-align: left;
   font: normal normal medium 16px/32px Noto Sans JP;
-
+  position: sticky;
+  top: 96px;
+  right: 0;
   h3 {
     margin-left: 16px;
   }
