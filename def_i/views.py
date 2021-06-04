@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
 
@@ -260,11 +261,6 @@ class ArticleDeleteView(LoginRequiredMixin,DeleteView):
     def delete(self,request,*args,**kwargs):
         messages.success(self.request,'記事を削除しました．')
         return super().delete(request,*args,**kwargs)
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["contents"] = Article.objects.get(pk=self.kwargs["pk"])
-    #     return context
 
 
 class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
@@ -598,6 +594,21 @@ def course(request):
         }
     return render(request, "def_i/course.html",params)
 
+@require_POST
+def mark_as_studying(request):
+    if request.method == "POST":
+        category_pk = json.loads(request.body)
+        category = Category.objects.get(pk=category_pk)
+        previous_cat = StudyingCategory.objects.filter(user=request.user)
+        for previous in previous_cat:
+            previous.delete()
+
+        StudyingCategory.objects.create(
+            user = request.user,
+            category = category,
+        )
+        return HttpResponse("")
+
 
 class CourseList(LoginRequiredMixin,ListView):
     context_object_name = 'course_and_progress'
@@ -646,6 +657,13 @@ def lesson_complete(request,pk):
         user = request.user
         lesson = Lesson.objects.get(pk=pk)
         ClearedLesson.objects.get_or_create(user=user,lesson=lesson)
+        next_lesson = Lesson.objects.get(pk=pk + 1)
+        if next_lesson:
+            # もしまだ学習中にするボタンを押していなかったらここでStudyingCategoryを作る
+            StudyingCategory.objects.get_or_create(
+                user = user,
+                category = lesson.course.category,
+            )
     return redirect('task_article_post',pk)
 
 
