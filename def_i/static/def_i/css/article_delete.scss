@@ -9,7 +9,10 @@
     margin-top: 48px;
   }
 }
-
+.header-container__contents{
+  border-top:rgba($color: #262626, $alpha: 0.4);
+  border-bottom: rgba($color: #262626, $alpha: 0.4);
+}
 .main-container__contents {
   z-index: -10;
   background-color: rgba($color: #262626, $alpha: 0.4);

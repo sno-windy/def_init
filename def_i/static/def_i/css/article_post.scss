@@ -98,6 +98,7 @@ textarea {
     font: normal normal medium 14px/28px Noto Sans JP;
     font-family: 'Noto Sans JP', sans-serif;
     letter-spacing: 0.29px;
+    resize: vertical;
 }
 .content {
     position: relative;
@@ -124,6 +125,12 @@ input[id$="_image_1"], input[id$="_image_2"] {
     background: #534EE1 0% 0% no-repeat padding-box;
     box-shadow: 0px 1px 6px #21212119;
     border-radius: 4px;
+    border: 0;
+    &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+        cursor: pointer;
+    }
 }
 ::placeholder {
     color: #bdbdbd;
