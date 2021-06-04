@@ -264,7 +264,7 @@
         </div>
         <p class="category_description">{{cat.description}}</p>
         <p class="btn3"><a href="{% url 'course_list' cat.title %}">{{cat.title}}編をはじめる</a></p>
-        <p class="btn4" id="studying-{{cat.pk}}">学習中にする</p>
+        <p {% if studying.category == cat %}class="btn4 btn4-studying"{% else %}class="btn4"{% endif %} id="studying-{{cat.pk}}">学習中にする</p>
     </div>
     {% endfor %}
     </div>
@@ -291,15 +291,21 @@
 {% endcomment %}
 {% endblock contents %}
 {% block javascript %}
+<script src="{% static 'def_i/js/utilities.js' %}"></script>
 <script>
 let range = {{each_progress|length}}
 {% for cat,_ in each_progress %}
 document.getElementById('studying-{{cat.pk}}').addEventListener('click',()=>{
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "{% url 'mark_as_studying' %}");
+    xhr.setRequestHeader('X-CSRFToken', getCookie("csrftoken"));
+    xhr.send("{{cat.pk}}");
+
     for(let i = 1;i<=range;i++){
-        document.getElementById('studying-'+i).classList.remove('btn4-studying')
+        document.getElementById('studying-'+i).classList.remove('btn4-studying');
     }
-    document.getElementById('studying-{{cat.pk}}').classList.toggle('btn4-studying')
-})
+    document.getElementById('studying-{{cat.pk}}').classList.toggle('btn4-studying');
+});
 
 {% endfor %}
 </script>
