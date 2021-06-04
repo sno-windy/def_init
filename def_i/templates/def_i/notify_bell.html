@@ -1,23 +1,30 @@
 {% load static %}
 <body>
     <div class="header-container__notification-button" id="bell">
-        <p><img src="{% static 'def_i/img/bell-icon.svg' %}" alt=""></p>
+        <p>
+        {% if new_likes %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+        {% elif new_bookmarks %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+        {% elif article_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+        {% elif question_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+        {% else %}<img src="{% static 'def_i/img/bell-icon.svg' %}" alt="">
+        {% endif %}</p>
         <div class="header__notify hidden_class" id="hover_notify">
-            <a href="{% url 'message_notification' %}">
-                <h2>お知らせ</h2>
-            </a>
                 {% for like in new_likes %}
-                    <p>{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p>
+                    <div class="notify_contents"><p class="notify_comments">{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p></div>
                 {% endfor %}
                 {% for bookmark in new_bookmarks %}
-                    <p>{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p>
+                    <div class="notify_contents"><p class="notify_comments">{{bookmark.user}}さんが「{{bookmark.question.title}}」をブックマークしました。</p></div>
                 {% endfor %}
                 {% for comment in article_talk %}
-                    <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
+                    <div class="notify_contents"><p class="notify_comments">{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
                 {% endfor %}
                 {% for comment in question_talk %}
-                    <p>{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p>
+                    <div class="notify_contents"><p class="notify_comments">{{comment.msg_from}}さんが「{{comment.msg_at.title}}」にコメントしました。</p></div>
                 {% endfor %}
+                {% comment %} <a href="{% url 'message_notification' %}">
+                    <h2>お知らせ</h2>
+                </a> {% endcomment %}
+
         </div>
     </div>
 </body>

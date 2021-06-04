@@ -109,7 +109,7 @@ body{
         &__create{
             width: 224px;
             height: 48px;
-            background: #4E93E1 0% 0% no-repeat padding-box;
+            background-color:#4d45d5;
             margin: 0 48px;
             border-radius: 8px;
             a{
@@ -118,8 +118,12 @@ body{
                 display: inline-block;
                 width: 100%;
                 text-align: center;
-
             }
+            &:hover{
+                cursor: pointer;
+                background-color: #3d2dbd;
+            }
+
         }
     }
 }
