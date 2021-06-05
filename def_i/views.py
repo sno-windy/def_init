@@ -735,12 +735,21 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
         lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
-        if (lesson_num := kwargs.get("lesson_num")):
+        cleared_lesson = Lesson.objects.filter(cleared_lesson__user=self.request.user)
+        # is_cleared = []
+        # for l in lesson_list:
+        #     if ClearedLesson.objects.filter(user=self.request.user,lesson=l).first():
+        #         is_cleared.append(1)
+        #     else:
+        #         is_cleared.append(0)
+        if lesson_num := kwargs.get("lesson_num"):
             lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         else:
             lesson = Lesson.objects.get(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         context["lesson"] = lesson
         context['lesson_list'] = lesson_list
+        print(cleared_lesson)
+        context['cleared_lesson'] = cleared_lesson
         context["category"] = Category.objects.filter(title=kwargs['category']).first()
         return context
 

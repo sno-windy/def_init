@@ -25,7 +25,7 @@
     <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
 </div>
 
-<p class="btn1"><a href="">続きからはじめる</a></p>
+<p class="btn1"><a href="{% url 'task_detail' studying.category learning_lesson.course.course_num learning_lesson.lesson_num %}">続きからはじめる</a></p>
 </div>
 {% else %}
 {% endif %}

@@ -9,26 +9,29 @@
 {% block contents %}
 <div class="breadcrumbs">
     <a class="breadcrumbs-category"><p>{{category.title}}</p></a>
-    <img src="">
+    <img src="{% static 'def_i/img/arrow-right.svg' %}">
     <a class="breadcrumbs-course"><p>レッスン{{course_num}}</p></a>
-    <img src="">
+    <img src="{% static 'def_i/img/arrow-right.svg' %}">
     <a class="breadcrumbs-course"><p>レッスン{{course_num}}-{% if lesson_num %}{{ lesson_num }}{% else %}1{% endif %}</p></a>
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>レッスン{% if lesson_num %}{{lesson_num}}{% else %}1{% endif %}</p>
+        <p>レッスン{{course_num}}</p>
     </div>
     {% for item in lesson_list %}
     <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
+      {% if item in cleared_lesson %}
+      <img src="{% static 'def_i/img/check.svg' %}" alt="">
+      {% endif %}
       </div>
-      <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter}}{% endif %}</p>
+      <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter}}{% endif %}. {{item.title}}</p>
     </a>
     {% endfor %}
-    <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
+    <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
         <p>質問する</p>
     </a>
-    <a href="{% url 'article_post' %}" class="main-container__contents-menubar-q">
+    <a href="{% url 'task_article_post' lesson.pk %}" class="main-container__contents-menubar-q">
         <p>ノートを書く</p>
     </a>
     </div>
@@ -37,7 +40,13 @@
             <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
             <p class="course-container__contents-text">{{ lesson.contents }}</p>
             <form action="{% url 'complete' lesson.pk %}" method="GET">
-                <button class="btn1">ノートを書いて<br>クリアする</button>
+                <button class="btn1">
+                {% if lesson in cleared_lesson %}
+                ノートを書く
+                {% else %}
+                ノートを書いて<br>クリアする
+                {% endif %}
+                </button>
             </form>
         </div>
     </div>
