@@ -122,7 +122,13 @@
             </a>
             <div class="main-container__contents-article-data">
                 {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
-                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp"><img src="{{a.poster.user_image.url}}">
+                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp">
+                {% if a.poster.user_image %}
+                    <img src="{{a.poster.user_image.url}}">
+                {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}">
+                {% endif %}
+
                     <p>{{a.poster}}</p>
                 </a>
                 <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>

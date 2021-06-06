@@ -139,6 +139,7 @@ $blue: #4e93e1;
       }
       p {
         font: normal normal medium 16px/32px Noto Sans JP;
+        font-weight: 300;
         letter-spacing: 0.38px;
         color: #212121;
         opacity: 1;
@@ -147,7 +148,8 @@ $blue: #4e93e1;
   }
   &-text {
     margin: 28px 0 34px 0;
-    font: normal normal 300 12px/24px Noto Sans JP;
+    font: normal normal medium 16px/32px Noto Sans JP;
+    font-weight: 300;
     letter-spacing: 0.22px;
     color: $contents-black;
     word-break: break-word;
