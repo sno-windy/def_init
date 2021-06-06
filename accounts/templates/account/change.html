@@ -12,8 +12,9 @@
 <div class="change-container">
     <form class="change-container__form" action="{% url 'account_change' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <p class="image_box"><span>プロフィール画像</span>
-            <label for="">{{ form.user_image }}</label></p>
+        <div class="image_box"><span>プロフィール画像</span>
+            <div class="image_box_container"><label>{{ form.user_image }}</label></div>
+        </div>
         <p class="normal_box"><span>ユーザー名</span>{{ form.username }}</p>
         <p class="normal_box"><span>肩書き</span>{{ form.position }}</p>
         <p class="normal_box"><span>メールアドレス</span>{{ form.email }}</p>

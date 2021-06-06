@@ -759,13 +759,15 @@ def lesson_complete(request,pk):
         user = request.user
         lesson = Lesson.objects.get(pk=pk)
         ClearedLesson.objects.get_or_create(user=user,lesson=lesson)
-        next_lesson = Lesson.objects.get(pk=pk + 1)
-        if next_lesson:
+        # if next_lesson := Lesson.objects.filter(pk=pk+1).first():
             # もしまだ学習中にするボタンを押していなかったらここでStudyingCategoryを作る
-            StudyingCategory.objects.get_or_create(
-                user = user,
-                category = lesson.course.category,
-            )
+        if studying := StudyingCategory.objects.filter(user=user):
+            for s in studying:
+                s.delete()
+        StudyingCategory.objects.get_or_create(
+            user = user,
+            category = lesson.course.category,
+        )
     return redirect('task_article_post',pk)
 
 

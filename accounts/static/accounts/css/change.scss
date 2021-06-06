@@ -46,6 +46,26 @@
                 text-align: center;
                 color: #212121;
             }
+            .image_box_container{
+                height: 52px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-left: 56px;
+                padding-top: 16px;
+                #user_image-clear_id{
+                    display: none;
+                }
+            }
+            label{
+                margin-right: -8px;
+                margin-left: auto;
+                // line-height: 52px;
+                font-size: 0;
+                #id_user_image{
+                    visibility: visible;
+                }
+            }
         }
         .normal_box{
             height: 52px;
@@ -82,15 +102,6 @@
                 background-color: #76b2ea;
                 transition: 0.3s;
             }
-        }
-        label{
-            margin-right: -8px;
-            margin-left: auto;
-            line-height: 52px;
-        //     visibility: hidden;
-        //     #id_user_image{
-        //         visibility: visible;
-        //     }
         }
     }
 }
@@ -143,4 +154,8 @@
             transition: 0.3s;
         }
     }
+}
+.alert.alert-danger{
+    font-size: 10px;
+    color: red;
 }
