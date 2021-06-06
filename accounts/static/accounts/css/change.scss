@@ -34,9 +34,22 @@
         box-shadow: 0px 1px 6px #21212119;
         border-radius: 4px;
         padding: 32px 40px 36px 48px;
+        .image_box{
+            height: 52px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            span{
+                display: inline-block;
+                line-height: 52px;
+                word-break: keep-all;
+                text-align: center;
+                color: #212121;
+            }
+        }
         .normal_box{
             height: 52px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: flex;
             flex-direction: row;
             span{
@@ -55,7 +68,7 @@
             }
         }
         .button{
-            margin: 48px 56px 0 48px;
+            margin: 32px 56px 0 64px;
             padding: 0;
             border: 0;
             border-radius: 4px;
@@ -71,10 +84,13 @@
             }
         }
         label{
-            visibility: hidden;
-            #id_user_image{
-                visibility: visible;
-            }
+            margin-right: -8px;
+            margin-left: auto;
+            line-height: 52px;
+        //     visibility: hidden;
+        //     #id_user_image{
+        //         visibility: visible;
+        //     }
         }
     }
 }
@@ -112,7 +128,7 @@
         }
     }
     .button{
-        margin: 4px 88px auto 104px;
+        margin: 4px 88px auto 120px;
         padding: 0;
         border: 0;
         border-radius: 4px;
