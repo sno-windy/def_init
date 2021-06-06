@@ -595,14 +595,15 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
-
-        context["course_dict"] = pass_courses()
-        context["lesson_dict"] = pass_lessons()
-        context["pk"] = self.kwargs["pk"]
+        context.update({
+            "new_bookmarks": new_bookmarks,
+            "new_likes": new_likes,
+            "article_talk": article_talk,
+            "question_talk": question_talk,
+            "course_dict": pass_courses(),
+            "lesson_dict": pass_lessons(),
+            "pk": self.kwargs["pk"],
+        })
         return context
 
     def form_valid(self, form):
@@ -611,6 +612,7 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         article.save()
         self.article = article
         messages.success(self.request,'ノートを保存しました．')
+        print('came to task_article_post!')
         return super().form_valid(form)
 
     def form_invalid(self,form):
@@ -622,6 +624,41 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
             return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
         else:
             return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
+
+
+class TaskCompleteArticlePost(TaskArticlePost):
+    template_name = 'def_i/task_article_post.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print("context!!!")
+        # context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context.update({
+            "new_bookmarks": new_bookmarks,
+            "new_likes": new_likes,
+            "article_talk": article_talk,
+            "question_talk": question_talk,
+            "course_dict": pass_courses(),
+            "lesson_dict": pass_lessons(),
+            "pk": self.kwargs["pk"],
+        })
+        return context
+
+    def form_valid(self, form):
+        # article = form.save(commit=False)
+        # article.poster = self.request.user
+        # article.save()
+        # self.article = article
+        # messages.success(self.request,'ノートを保存しました．')
+        print('task_article_post')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print('フォーム保存に失敗しました。')
+        print(form.errors)
+        return super().form_invalid(form)
 
 
 def pass_courses():
@@ -757,7 +794,7 @@ def lesson_complete(request,pk):
                 user = user,
                 category = lesson.course.category,
             )
-    return redirect('task_article_post',pk)
+        return redirect('task_detail', lesson.course.category, lesson.course.course_num, lesson.lesson_num)
 
 
 class TaskQuestion(LoginRequiredMixin, ListView):

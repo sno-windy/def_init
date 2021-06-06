@@ -36,7 +36,7 @@
         <div class="course-container__contents">
             <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
             <p class="course-container__contents-text">{{ lesson.contents }}</p>
-            <form action="{% url 'complete' lesson.pk %}" method="GET">
+            <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
                 <button class="btn1">ノートを書いて<br>クリアする</button>
             </form>
         </div>

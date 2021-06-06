@@ -15,6 +15,7 @@
             <span class="checkbox_is_published"></span>
             <span>ノートを公開する</span>
         </label>
+        {% block extra_btn %}{% endblock %}
     </div>
     <div>{{form.title}}</div>
     <div class="note-at">
@@ -43,7 +44,9 @@
             <div id="new_img_wrapper_2"></div>
         </div>
     </div>
-    <button type="submit" class="postform-btn">ノートを投稿する</button>
+    <div class="postbtn_wrapper">
+        <button type="submit" class="postform-btn" id="postform-btn">ノートを投稿する</button>
+    </div>
 </form>
 {% endblock contents %}
 
