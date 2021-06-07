@@ -1028,8 +1028,3 @@ def userpage_view(request,pk):
 @csrf_exempt
 def callback(request):
     return handle_callback(request)
-
-
-def studying_category(request):
-
-    return JsonResponse()

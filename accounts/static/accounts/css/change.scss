@@ -79,12 +79,17 @@
                 text-align: center;
                 color: #212121;
             }
-            input{
+            input ,select{
                 width: 240px;
                 height: 100%;
                 border: 1px solid #e0e0e0;
                 border-radius: 8px;
                 margin:0 0 0 auto;
+                padding-left: 4px;
+
+            }
+            select{
+                width: 248px;
             }
         }
         .button{

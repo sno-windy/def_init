@@ -1,15 +1,14 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
+{% comment %} <link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}"> {% endcomment %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article_delete.scss' %}">
 {% endblock extra_style %}
 
 {% block menubar %}{% endblock menubar %}
 
 {% block contents %}
-
-<!-- <div class="main-bar">
+{% comment %} <div class="main-bar">
 
     <div id="question" class="contents">
 
@@ -83,10 +82,10 @@
             </button>
         </form>
     </div>
-</div> -->
+</div>
 
 <!-- サイドバー -->
-<!-- <div class="sidebar">
+<div class="sidebar">
     <div class="sidebar-poster">
 
         <h3>投稿者</h3>
@@ -112,8 +111,7 @@
         </div>
         {% endfor %}
     </div>
-</div> -->
-
+</div> {% endcomment %}
 <div class="background">
 
     <form action="" method="POST" class="popup">

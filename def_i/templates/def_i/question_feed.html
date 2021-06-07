@@ -33,7 +33,7 @@
     <p class="here"><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
     <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
 
-    {% elif request.GET.orderby == 'new' %}
+    {% elif request.GET.orderby == 'myquestion' %}
     <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
     <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
     <p class="here"><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>

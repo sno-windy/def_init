@@ -4,15 +4,23 @@ from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, Set
 from allauth.account.forms import SignupForm, LoginForm
 from .models import User
 
+POSITION_CHOICE = (
+    ('インターン生','インターン生'),
+    ('エンジニア','エンジニア'),
+    ('デザイナー','デザイナー'),
+    ('凄いエンジニア','凄いエンジニア'),
+    ('素晴らしいデザイナー','素晴らしいデザイナー'),
+    ('運営','運営'),
+)
+
 class MyCustomSignupForm(SignupForm):
-    position = forms.CharField(max_length=15)
+    position = forms.ChoiceField(choices=POSITION_CHOICE)
     user_image = forms.ImageField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # django-allauthのフィールドを上書き
         self.fields['username'].widget.attrs['placeholder'] = '8文字以下'
-        self.fields['position'].widget.attrs['placeholder'] = '15文字以下'
         self.fields['email'].widget.attrs['placeholder'] = 'メールアドレス'
         self.fields['password1'].widget.attrs['placeholder'] = '8文字以上の十分に複雑なもの'
         self.fields['password2'].widget.attrs['placeholder'] = '8文字以上の十分に複雑なもの'

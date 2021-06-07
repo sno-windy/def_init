@@ -20,6 +20,7 @@ body{
             font-size: 22px;
             text-align: center;
             margin-top: 24px;
+            margin-bottom: 0;
         }
         &__form{
             display: flex;
@@ -37,8 +38,9 @@ body{
                 text-align: center;
                 color: #212121;
                 margin-left: 32px;
+                font-size: 14px;
             }
-            input{
+            input,select{
                 width: 240px;
                 height: 100%;
                 border: 1px solid #e0e0e0;
@@ -47,6 +49,9 @@ body{
                 &::placeholder{
                     color: #bdbdbd;
                 }
+            }
+            select{
+                width: 248px;
             }
         }
     }
