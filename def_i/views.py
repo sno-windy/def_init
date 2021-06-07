@@ -1028,3 +1028,25 @@ def userpage_view(request,pk):
 @csrf_exempt
 def callback(request):
     return handle_callback(request)
+
+def notify(request):
+    if request.method =="GET":
+
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+        for like in new_likes:
+            like.has_noticed = True
+            like.save()
+        for bookmark in new_bookmarks:
+            bookmark.has_noticed = True
+            bookmark.save()
+        for talk in article_talk:
+            talk.has_noticed = True
+            talk.save()
+        for talk in question_talk:
+            talk.has_noticed = True
+            talk.save()
+        params={
+            "is_notified":True,
+        }
+        return JsonResponse(params)

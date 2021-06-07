@@ -178,23 +178,10 @@ class GetIndexInfo:
     def get_notification(self, user):
         # 記事へのいいね
         new_likes = Like.objects.filter(article__poster=user, has_noticed=False)
-        new_bookmarks = BookMark.objects.filter(question__poster=user, has_noticed=True)
+        new_bookmarks = BookMark.objects.filter(question__poster=user, has_noticed=False)
         # 記事へのコメント
         article_talk = TalkAtArticle.objects.filter(msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント
         question_talk = TalkAtQuestion.objects.filter(msg_to=user, has_noticed=False).order_by('time')
-
-        for like in new_likes:
-            like.has_noticed = True
-            like.save()
-        for bookmark in new_bookmarks:
-            bookmark.has_noticed = True
-            bookmark.save()
-        for talk in article_talk:
-            talk.has_noticed = True
-            talk.save()
-        for talk in question_talk:
-            talk.has_noticed = True
-            talk.save()
 
         return new_likes, new_bookmarks, article_talk, question_talk

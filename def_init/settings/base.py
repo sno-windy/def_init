@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'cms_integration',
     'imagekit',
     'storages',
+    'stdimage',
 ]
 
 MIDDLEWARE = [

@@ -1,13 +1,13 @@
 {% load static %}
 <body>
-    <div class="header-container__notification-button" id="bell">
-        <p>
-        {% if new_likes %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
-        {% elif new_bookmarks %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
-        {% elif article_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
-        {% elif question_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
-        {% else %}<img src="{% static 'def_i/img/bell-icon.svg' %}" alt="">
-        {% endif %}</p>
+    <div class="header-container__notification-button">
+            <p id="bell">
+            {% if new_likes %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+            {% elif new_bookmarks %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+            {% elif article_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+            {% elif question_talk %}<img src="{% static 'def_i/img/bell-icon-on.svg' %}" alt="">
+            {% else %}<img src="{% static 'def_i/img/bell-icon.svg' %}" alt="">
+            {% endif %}</p>
         <div class="header__notify hidden_class" id="hover_notify">
                 {% for like in new_likes %}
                     <div class="notify_contents"><p class="notify_comments">{{like.user}}さんが「{{like.article.title}}」にいいねしました。</p></div>
