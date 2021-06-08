@@ -814,7 +814,6 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
             lesson = Lesson.objects.get(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         context["lesson"] = lesson
         context['lesson_list'] = lesson_list
-        print(cleared_lesson)
         context['cleared_lesson'] = cleared_lesson
         context["category"] = Category.objects.filter(title=kwargs['category']).first()
         context["article_for_complete"] = Article.objects.filter(
