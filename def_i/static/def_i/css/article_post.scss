@@ -15,8 +15,10 @@
 }
 .postnow label {
     display: flex;
+    margin-top: 16px;
+}
+.postnow :first-child {
     margin-top: 144px;
-    align-items: center;
 }
 #id_is_published {
     width: 20px;
@@ -32,7 +34,9 @@
     cursor: pointer;
     user-select: none;
 }
-
+input#id_clear {
+    display: none;
+}
 input#id_is_published {
     display: none;
 }
@@ -113,7 +117,6 @@ textarea {
 input[id$="_image_1"], input[id$="_image_2"] {
     display: none;
 }
-
 .postform-btn{
     width: 224px;
     height: 48px;

@@ -19,7 +19,7 @@ from stdimage.validators import MinSizeValidator, MaxSizeValidator
 from stdimage.models import StdImageField
 
 from def_init.secret_settings import *
-from .validators import FileSizeValidator
+
 
 User = get_user_model()
 
@@ -79,6 +79,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     is_published = models.BooleanField(default=False)
+    for_lesson_complete = models.BooleanField(default=False)
     # 画像を添付する
         # works just like django's ImageField
     article_image_1 = StdImageField(
@@ -86,14 +87,14 @@ class Article(models.Model):
         null=True,
         blank=True,
         variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     article_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
         variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
 
     def __str__(self):
@@ -120,14 +121,14 @@ class Question(models.Model):
         null=True,
         blank=True,
         variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     question_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
         variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
 
     bookmark_count = models.PositiveIntegerField(default=0)
