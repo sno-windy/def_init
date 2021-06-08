@@ -17,7 +17,7 @@ from .markdown import markdownify
 from taggit.managers import TaggableManager
 
 from def_init.secret_settings import *
-from .validators import FileSizeValidator
+
 
 User = get_user_model()
 
@@ -77,18 +77,19 @@ class Article(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     is_published = models.BooleanField(default=False)
+    for_lesson_complete = models.BooleanField(default=False)
     # 画像を添付する
     article_image_1 = models.ImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     article_image_2 = models.ImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     article_image_1_resize = ImageSpecField(source='article_image_1',
         processors=[ResizeToFill(250,250)],
@@ -124,13 +125,13 @@ class Question(models.Model):
         upload_to="def_i/img",
         null=True,
         blank=True,
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     question_image_2 = models.ImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
-        validators=[validate_image_file_extension, FileSizeValidator()]
+        validators=[validate_image_file_extension]
     )
     question_image_1_resize = ImageSpecField(source='question_image_1',
         processors=[ResizeToFill(250,250)],

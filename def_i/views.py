@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import F, OuterRef, Q, Subquery
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
@@ -595,14 +595,15 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
-
-        context["course_dict"] = pass_courses()
-        context["lesson_dict"] = pass_lessons()
-        context["pk"] = self.kwargs["pk"]
+        context.update({
+            "new_bookmarks": new_bookmarks,
+            "new_likes": new_likes,
+            "article_talk": article_talk,
+            "question_talk": question_talk,
+            "course_dict": pass_courses(),
+            "lesson_dict": pass_lessons(),
+            "pk": self.kwargs["pk"],
+        })
         return context
 
     def form_valid(self, form):
@@ -622,6 +623,71 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
             return reverse_lazy('article_published', kwargs={'pk': self.article.pk})
         else:
             return reverse_lazy('article_saved', kwargs={'pk': self.article.pk})
+
+
+class TaskCompleteArticlePost(TaskArticlePost):
+    template_name = 'def_i/task_article_post.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print("context!!!")
+        # context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context.update({
+            "new_bookmarks": new_bookmarks,
+            "new_likes": new_likes,
+            "article_talk": article_talk,
+            "question_talk": question_talk,
+            "course_dict": pass_courses(),
+            "lesson_dict": pass_lessons(),
+            "pk": self.kwargs["pk"],
+        })
+        return context
+
+    def form_valid(self, form):
+        article = form.save(commit=False)
+        article.poster = self.request.user
+        article.for_lesson_complete = True
+        article.save()
+        self.article = article
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        print('フォーム保存に失敗しました。')
+        print(form.errors)
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        if self.request.POST.get("id_clear"):
+            return reverse_lazy("complete", kwargs={'pk': self.kwargs["pk"]})
+        else:
+            return super().get_success_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
+        context.update({
+            "new_bookmarks": new_bookmarks,
+            "new_likes": new_likes,
+            "article_talk": article_talk,
+            "question_talk": question_talk,
+            "course_dict": pass_courses(),
+            "lesson_dict": pass_lessons(),
+            "pk": self.kwargs["pk"],
+        })
+        return context
+
+
+class TaskCompleteArticleUpdate(ArticleUpdateView):
+    template_name = "def_i/task_article_edit.html"
+
+    def get_success_url(self):
+        if self.request.POST.get("id_clear"):
+            return reverse_lazy("complete", kwargs={'pk': self.article.lesson.pk})
+        else:
+            return super().get_success_url()
 
 
 def pass_courses():
@@ -742,6 +808,15 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["lesson"] = lesson
         context['lesson_list'] = lesson_list
         context["category"] = Category.objects.filter(title=kwargs['category']).first()
+        context["article_for_complete"] = Article.objects.filter(
+            poster=self.request.user,
+            lesson = lesson,
+            for_lesson_complete = True,
+        ).first()
+        context["is_cleared"] = ClearedLesson.objects.filter(
+            user = self.request.user,
+            lesson = lesson,
+        )
         return context
 
 
@@ -757,7 +832,7 @@ def lesson_complete(request,pk):
                 user = user,
                 category = lesson.course.category,
             )
-    return redirect('task_article_post',pk)
+        return redirect('task_detail', lesson.course.category, lesson.course.course_num, lesson.lesson_num)
 
 
 class TaskQuestion(LoginRequiredMixin, ListView):
