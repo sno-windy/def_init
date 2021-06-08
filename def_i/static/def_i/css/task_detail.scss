@@ -114,9 +114,19 @@ $black: #212121;
         color: #262626;
       }
       .btn1{
+        display: inline-block;
         margin-top: 32px;
         border: 0;
         color: #fff;
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        p {
+          position: absolute;
+          top: 50%;
+          margin-left: 13px;
+          transform: translateY(-50%);
+        }
       }
     }
   }

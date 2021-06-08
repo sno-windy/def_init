@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='question',
             name='question_image_2',
-            field=models.ImageField(blank=True, null=True, upload_to='def_i/img', validators=[django.core.validators.validate_image_file_extension]),
+            field=models.ImageField(blank=True, null=True, upload_to='def_i/img', validators=[django.core.validators.validate_image_file_extension, def_i.validators.FileSizeValidator]),
         ),
     ]
