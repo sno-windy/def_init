@@ -20,20 +20,21 @@
 <h1 class="note_list__title">ノート一覧</h1>
 <!-- 並び替え方法を選択 -->
 <div class="choice-button">
-    {% if request.GET.orderby == 'new' %}
-    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
-    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
-    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-    {% elif request.GET.orderby == 'like' %}
+    {% if request.GET.orderby == 'like' %}
     <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
     <p id="like" class="here"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
     <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
-    {% else %}
+    {% elif request.GET.orderby == 'mynote' %}
     <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
     <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
     <p class="here"><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
+
+    {% else %}
+    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p id="like"><a href="?orderby=like&keyword={{request.GET.keyword}}">人気</a></p>
+    <p><a href="?orderby=mynote&keyword={{request.GET.keyword}}">あなたのノート</a></p>
 
     {% endif %}
 </div>

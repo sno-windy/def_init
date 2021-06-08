@@ -13,6 +13,10 @@
   border-top:rgba($color: #262626, $alpha: 0.4);
   border-bottom: rgba($color: #262626, $alpha: 0.4);
 }
+.main-container{
+  width: 100%;
+  margin: 0;
+}
 .main-container__contents {
   z-index: -10;
   background-color: rgba($color: #262626, $alpha: 0.4);
@@ -24,6 +28,7 @@
 
   .background {
     height: 100vh;
+    width: 1rem;
 }
 
 .popup {
@@ -53,7 +58,7 @@
     width: 224px;
     height: 48px;
     background: #4D45D5 0% 0% no-repeat padding-box;
-    box-shadow: 0px 1px 6px #21212119;
+    border: 0;
     border-radius: 4px;
     opacity: 1;
     text-align: center;
@@ -63,6 +68,12 @@
       display: block;
       color: #fafafa;
       padding-top: 12px;
+      font-size: 16px;
+    }
+    &:hover{
+      cursor: pointer;
+      background-color: #3d2dbd;
+      ;
     }
   }
   .cancel {

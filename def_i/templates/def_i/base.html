@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="{% sass_src 'def_i/css/base.scss' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
 {% comment %}
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
     <script>
@@ -71,13 +75,25 @@
         </div>
     </main>
     <script>
-        document.getElementById('icon').addEventListener('click',()=>{
-            document.getElementById('hover_item').classList.toggle('hidden_class')
+    $(document).ready(function(e){
+        $(document).on('click','#bell',function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'GET',
+                url:"{% url 'notify_bell' %}",
+                success:function(response){
+                    $('#hover_notify').toggleClass('hidden_class')
+                }
+            })
         })
-        document.getElementById('bell').addEventListener('click',()=>{
-            document.getElementById('hover_notify').classList.toggle('hidden_class')
-        })
+    })
     </script>
+    <script>
+    document.getElementById('icon').addEventListener('click',()=>{
+        document.getElementById('hover_item').classList.toggle('hidden_class')
+    })
+    </script>
+
     {% block javascript %}{% endblock javascript %}
 </body>
 

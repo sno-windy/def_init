@@ -31,13 +31,13 @@
         </div>
         <div class="contents-images">
             {% if contents.article_image_1 %}
-            <a href="{{contents.article_image_1_resize.url}}">
-                <img src="{{ contents.article_image_1_resize.url }}" alt="">
+            <a href="{{contents.article_image_1.url}}">
+                <img src="{{ contents.article_image_1.thumbnail.url }}" alt="">
             </a>
             {% endif %}
             {% if contents.article_image_2 %}
-            <a href="{{contents.article_image_2_resize.url}}">
-                <img src="{{ contents.article_image_2_resize.url }}" alt="">
+            <a href="{{contents.article_image_2.url}}">
+                <img src="{{ contents.article_image_2.thumbnail.url }}" alt="">
             </a>
             {% endif %}
         </div>

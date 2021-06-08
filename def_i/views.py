@@ -801,12 +801,20 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
         lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
-        if (lesson_num := kwargs.get("lesson_num")):
+        cleared_lesson = Lesson.objects.filter(cleared_lesson__user=self.request.user)
+        # is_cleared = []
+        # for l in lesson_list:
+        #     if ClearedLesson.objects.filter(user=self.request.user,lesson=l).first():
+        #         is_cleared.append(1)
+        #     else:
+        #         is_cleared.append(0)
+        if lesson_num := kwargs.get("lesson_num"):
             lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         else:
             lesson = Lesson.objects.get(lesson_num=1,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         context["lesson"] = lesson
         context['lesson_list'] = lesson_list
+        context['cleared_lesson'] = cleared_lesson
         context["category"] = Category.objects.filter(title=kwargs['category']).first()
         context["article_for_complete"] = Article.objects.filter(
             poster=self.request.user,
@@ -825,13 +833,15 @@ def lesson_complete(request,pk):
         user = request.user
         lesson = Lesson.objects.get(pk=pk)
         ClearedLesson.objects.get_or_create(user=user,lesson=lesson)
-        next_lesson = Lesson.objects.get(pk=pk + 1)
-        if next_lesson:
+        # if next_lesson := Lesson.objects.filter(pk=pk+1).first():
             # もしまだ学習中にするボタンを押していなかったらここでStudyingCategoryを作る
-            StudyingCategory.objects.get_or_create(
-                user = user,
-                category = lesson.course.category,
-            )
+        if studying := StudyingCategory.objects.filter(user=user):
+            for s in studying:
+                s.delete()
+        StudyingCategory.objects.get_or_create(
+            user = user,
+            category = lesson.course.category,
+        )
         return redirect('task_detail', lesson.course.category, lesson.course.course_num, lesson.lesson_num)
 
 
@@ -1093,7 +1103,24 @@ def userpage_view(request,pk):
 def callback(request):
     return handle_callback(request)
 
+def notify(request):
+    if request.method =="GET":
 
-def studying_category(request):
-
-    return JsonResponse()
+        info = GetIndexInfo(request.user)
+        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(request.user)
+        for like in new_likes:
+            like.has_noticed = True
+            like.save()
+        for bookmark in new_bookmarks:
+            bookmark.has_noticed = True
+            bookmark.save()
+        for talk in article_talk:
+            talk.has_noticed = True
+            talk.save()
+        for talk in question_talk:
+            talk.has_noticed = True
+            talk.save()
+        params={
+            "is_notified":True,
+        }
+        return JsonResponse(params)

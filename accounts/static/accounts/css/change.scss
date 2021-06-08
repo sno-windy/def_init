@@ -34,9 +34,9 @@
         box-shadow: 0px 1px 6px #21212119;
         border-radius: 4px;
         padding: 32px 40px 36px 48px;
-        .normal_box{
+        .image_box{
             height: 52px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: flex;
             flex-direction: row;
             span{
@@ -46,16 +46,54 @@
                 text-align: center;
                 color: #212121;
             }
-            input{
+            .image_box_container{
+                height: 52px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-left: 56px;
+                padding-top: 16px;
+                #user_image-clear_id{
+                    display: none;
+                }
+            }
+            label{
+                margin-right: -8px;
+                margin-left: auto;
+                // line-height: 52px;
+                font-size: 0;
+                #id_user_image{
+                    visibility: visible;
+                }
+            }
+        }
+        .normal_box{
+            height: 52px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            span{
+                display: inline-block;
+                line-height: 52px;
+                word-break: keep-all;
+                text-align: center;
+                color: #212121;
+            }
+            input ,select{
                 width: 240px;
                 height: 100%;
                 border: 1px solid #e0e0e0;
                 border-radius: 8px;
                 margin:0 0 0 auto;
+                padding-left: 4px;
+
+            }
+            select{
+                width: 248px;
             }
         }
         .button{
-            margin: 48px 56px 0 48px;
+            margin: 32px 56px 0 64px;
             padding: 0;
             border: 0;
             border-radius: 4px;
@@ -68,12 +106,6 @@
             &:hover{
                 background-color: #76b2ea;
                 transition: 0.3s;
-            }
-        }
-        label{
-            visibility: hidden;
-            #id_user_image{
-                visibility: visible;
             }
         }
     }
@@ -112,7 +144,7 @@
         }
     }
     .button{
-        margin: 4px 88px auto 104px;
+        margin: 4px 88px auto 120px;
         padding: 0;
         border: 0;
         border-radius: 4px;
@@ -127,4 +159,8 @@
             transition: 0.3s;
         }
     }
+}
+.alert.alert-danger{
+    font-size: 10px;
+    color: red;
 }

@@ -18,6 +18,8 @@
 {% endif %}
 
 <p>{{user_data.username}}</p>
+<p class="user_position">{{user.position}}</p>
+
 </div>
 {% if studying %}
 <h1>現在の進捗</h1>
@@ -34,7 +36,7 @@
     {% endif %}
     {% endfor %}
     </div>
-    <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
+    {% comment %} <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p> {% endcomment %}
 </div>
 </div>
 </div>
@@ -122,7 +124,13 @@
             </a>
             <div class="main-container__contents-article-data">
                 {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
-                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp"><img src="{{a.poster.user_image.url}}">
+                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp">
+                {% if a.poster.user_image %}
+                    <img src="{{a.poster.user_image.url}}">
+                {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}">
+                {% endif %}
+
                     <p>{{a.poster}}</p>
                 </a>
                 <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>

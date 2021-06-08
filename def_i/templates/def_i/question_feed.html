@@ -28,20 +28,22 @@
 <h1 class="note_list__title">質問一覧</h1>
 <!-- 並び替え方法を選択 -->
 <div class="choice-button">
-    {% if request.GET.orderby == 'new' %}
-    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
-    <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
-    <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
-
-    {% elif request.GET.orderby == 'unanswered' %}
+    {% if request.GET.orderby == 'unanswered' %}
     <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
     <p class="here"><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
     <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
 
-    {% else %}
+    {% elif request.GET.orderby == 'myquestion' %}
     <p id="art-new"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
     <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
     <p class="here"><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
+
+    {% else %}
+    <p id="art-new" class="here"><a href="?orderby=new&keyword={{request.GET.keyword}}">新着</a></p>
+    <p><a href="?orderby=unanswered&keyword={{request.GET.keyword}}">未解決</a></p>
+    <p><a href="?orderby=myquestion&keyword={{request.GET.keyword}}">あなたの質問</a></p>
+
+
     {% endif %}
 </div>
 

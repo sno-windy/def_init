@@ -34,6 +34,8 @@
         .category_description{
             margin-top: 32px;
             font-size: 14px;
+            font-weight: 300;
+            line-height: 18px;
         }
         .btn3{
             margin-top: auto;
@@ -43,6 +45,9 @@
             margin: 0 56px 32px 56px;
             color: #5FA2E6;
             font-size: 16px;
+            &:hover{
+                cursor: pointer;
+            }
         }
         .btn4-studying{
             font-size: 0;
@@ -67,7 +72,6 @@
 }
 #progress_bar{
     width: 144px;
-    margin-right: 20px;
 }
 #colleague_progress_bar{
     width: 128px;

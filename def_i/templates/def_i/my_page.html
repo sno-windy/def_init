@@ -4,7 +4,7 @@
 {% block extra_style %}
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="{% sass_src 'def_i/css/article_feed.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/user_page.scss' %}">
 {% endblock extra_style %}
 {% block menubar %}
@@ -17,6 +17,7 @@
     <img src="{% static 'def_i/img/default.png' %}">
 {% endif %}
 <p>{{user.username}}</p>
+<p class="user_position">{{user.position}}</p>
 </div>
 {% if studying %}
 <h1 class="index_title">学習中のコース</h1>
@@ -33,9 +34,9 @@
     {% endif %}
     {% endfor %}
     </div>
-    <p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title">   {{learning_lesson}}</span></p>
+    {% if learning_lesson %}<p class="main-container__contents-studying-lesson">レッスン{{learning_lesson.course.course_num}}-{{learning_lesson.lesson_num}}<span class="lesson_title"> {{learning_lesson}}</span></p>{% endif %}
 </div>
-<p class="btn1"><a href="">続きからはじめる</a></p>
+{% if learning_lesson %}<p class="btn1"><a href="{% url 'task_detail' studying.category learning_lesson.course.course_num learning_lesson.lesson_num %}">続きからはじめる</a></p>{% endif %}
 </div>
 {% else %}
 {% endif %}
@@ -59,7 +60,20 @@
                 <h2>{{q.title}}</h2>
             </a>
             <div class="main-container__contents-article-data">
-                {{q.category.title}} レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}
+                <div class="note_info">
+                    <div class="note_info_like">
+                        <img src="{% static 'def_i/img/good-before.svg' %}" class="btn-good" alt="">
+                        <span>{{q.bookmark_count}}</span>
+                    </div>
+                    {% if q.is_answered %}
+                    <div>解決済み</div>
+                    {% else %}
+                    <div>未解決</div>
+                    {% endif %}
+                    <div>{{q.category}}</div>
+                    <div>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</div>
+                </div>
+
                 <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
                 {% if q.poster.user_image %}
                     <img src="{{q.poster.user_image.url}}">
@@ -140,7 +154,14 @@
                 <h2>{{a.title}}</h2>
             </a>
             <div class="main-container__contents-article-data">
-                {{a.category.title}} レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}
+                <div class="note_info">
+                    <div class="note_info_like">
+                        <img src="{% static 'def_i/img/good-before.svg' %}" class="btn-good" alt="">
+                        <span>{{a.like_count}}</span>
+                    </div>
+                    <div>{{a.category}}</div>
+                    <div>レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}</div>
+                </div>
                 <a href="{% url 'user_page' a.poster.pk %}" class="user-disp">
                 {% if a.poster.user_image %}
                     <img src="{{a.poster.user_image.url}}">

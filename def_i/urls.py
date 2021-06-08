@@ -33,7 +33,6 @@ urlpatterns = [
 
     # コース系
     path('course/', views.course, name="course"),
-    path('studying_course/<int:cat_num>/',views.studying_category, name="studying_course"),
     path('course/<str:category>/',views.CourseList.as_view(),name='course_list'),
     path('mark_as_studying/', views.mark_as_studying, name="mark_as_studying"),
     path('task_detail/<str:category>/<int:course_num>/', views.TaskDetailView.as_view(), name='task_detail'),
@@ -62,5 +61,9 @@ urlpatterns = [
     path('robots.txt',TemplateView.as_view(template_name='def_i/robots.txt', content_type='text/plain')),
 
     #sitemaps
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap')
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    #notify
+    path('notify_bell', views.notify, name="notify_bell"),
+
 ]

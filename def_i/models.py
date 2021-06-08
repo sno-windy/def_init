@@ -15,6 +15,8 @@ from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
 from .markdown import markdownify
 from taggit.managers import TaggableManager
+from stdimage.validators import MinSizeValidator, MaxSizeValidator
+from stdimage.models import StdImageField
 
 from def_init.secret_settings import *
 
@@ -79,28 +81,21 @@ class Article(models.Model):
     is_published = models.BooleanField(default=False)
     for_lesson_complete = models.BooleanField(default=False)
     # 画像を添付する
-    article_image_1 = models.ImageField(
+        # works just like django's ImageField
+    article_image_1 = StdImageField(
+        upload_to='def_i/img',
+        null=True,
+        blank=True,
+        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        validators=[validate_image_file_extension]
+    )
+    article_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
+        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
         validators=[validate_image_file_extension]
     )
-    article_image_2 = models.ImageField(
-        upload_to="def_i/img",
-        null=True,
-        blank=True,
-        validators=[validate_image_file_extension]
-    )
-    article_image_1_resize = ImageSpecField(source='article_image_1',
-        processors=[ResizeToFill(250,250)],
-        format='JPEG',
-        options={'quality':60}
-        )
-    article_image_2_resize = ImageSpecField(source='article_image_2',
-        processors=[ResizeToFill(250,250)],
-        format='JPEG',
-        options={'quality':60}
-        )
 
     def __str__(self):
         return str(self.title)
@@ -121,28 +116,21 @@ class Question(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     # 画像を添付する
-    question_image_1 = models.ImageField(
+    question_image_1 = StdImageField(
+        upload_to='def_i/img',
+        null=True,
+        blank=True,
+        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        validators=[validate_image_file_extension]
+    )
+    question_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
+        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
         validators=[validate_image_file_extension]
     )
-    question_image_2 = models.ImageField(
-        upload_to="def_i/img",
-        null=True,
-        blank=True,
-        validators=[validate_image_file_extension]
-    )
-    question_image_1_resize = ImageSpecField(source='question_image_1',
-        processors=[ResizeToFill(250,250)],
-        format='JPEG',
-        options={'quality':60}
-        )
-    question_image_2_resize = ImageSpecField(source='question_image_2',
-        processors=[ResizeToFill(250,250)],
-        format='JPEG',
-        options={'quality':60}
-        )
+
     bookmark_count = models.PositiveIntegerField(default=0)
 
     def browser_push(self):
