@@ -1,16 +1,10 @@
 {% extends 'def_i/article_post.html' %}
-{% load static sass_tags %}
-{% block extra_style %}
-<link rel="stylesheet" href="{% sass_src 'def_i/css/article_post.scss' %}">
-{% endblock extra_style %}
-{% block menubar %}{% endblock menubar %}
+
 
 {% block extra_btn %}
     <label class="post_checkbox" for="id_clear">
-        <input type="checkbox" name="is_clear" id="id_clear">
+        <input type="checkbox" name="id_clear" id="id_clear">
         <span class="checkbox_is_published"></span>
         <span>課題をクリアする</span>
     </label>
 {% endblock extra_btn%}
-
-

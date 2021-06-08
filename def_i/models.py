@@ -77,6 +77,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
     is_published = models.BooleanField(default=False)
+    for_lesson_complete = models.BooleanField(default=False)
     # 画像を添付する
     article_image_1 = models.ImageField(
         upload_to="def_i/img",
