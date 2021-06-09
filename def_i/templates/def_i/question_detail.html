@@ -2,6 +2,7 @@
 {% load static sass_tags %}
 {% block extra_style %}
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'def_i/css/luminous-basic.min.css' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/question.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -32,12 +33,12 @@
         </div>
         <div class="contents-images">
             {% if contents.question_image_1 %}
-            <a href="{{contents.question_image_1.url}}">
+            <a href="{{contents.question_image_1.url}}" class="luminous">
                 <img src="{{ contents.question_image_1.thumbnail.url }}" alt="">
             </a>
             {% endif %}
             {% if contents.question_image_2 %}
-            <a href="{{contents.question_image_2.url}}">
+            <a href="{{contents.question_image_2.url}}" class="luminous">
                 <img src="{{ contents.question_image_2.thumbnail.url }}" alt="">
             </a>
             {% endif %}
@@ -117,7 +118,15 @@
 {% endblock contents %}
 
 {% block javascript %}
+<script src="{% static 'def_i/js/Luminous.min.js' %}"></script>
 <script>
+        const options = {
+            appendToSelector: 'body',
+        };
+        const luminousTrigger = document.querySelectorAll('.luminous');
+        if (luminousTrigger !== null) {
+            new LuminousGallery(luminousTrigger, options);
+        }
         //jQueryあんまりよくないと知る前に作ったので使っています．．．
         $(document).ready(function (e) {
             $(document).on('click', '#bookmark', function (e) {
