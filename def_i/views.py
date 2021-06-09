@@ -453,8 +453,7 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question.save()
         self.question = question
         #push通知
-        # question.browser_push(self.request)
-        # question.notify_new_question()
+        question.notify_new_question()
 
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)

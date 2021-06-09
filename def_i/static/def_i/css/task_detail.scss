@@ -13,7 +13,7 @@ $black: #212121;
   position: fixed;
   top: 48px;
   left: 0;
-  z-index: 10;
+  z-index: 1;
   display: flex;
   align-items: center;
   color: #4173c0;
@@ -43,7 +43,7 @@ $black: #212121;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-
+  z-index: 0;
   &-title, &-q{
     height: 48px;
     background-color: #FBFCFE;
@@ -130,4 +130,7 @@ $black: #212121;
       }
     }
   }
+}
+.header{
+  box-shadow: none;
 }
