@@ -1,21 +1,16 @@
-from django.db.models.fields.files import ImageField
 import requests
 
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import validate_image_file_extension
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import resolve_url
 from django.utils import timezone
-from imagekit.models import ImageSpecField, ProcessedImageField
-from imagekit.processors import ResizeToFill
-from linebot import LineBotApi, WebhookHandler
+from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
 from .markdown import markdownify
 from taggit.managers import TaggableManager
-from stdimage.validators import MinSizeValidator, MaxSizeValidator
 from stdimage.models import StdImageField
 
 from def_init.secret_settings import *
@@ -197,14 +192,20 @@ class TalkAtArticle(Talk):
     def notify_new_comment(self):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtArticle.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)
         for push in notify_to:
             if push.notify_comment:
-                line_bot_api.push_message(
-                    push.line_user_id,
-                    TextSendMessage(text="記事にコメントが来ました。")
-                )
+                if push.user == self.msg_at.poster:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                    )
+                else:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                    )
 
 
 class TalkAtQuestion(Talk):
@@ -215,13 +216,19 @@ class TalkAtQuestion(Talk):
     def notify_new_comment(self):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtQuestion.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ質問にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from) #投稿者か，その質問でコメントしてる人,かつ今コメントした人以外
         for push in notify_to:
             if push.notify_answer:
-                line_bot_api.push_message(
-                    push.line_user_id,
-                    TextSendMessage(text="質問にコメントが来ました。")
-                )
+                if push.user == self.msg_at.poster:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                    )
+                else:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                    )
 
     def __str__(self):
         return f"FROM {self.msg_from} TO {self.msg_to} AT {self.msg_at}"

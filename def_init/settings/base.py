@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'sass_processor',
     'taggit',
     'markdownx',
-    'cms_integration',
     'imagekit',
     'storages',
     'stdimage',
@@ -209,6 +208,7 @@ MARKDOWNIFY_WHITELIST_TAGS = [
     'ul',
     'pre',
     'code',
+    'span'
 ]
 
 MARKDOWNIFY_WHITELIST_PROTOCOLS = [
@@ -225,4 +225,5 @@ MARKDOWNIFY_WHITELIST_ATTRS = [
     'src',
     'alt',
     'class',
+    'style'
 ]

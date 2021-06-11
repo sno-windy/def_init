@@ -83,7 +83,13 @@ $blue: #4e93e1;
         text-align: center;
         letter-spacing: 0.38px;
         color: #FAFAFA;
-        margin: 16px auto 16px;
+        margin: 0 auto;
+        line-height: 48px;
+      }
+      &:hover{
+        background-color: #3d2dbd;
+        transition: 0.3s;
+        cursor: pointer;
       }
     }
     .btn-delete {
@@ -100,8 +106,14 @@ $blue: #4e93e1;
         font: normal normal medium 16px/32px Noto Sans JP;
         letter-spacing: 0.38px;
         color: #4E93E1;
+        line-height: 48px;
         // padding-top: 20px;
-        margin: 16px auto 16px;
+        margin: 0 auto;
+      }
+      &:hover{
+        background-color: #f5f5f5;
+        transition: 0.3s;
+        cursor: pointer;
       }
     }
   }
