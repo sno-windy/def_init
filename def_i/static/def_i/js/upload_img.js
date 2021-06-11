@@ -28,8 +28,13 @@ function handleImage(image, previewSpace) {
             window.alert("添付できる画像は2枚までです。");
         } else {
             previewImg(e, previewSpace);
-            imgLabel1.classList.toggle("hidden_class");
-            imgLabel2.classList.toggle("hidden_class");
+            if (previewSpace == document.getElementById("new_img_wrapper_1")) {
+                imgLabel1.classList.add("hidden_class");
+                imgLabel2.classList.remove("hidden_class");
+            } else {
+                imgLabel1.classList.remove("hidden_class");
+                imgLabel2.classList.add("hidden_class");
+            }
         }
     })
 };
@@ -71,6 +76,7 @@ function addDeleteBtn(previewSpace) {
             imgLabel1.classList.add("hidden_class");
         }
 
+        // プレビュー画像がなくなったらプレビュー用スペースを削除、合わせて画像選択アイコンを上に移動
         if (!previewSpaceFor1.hasChildNodes() && !previewSpaceFor2.hasChildNodes()) {
             document.getElementById("id_content").classList.remove("add_preview_space");
             document.getElementById("preview").classList.remove("preview_space");
@@ -102,7 +108,7 @@ function deleteSavedImg(deleteBtn, clearBtn) {
             wrapper.removeChild(wrapper.lastChild);
         }
 
-        // previewSpaceを作り直す
+        // 保存済み画像の削除と追加は同時にできないので、画像選択アイコンを削除
         if (deleteBtn == deleteBtn1) {
             imgLabel1.classList.add("hidden_class");
         } else {
