@@ -45,6 +45,9 @@ class Lesson(models.Model):
     def __str__(self):
         return str(self.title)
 
+    def formatted_markdown(self):
+        return markdownify(self.contents)
+
 
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
