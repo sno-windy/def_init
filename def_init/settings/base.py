@@ -181,10 +181,14 @@ MEDIA_URL = '/media/'
 # MARKDOWNX_MARKDOWNIFY_FUNCTION = 'def_i.markdown.markdownify'
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'extra',
     'fenced_code', # コードブロック
     'tables', # テーブル
     'toc', # 目次
     'nl2br', # 改行
+    'codehilite',
+    'sane_lists',
+    'admonition',
 ]
 
 # MARKDOWNIFY_WHITELIST_TAGS = [
