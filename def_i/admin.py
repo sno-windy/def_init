@@ -10,7 +10,7 @@ class QuestionAdmin(admin.ModelAdmin):
     actions = [notify]
 
 class LessonAdmin(admin.ModelAdmin):
-    ordering = ('course','lesson_num')
+    ordering = ('course.category','course','lesson_num')
 
 class CourseAdmin(admin.ModelAdmin):
     ordering = ('category','course_num')
