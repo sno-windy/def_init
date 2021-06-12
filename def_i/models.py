@@ -38,7 +38,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=30)
-    contents = models.TextField(max_length=1000, null=True)
+    contents = MarkdownxField(max_length=100000,null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
 
@@ -69,7 +69,7 @@ class Article(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_article", null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article", null=True)
     title = models.CharField(max_length=30)
-    content = MarkdownxField()
+    content = MarkdownxField(max_length=100000)
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -106,7 +106,7 @@ class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question", null=True)
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
-    content = MarkdownxField()
+    content = MarkdownxField(max_length=100000)
     is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -147,7 +147,7 @@ class Question(models.Model):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         notify_to = LineFriend.objects.filter(is_answerer=True)
         for push in notify_to:
-            line_bot_api.push_message(push.line_user_id, TextSendMessage(text="質問が投稿されました。回答をお願いします。"))
+            line_bot_api.push_message(push.line_user_id, TextSendMessage(text=f" 【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。"))
 
     def formatted_markdown(self):
         return markdownify(self.content)
