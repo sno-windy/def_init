@@ -1,13 +1,8 @@
-import sys
-sys.path.append('../')
 
 from functools import partial
 
 from django.utils.safestring import mark_safe
 from django.conf import settings
-from def_init.settings.base import (
-    MARKDOWNX_MARKDOWN_EXTENSIONS,
-)
 
 import markdown
 import bleach
@@ -58,20 +53,3 @@ def markdownify(content):
         html = cleaner.clean(html)
 
     return mark_safe(html)
-
-
-def markdownify_lesson(content):
-    """
-    Trans-compiles Markdown text to HTML.
-
-    :param content: Markdown text.
-    :type content: str
-    :return: HTML encoded text.
-    :rtype: str
-    """
-    md = markdown(
-        text=content,
-        extensions=MARKDOWNX_MARKDOWN_EXTENSIONS,
-        # extension_configs=MARKDOWNX_MARKDOWN_EXTENSION_CONFIGS
-    )
-    return md

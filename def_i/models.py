@@ -9,7 +9,7 @@ from django.utils import timezone
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
-from .markdown import markdownify, markdownify_lesson
+from .markdown import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
 

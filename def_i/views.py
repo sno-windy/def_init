@@ -799,7 +799,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["new_likes"] = new_likes
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
-        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category']).order_by('lesson_num')
         cleared_lesson = Lesson.objects.filter(cleared_lesson__user=self.request.user)
         # is_cleared = []
         # for l in lesson_list:

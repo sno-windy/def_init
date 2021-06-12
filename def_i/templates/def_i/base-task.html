@@ -16,7 +16,7 @@
           <img src="{% static 'def_i/img/check.svg' %}" alt="">
         {% endif %}
       </div>
-      <p>レッスン{{course.course_num}}</p>
+      <p>{{course.title}}</p>
     </a>
     {% endfor %}
     <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
