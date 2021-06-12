@@ -46,7 +46,7 @@ class Lesson(models.Model):
         return str(self.title)
 
     def formatted_markdown(self):
-        return markdownify_lesson(self.contents)
+        return markdownify(self.contents)
 
 
 class ClearedLesson(models.Model):
