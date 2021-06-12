@@ -33,7 +33,7 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.title}({self.category}-{self.course_num})"
+        return f"({self.category}-{self.course_num}){self.title}"
 
 
 class Lesson(models.Model):
@@ -43,7 +43,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
 
     def __str__(self):
-        return f"{self.title}({self.course.category}-{self.course.course_num}-{self.lesson_num})"
+        return f"({self.course.category}-{self.course.course_num}-{self.lesson_num}){self.title}"
 
     def formatted_markdown(self):
         return markdownify(self.contents)
