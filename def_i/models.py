@@ -33,7 +33,7 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title}({self.category}-{self.course_num})"
 
 
 class Lesson(models.Model):
