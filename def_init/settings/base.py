@@ -198,6 +198,7 @@ MARKDOWNIFY_WHITELIST_TAGS = [
     'abbr',
     'acronym',
     'b',
+    'br',
     'blockquote',
     'em',
     'i',
