@@ -42,7 +42,7 @@
             <p class="course-container__contents-text">{{ lesson.formatted_markdown|safe }}</p>
             {% if is_cleared %}
                 <p class="btn1">
-                    <a href="{% url 'task_detail' article_for_complete.pk  %}">
+                    <a href="{% url 'article_detail' article_for_complete.pk  %}">
                     クリア済み
                     </a>
                 </p>
