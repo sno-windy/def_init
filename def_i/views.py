@@ -629,8 +629,6 @@ class TaskCompleteArticlePost(TaskArticlePost):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("context!!!")
-        # context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
         context.update({
@@ -641,6 +639,7 @@ class TaskCompleteArticlePost(TaskArticlePost):
             "course_dict": pass_courses(),
             "lesson_dict": pass_lessons(),
             "pk": self.kwargs["pk"],
+            "caution":"caution"
         })
         return context
 

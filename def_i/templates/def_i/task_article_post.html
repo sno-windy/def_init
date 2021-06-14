@@ -7,4 +7,7 @@
         <span class="checkbox_is_published"></span>
         <span>課題をクリアする</span>
     </label>
-{% endblock extra_btn%}
+    {% if caution %}
+    <span style="color:red;">※レッスンタブを変更しないでください！</span>
+    {% endif %}
+{% endblock extra_btn %}
