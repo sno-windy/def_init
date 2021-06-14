@@ -823,6 +823,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
             user = self.request.user,
             lesson = lesson,
         )
+        context["next_lesson"] = info.learning_lesson
         return context
 
 

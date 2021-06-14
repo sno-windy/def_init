@@ -25,7 +25,7 @@
           <img src="{% static 'def_i/img/check.svg' %}" alt="">
           {% endif %}
           </div>
-          <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter0}}{% endif %}. {{item.title}}</p>
+          <p>{% if lesson_num %}{{item.lesson_num|add:'-1'}}{% else %}{{forloop.counter0}}{% endif %}. {{item.title}}</p>
         </a>
         {% endfor %}
         <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
@@ -40,31 +40,40 @@
         <div class="course-container__contents">
             <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
             <p class="course-container__contents-text">{{ lesson.formatted_markdown|safe }}</p>
-            {% if is_cleared %}
-                {% if article_for_complete %}
-                <p class="btn1">
-                    <a href="{% url 'article_detail' article_for_complete.pk  %}">
-                    クリア済み
-                    </a>
-                </p>
+            <div class="btn-container">
+                {% if is_cleared %}
+                    {% if article_for_complete %}
+                    <p class="btn1">
+                        <a href="{% url 'article_detail' article_for_complete.pk  %}">
+                        クリア済み
+                        </a>
+                    </p>
+                    {% else %}
+                    <p class="btn1">
+                        <a href="{% url 'task_article_post' lesson.pk %}">
+                        クリア済み(新規投稿)
+                        </a>
+                    </p>
+                    {% endif %}
+                {% elif article_for_complete %}
+                    <p class="btn1">
+                        <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" style="font-size:12px;">
+                            ノートを編集してクリアする
+                        </a>
+                    </p>
                 {% else %}
-                <p class="btn1">
-                    <a href="{% url 'task_article_post' lesson.pk %}">
-                    クリア済み(新規投稿)
-                    </a>
-                </p>
+                    <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
+                        <button class="btn1">ノートを書いて<br>クリアする</button>
+                    </form>
                 {% endif %}
-            {% elif article_for_complete %}
-                <p class="btn1">
-                    <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" style="font-size:12px;">
-                        ノートを編集してクリアする
-                    </a>
-                </p>
-            {% else %}
-                <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
-                    <button class="btn1">ノートを書いて<br>クリアする</button>
-                </form>
-            {% endif %}
+                {% if is_cleared %}
+                    {% if next_lesson %}
+                        <p class="btn2">
+                            <a href="{% url 'task_detail' category.title next_lesson.course.course_num next_lesson.lesson_num %}">次のレッスンへ</a>
+                        </p>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock contents %}
