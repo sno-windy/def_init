@@ -639,7 +639,7 @@ class TaskCompleteArticlePost(TaskArticlePost):
             "course_dict": pass_courses(),
             "lesson_dict": pass_lessons(),
             "pk": self.kwargs["pk"],
-            "caution":"caution"
+            "caution":"※レッスンタブを変更しないでください！"
         })
         return context
 
