@@ -11,30 +11,32 @@
 <div class="breadcrumbs">
     <a class="breadcrumbs-category" href="{% url 'course_list' category.title %}"><p>{{category.title}}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>レッスン{{course_num}}</p></a>
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.course.title }}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>レッスン{{course_num}}-{% if lesson_num %}{{ lesson_num }}{% else %}1{% endif %}</p></a>
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.title }}</p></a>
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>レッスン{{course_num}}</p>
+        <p>{{ lesson.course.title }}</p>
     </div>
-    {% for item in lesson_list %}
-    <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
-      <div class="lesson_checkbox">
-      {% if item in cleared_lesson %}
-      <img src="{% static 'def_i/img/check.svg' %}" alt="">
-      {% endif %}
-      </div>
-      <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter}}{% endif %}. {{item.title}}</p>
-    </a>
-    {% endfor %}
-    <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
-        <p>質問する</p>
-    </a>
-    <a href="{% url 'task_article_post' lesson.pk %}" class="main-container__contents-menubar-q">
-        <p>ノートを書く</p>
-    </a>
+    <div class="main-container__contents-menubar-scroll">
+        {% for item in lesson_list %}
+        <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
+          <div class="lesson_checkbox">
+          {% if item in cleared_lesson %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+          {% endif %}
+          </div>
+          <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter0}}{% endif %}. {{item.title}}</p>
+        </a>
+        {% endfor %}
+        <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
+            <p>質問する</p>
+        </a>
+        <a href="{% url 'task_article_post' lesson.pk %}" class="main-container__contents-menubar-q">
+            <p>ノートを書く</p>
+        </a>
+    </div>
     </div>
     <div class="course-container">
         <div class="course-container__contents">
