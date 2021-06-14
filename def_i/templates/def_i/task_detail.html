@@ -47,9 +47,11 @@
                     </a>
                 </p>
             {% elif article_for_complete %}
-                <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" class="btn1">
-                    <p>ノートを編集して<br>クリアする</p>
+                <p class="btn1">
+                    <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" style="font-size:12px;">
+                        ノートを編集してクリアする
                     </a>
+                </p>
             {% else %}
                 <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
                     <button class="btn1">ノートを書いて<br>クリアする</button>

@@ -639,7 +639,6 @@ class TaskCompleteArticlePost(TaskArticlePost):
             "course_dict": pass_courses(),
             "lesson_dict": pass_lessons(),
             "pk": self.kwargs["pk"],
-            "caution":"※レッスンタブを変更しないでください！"
         })
         return context
 
@@ -674,6 +673,7 @@ class TaskCompleteArticlePost(TaskArticlePost):
             "course_dict": pass_courses(),
             "lesson_dict": pass_lessons(),
             "pk": self.kwargs["pk"],
+            "caution":"※タブを変更しないでください！"
         })
         return context
 
@@ -686,6 +686,12 @@ class TaskCompleteArticleUpdate(ArticleUpdateView):
             return reverse_lazy("complete", kwargs={'pk': self.article.lesson.pk})
         else:
             return super().get_success_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["caution"] = "※タブを変更しないでください！"
+        return context
+
 
 
 def pass_courses():
