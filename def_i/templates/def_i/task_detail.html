@@ -41,11 +41,19 @@
             <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
             <p class="course-container__contents-text">{{ lesson.formatted_markdown|safe }}</p>
             {% if is_cleared %}
+                {% if article_for_complete %}
                 <p class="btn1">
                     <a href="{% url 'article_detail' article_for_complete.pk  %}">
                     クリア済み
                     </a>
                 </p>
+                {% else %}
+                <p class="btn1">
+                    <a href="{% url 'task_article_post' lesson.pk %}">
+                    クリア済み
+                    </a>
+                </p>
+                {% endif %}
             {% elif article_for_complete %}
                 <p class="btn1">
                     <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" style="font-size:12px;">
