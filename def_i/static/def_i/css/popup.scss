@@ -1,0 +1,48 @@
+@for $i from 1 through 2 {
+
+  #popup_#{$i}{
+    width:100%;
+    height: 100%;
+    line-height:100%;
+    background-color: rgba($color: #262626, $alpha: 0.6);
+    z-index: 5;
+    padding:0 4%;
+    box-sizing:border-box;
+    display:none;
+    position:fixed;
+    top:50%;
+    left:50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    img{
+      width: 80%;
+      height: 80%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
+    }
+  }
+  input[type="checkbox"]#show_popup_#{$i}{
+    display: none;
+  }
+  input[id^="to_"] {
+    width: 30px;
+  }
+  input#show_popup_#{$i}:checked + #popup_#{$i}{
+    display: block;
+    #to_prev_img_1, #to_prev_img_2 {
+      position: absolute;
+      top: 50%;
+      left: 30px;
+      transform: translateY(-50%);
+    }
+    #to_next_img_1, #to_next_img_2 {
+      position: absolute;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+    }
+  }
+}
