@@ -1,5 +1,6 @@
 let image1;
 let image2;
+showPopup();
 
 if (document.getElementById("id_article_image_1")) {
     image1 = document.getElementById("id_article_image_1");
@@ -41,10 +42,9 @@ function handleImage(image, previewSpace) {
 
 function previewImg(e, previewSpace) {
     const fileReader = new FileReader();
-    fileReader.addEventListener('load', function (e) {
-        const newImg = document.createElement('img');
-        newImg.src = e.target.result;
-        previewSpace.appendChild(newImg);
+    fileReader.addEventListener('load', {
+        previewSpace: previewSpace,
+        handleEvent: createPopup,
     });
     document.getElementById("id_content").classList.add("add_preview_space");
     document.getElementById("preview").classList.add("preview_space");
@@ -54,6 +54,33 @@ function previewImg(e, previewSpace) {
     });
     fileReader.readAsDataURL(e.target.files[0]);
     addDeleteBtn(previewSpace);
+};
+
+// プレビュー設置、ポップアップ表示を用意
+function createPopup(e) {
+    const newImg = e.currentTarget.result;
+    if (this.previewSpace == previewSpaceFor2) {
+        this.previewSpace.insertAdjacentHTML("beforeend", "<label>"
+            + "<img src=" + newImg + ">"
+            + "<input type='checkbox' id='show_popup_2'>"
+            + "<div id='popup_2'>"
+            + "<input type='image' src='" + toNextIconSource + "' id='to_next_img_2'>"
+            + "<img src=" + newImg + ">"
+            + "<input type='image' src='" + toPrevIconSource + "' id='to_prev_img_2'>"
+            + "</div>"
+        );
+
+    } else {
+        this.previewSpace.insertAdjacentHTML("beforeend", "<label>"
+            + "<img src=" + newImg + ">"
+            + "<input type='checkbox' id='show_popup_1'>"
+            + "<div id='popup_1'>"
+            + "<input type='image' src='" + toNextIconSource + "' id='to_next_img_1'>"
+            + "<img src=" + newImg + ">"
+            + "<input type='image' src='" + toPrevIconSource + "' id='to_prev_img_1'>"
+            + "</div>");
+    }
+    showPopup();
 };
 
 // プレビュー用削除ボタン
@@ -116,4 +143,30 @@ function deleteSavedImg(deleteBtn, clearBtn) {
         }
 
     });
+};
+
+// 画像ポップアップ表示
+function showPopup() {
+    const showFirstPopup = document.getElementById("show_popup_1");
+    const showSecondPopup = document.getElementById("show_popup_2");
+
+
+    for (let i = 1; i < 3; i++) {
+        const idNext = "to_next_img_" + i;
+        const idPrev = "to_prev_img_" + i;
+        if ((toNextImg = document.getElementById(idNext))) {
+            toNextImg.addEventListener('click', function (e) {
+                e.preventDefault();
+                showFirstPopup.checked = false;
+                showSecondPopup.checked = true;
+            })
+        };
+        if ((toPrevImg = document.getElementById(idPrev))) {
+            toPrevImg.addEventListener('click', function (e) {
+                e.preventDefault();
+                showFirstPopup.checked = true;
+                showSecondPopup.checked = false;
+            })
+        };
+    }
 };

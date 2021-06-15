@@ -1,7 +1,7 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
-<link rel="stylesheet" href="{% static 'def_i/css/luminous-basic.min.css' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/popup.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article_post.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/edit_base.scss' %}">
@@ -46,9 +46,14 @@
             {% if form.article_image_1.value %}
             <div id="new_img_wrapper_1">
                 <button type="button" class="img_delete_btn" id="delete_image_1">削除する</button>
-                <a href="{{object.article_image_1.url}}" class="luminous">
+                <label>
                     <img src="{{object.article_image_1.url}}" alt="">
-                </a>
+                    <input type="checkbox" id="show_popup_1">
+                    <div id="popup_1">
+                        <input type="image" src="{% static 'def_i/img/next_icon.svg' %}" id="to_next_img_1">
+                        <img src="{{object.article_image_1.url}}" alt="">
+                    </div>
+                </label>
             </div>
             {% else %}
             <div id="new_img_wrapper_1"></div>
@@ -56,9 +61,14 @@
             {% if form.article_image_2.value %}
             <div id="new_img_wrapper_2">
                 <button type="button" class="img_delete_btn" id="delete_image_2">削除する</button>
-                <a href="{{object.article_image_2.url}}" class="luminous">
+                <label>
                     <img src="{{object.article_image_2.url}}" alt="">
-                </a>
+                    <input type="checkbox" id="show_popup_2">
+                    <div id="popup_2">
+                        <input type="image" src="{% static 'def_i/img/back_icon_white.svg' %}" id="to_prev_img_2">
+                        <img src="{{object.article_image_2.url}}" alt="">
+                    </div>
+                </label>
             </div>
             {% else %}
             <div id="new_img_wrapper_2"></div>
@@ -70,17 +80,12 @@
 {% endblock contents %}
 
 {% block javascript %}
-<script src="{% static 'def_i/js/Luminous.min.js' %}"></script>
 <script>
-    const options = {
-        appendToSelector: 'body',
-    };
-    const luminousTrigger = document.querySelectorAll('.luminous');
-    if (luminousTrigger !== null) {
-        new LuminousGallery(luminousTrigger, options);
-    }
     const courses = JSON.parse('{{course_dict|escapejs}}');
     const lessons = JSON.parse('{{lesson_dict|escapejs}}');
+    const toNextIconSource = "{% static 'def_i/img/next_icon.svg' %}";
+    const toPrevIconSource = "{% static 'def_i/img/back_icon_white.svg' %}";
+
     const newImgWrapper1 = document.getElementById("new_img_wrapper_1");
     const newImgWrapper2 = document.getElementById("new_img_wrapper_2");
 

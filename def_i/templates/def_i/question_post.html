@@ -1,6 +1,7 @@
 {% extends 'def_i/base.html' %}
 {% load static sass_tags %}
 {% block extra_style %}
+<link rel="stylesheet" href="{% sass_src 'def_i/css/popup.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/article_post.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/question.scss' %}">
 {% endblock extra_style %}
@@ -47,6 +48,8 @@
     const courses = JSON.parse('{{course_dict|escapejs}}');
     console.log("courses: " + courses);
     const lessons = JSON.parse('{{lesson_dict|escapejs}}');
+    const toNextIconSource = "{% static 'def_i/img/next_icon.svg' %}";
+    const toPrevIconSource = "{% static 'def_i/img/back_icon_white.svg' %}";
 </script>
 <script src="{% static 'def_i/js/filter.js' %}"></script>
 <script src="{% static 'def_i/js/upload_img.js' %}"></script>
