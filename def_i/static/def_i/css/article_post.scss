@@ -109,7 +109,7 @@ textarea {
 }
 .article_image_icon img {
     position: absolute;
-    top: 216px;
+    bottom: 32px;
     right: 16px;
     width: 32px;
     height: 32px;
@@ -185,4 +185,10 @@ input[id$="_image_1"], input[id$="_image_2"] {
     bottom: 40px;
     left: 0;
     height: 180px;
+}
+
+.caution{
+    display: block;
+    margin-top: -16px;
+    color: red;
 }

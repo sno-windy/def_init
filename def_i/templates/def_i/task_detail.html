@@ -3,57 +3,81 @@
 {% load sass_tags %}
 {% block extra_style %}
 <link rel="stylesheet" href="{% sass_src 'def_i/css/task_detail.scss' %}">
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css">
 {% endblock extra_style %}
 {% block contents %}
 <div class="breadcrumbs">
-    <a class="breadcrumbs-category"><p>{{category.title}}</p></a>
+    <a class="breadcrumbs-category" href="{% url 'course_list' category.title %}"><p>{{category.title}}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course"><p>レッスン{{course_num}}</p></a>
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.course.title }}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course"><p>レッスン{{course_num}}-{% if lesson_num %}{{ lesson_num }}{% else %}1{% endif %}</p></a>
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.title }}</p></a>
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>レッスン{{course_num}}</p>
+        <p>{{ lesson.course.title }}</p>
     </div>
-    {% for item in lesson_list %}
-    <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
-      <div class="lesson_checkbox">
-      {% if item in cleared_lesson %}
-      <img src="{% static 'def_i/img/check.svg' %}" alt="">
-      {% endif %}
-      </div>
-      <p>{% if lesson_num %}{{item.lesson_num}}{% else %}{{forloop.counter}}{% endif %}. {{item.title}}</p>
-    </a>
-    {% endfor %}
-    <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
-        <p>質問する</p>
-    </a>
-    <a href="{% url 'task_article_post' lesson.pk %}" class="main-container__contents-menubar-q">
-        <p>ノートを書く</p>
-    </a>
+    <div class="main-container__contents-menubar-scroll">
+        {% for item in lesson_list %}
+        <a href="{% url 'task_detail' category.title course_num forloop.counter %}" class="main-container__contents-menubar-lesson">
+          <div class="lesson_checkbox">
+          {% if item in cleared_lesson %}
+          <img src="{% static 'def_i/img/check.svg' %}" alt="">
+          {% endif %}
+          </div>
+          <p>{% if lesson_num %}{{item.lesson_num|add:'-1'}}{% else %}{{forloop.counter0}}{% endif %}. {{item.title}}</p>
+        </a>
+        {% endfor %}
+        <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
+            <p>質問する</p>
+        </a>
+        <a href="{% url 'task_article_post' lesson.pk %}" class="main-container__contents-menubar-q">
+            <p>ノートを書く</p>
+        </a>
+    </div>
     </div>
     <div class="course-container">
         <div class="course-container__contents">
             <h1 class="course-container__contents-title">{{ lesson.title }}</h1>
-            <p class="course-container__contents-text">{{ lesson.contents }}</p>
-            {% if is_cleared %}
-                <a href="{% url 'article_detail' article_for_complete.pk %}" class="btn1">
-                    <p>クリア済み</p>
-                </a>
-            {% elif article_for_complete %}
-                <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" class="btn1">
-                    <p>ノートを編集して<br>クリアする</p>
-                    </a>
-            {% else %}
-                <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
-                    <button class="btn1">ノートを書いて<br>クリアする</button>
-                </form>
-            {% endif %}
+            <p class="course-container__contents-text">{{ lesson.formatted_markdown|safe }}</p>
+            <div class="btn-container">
+                {% if is_cleared %}
+                    {% if article_for_complete %}
+                    <p class="btn1">
+                        <a href="{% url 'article_detail' article_for_complete.pk  %}">
+                        クリア済み
+                        </a>
+                    </p>
+                    {% else %}
+                    <p class="btn1">
+                        <a href="{% url 'task_article_post' lesson.pk %}">
+                        クリア済み(新規投稿)
+                        </a>
+                    </p>
+                    {% endif %}
+                {% elif article_for_complete %}
+                    <p class="btn1">
+                        <a href="{% url 'task_complete_article_edit' article_for_complete.pk %}" style="font-size:12px;">
+                            ノートを編集してクリアする
+                        </a>
+                    </p>
+                {% else %}
+                    <form action="{% url 'task_complete_article' lesson.pk %}" method="GET">
+                        <button class="btn1">ノートを書いて<br>クリアする</button>
+                    </form>
+                {% endif %}
+                {% if is_cleared %}
+                    {% if next_lesson %}
+                        <p class="btn2">
+                            <a href="{% url 'task_detail' category.title next_lesson.course.course_num next_lesson.lesson_num %}">次のレッスンへ</a>
+                        </p>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
     </div>
 {% endblock contents %}
 {% block javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 {% endblock javascript %}

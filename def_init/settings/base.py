@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'sass_processor',
     'taggit',
     'markdownx',
-    'cms_integration',
     'imagekit',
     'storages',
     'stdimage',
@@ -179,50 +178,57 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 
-MARKDOWNX_MARKDOWNIFY_FUNCTION = 'def_i.markdown.markdownify'
+# MARKDOWNX_MARKDOWNIFY_FUNCTION = 'def_i.markdown.markdownify'
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'extra',
     'fenced_code', # コードブロック
     'tables', # テーブル
     'toc', # 目次
     'nl2br', # 改行
+    'codehilite',
+    'sane_lists',
+    'admonition',
 ]
 
-MARKDOWNIFY_WHITELIST_TAGS = [
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'a',
-    'abbr',
-    'acronym',
-    'b',
-    'blockquote',
-    'em',
-    'i',
-    'li',
-    'ol',
-    'p',
-    'strong',
-    'ul',
-    'pre',
-    'code',
-]
+# MARKDOWNIFY_WHITELIST_TAGS = [
+#     'h1',
+#     'h2',
+#     'h3',
+#     'h4',
+#     'h5',
+#     'h6',
+#     'a',
+#     'abbr',
+#     'acronym',
+#     'b',
+#     'br',
+#     'blockquote',
+#     'em',
+#     'i',
+#     'li',
+#     'ol',
+#     'p',
+#     'strong',
+#     'ul',
+#     'pre',
+#     'code',
+#     'span'
+# ]
 
-MARKDOWNIFY_WHITELIST_PROTOCOLS = [
-    'http',
-    'https',
-]
+# MARKDOWNIFY_WHITELIST_PROTOCOLS = [
+#     'http',
+#     'https',
+# ]
 
-MARKDOWNIFY_LINKIFY_PARSE_EMAIL = True
+# MARKDOWNIFY_LINKIFY_PARSE_EMAIL = True
 
-MARKDOWNIFY_LINKIFY_SKIP_TAGS = ['pre', 'code', ]
+# MARKDOWNIFY_LINKIFY_SKIP_TAGS = ['pre', 'code', ]
 
-MARKDOWNIFY_WHITELIST_ATTRS = [
-    'href',
-    'src',
-    'alt',
-    'class',
-]
+# MARKDOWNIFY_WHITELIST_ATTRS = [
+#     'href',
+#     'src',
+#     'alt',
+#     'class',
+#     'style'
+# ]

@@ -83,6 +83,7 @@
                 url:"{% url 'notify_bell' %}",
                 success:function(response){
                     $('#hover_notify').toggleClass('hidden_class')
+                    $('#bell_img').attr('src',"{% static 'def_i/img/bell-icon.svg' %}")
                 }
             })
         })

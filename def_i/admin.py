@@ -9,14 +9,20 @@ def notify(request,queryset):
 class QuestionAdmin(admin.ModelAdmin):
     actions = [notify]
 
+class LessonAdmin(admin.ModelAdmin):
+    ordering = ('course__category','course','lesson_num')
+
+class CourseAdmin(admin.ModelAdmin):
+    ordering = ('category','course_num')
+
 admin.site.register(Article)
 notify.short_description = '通知を送信する'
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Like)
-admin.site.register(Course)
+admin.site.register(Course,CourseAdmin)
 admin.site.register(Category)
 admin.site.register(StudyingCategory)
-admin.site.register(Lesson)
+admin.site.register(Lesson,LessonAdmin)
 admin.site.register(Talk)
 admin.site.register(TalkAtQuestion)
 admin.site.register(TalkAtArticle)

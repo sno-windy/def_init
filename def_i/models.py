@@ -1,21 +1,17 @@
-from django.db.models.fields.files import ImageField
 import requests
 
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import validate_image_file_extension
 from django.db import models
 from django.db.models import Q
 from django.shortcuts import resolve_url
 from django.utils import timezone
-from imagekit.models import ImageSpecField, ProcessedImageField
-from imagekit.processors import ResizeToFill
-from linebot import LineBotApi, WebhookHandler
+from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
-from .markdown import markdownify
+# from .markdown import markdownify
+from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
-from stdimage.validators import MinSizeValidator, MaxSizeValidator
 from stdimage.models import StdImageField
 
 from def_init.secret_settings import *
@@ -38,17 +34,20 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.title)
+        return f"({self.category}-{self.course_num}){self.title}"
 
 
 class Lesson(models.Model):
     title = models.CharField(max_length=30)
-    contents = models.TextField(max_length=1000, null=True)
+    contents = MarkdownxField(max_length=100000,null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
 
     def __str__(self):
-        return str(self.title)
+        return f"({self.course.category}-{self.course.course_num}-{self.lesson_num}){self.title}"
+
+    def formatted_markdown(self):
+        return markdownify(self.contents)
 
 
 class ClearedLesson(models.Model):
@@ -74,7 +73,7 @@ class Article(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_article", null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article", null=True)
     title = models.CharField(max_length=30)
-    content = MarkdownxField()
+    content = MarkdownxField(max_length=100000)
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -111,7 +110,7 @@ class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question", null=True)
     title = models.CharField(max_length=30)
     # content = models.TextField(null=True)
-    content = MarkdownxField()
+    content = MarkdownxField(max_length=100000)
     is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     tags = TaggableManager(blank=True)
@@ -151,10 +150,8 @@ class Question(models.Model):
     def notify_new_question(self):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         notify_to = LineFriend.objects.filter(is_answerer=True)
-        print("to:", notify_to)
         for push in notify_to:
-            print(push.line_user_id)
-            line_bot_api.push_message(push.line_user_id, TextSendMessage(text="質問が投稿されました。回答をお願いします。"))
+            line_bot_api.push_message(push.line_user_id, TextSendMessage(text=f" 【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。"))
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -199,14 +196,20 @@ class TalkAtArticle(Talk):
     def notify_new_comment(self):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtArticle.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)
         for push in notify_to:
             if push.notify_comment:
-                line_bot_api.push_message(
-                    push.line_user_id,
-                    TextSendMessage(text="記事にコメントが来ました。")
-                )
+                if push.user == self.msg_at.poster:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                    )
+                else:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                    )
 
 
 class TalkAtQuestion(Talk):
@@ -217,13 +220,19 @@ class TalkAtQuestion(Talk):
     def notify_new_comment(self):
         line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtQuestion.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ質問にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters))
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from) #投稿者か，その質問でコメントしてる人,かつ今コメントした人以外
         for push in notify_to:
             if push.notify_answer:
-                line_bot_api.push_message(
-                    push.line_user_id,
-                    TextSendMessage(text="質問にコメントが来ました。")
-                )
+                if push.user == self.msg_at.poster:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                    )
+                else:
+                    line_bot_api.push_message(
+                        push.line_user_id,
+                        TextSendMessage(text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                    )
 
     def __str__(self):
         return f"FROM {self.msg_from} TO {self.msg_to} AT {self.msg_at}"

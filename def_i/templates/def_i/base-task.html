@@ -10,13 +10,13 @@
       <p>コース内容</p>
     </div>
     {% for course,prog in course_and_progress %}
-    <a href="{% url 'task_detail' category.title course.pk %}" class="main-container__contents-menubar-lesson">
+    <a href="{% url 'task_detail' category.title course.course_num %}" class="main-container__contents-menubar-lesson">
       <div class="lesson_checkbox">
         {% if prog == 100 %}
           <img src="{% static 'def_i/img/check.svg' %}" alt="">
         {% endif %}
       </div>
-      <p>レッスン{{course.course_num}}</p>
+      <p>{{course.title}}</p>
     </a>
     {% endfor %}
     <a href="{% url 'question_post' %}" class="main-container__contents-menubar-q">
@@ -41,14 +41,14 @@
           <img src="{% static 'def_i/img/check.svg' %}" alt="">
         {% endif %}
         </div>
-        <p class="main-container__contents-task-box-title">レッスン{{course.course_num}}</p>
+        <p class="main-container__contents-task-box-title">{{course.title}}</p>
         <a class="main-container__contents-task-box-arrow">
           <img class="more" src="{% static 'def_i/img/expand-more.svg' %}" width="40" height="40">
           <img class="less hidden-img" src="{% static 'def_i/img/expand-less.svg' %}" width="40" height="40">
         </a>
       </div>
       <div class="main-container__contents-task-box-detail hidden">
-        <p class="category-description">{{course.title}}</p>
+        <p class="category-description"></p>
         <div class="main-container__contents-task-box-detail-sub">
           <div class="progress_bar">
             <progress id="category_progress_bar"

@@ -1,13 +1,9 @@
 from django import forms
 from markdownx.widgets import MarkdownxWidget
 from .models import (
-    User, Article, Question, Like, Lesson, Talk, TalkAtArticle, TalkAtQuestion, Course, Category
-)
-from django.contrib.auth.forms import (
-    AuthenticationForm
+    User, Article, Question, Lesson, TalkAtArticle, TalkAtQuestion, Course, Category
 )
 
-from .validators import FileSizeValidator
 
 class ArticleTalkForm(forms.ModelForm):
     class Meta:

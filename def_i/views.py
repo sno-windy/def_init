@@ -453,8 +453,7 @@ class QuestionPost(LoginRequiredMixin,CreateView):
         question.save()
         self.question = question
         #push通知
-        # question.browser_push(self.request)
-        # question.notify_new_question()
+        question.notify_new_question()
 
         messages.success(self.request,'質問を投稿しました．')
         return super().form_valid(form)
@@ -630,8 +629,6 @@ class TaskCompleteArticlePost(TaskArticlePost):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print("context!!!")
-        # context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
         context.update({
@@ -676,6 +673,7 @@ class TaskCompleteArticlePost(TaskArticlePost):
             "course_dict": pass_courses(),
             "lesson_dict": pass_lessons(),
             "pk": self.kwargs["pk"],
+            "caution":"※タブを変更しないでください！"
         })
         return context
 
@@ -688,6 +686,12 @@ class TaskCompleteArticleUpdate(ArticleUpdateView):
             return reverse_lazy("complete", kwargs={'pk': self.article.lesson.pk})
         else:
             return super().get_success_url()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["caution"] = "※タブを変更しないでください！"
+        return context
+
 
 
 def pass_courses():
@@ -800,14 +804,8 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["new_likes"] = new_likes
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
-        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
+        lesson_list = Lesson.objects.filter(course__course_num=kwargs['course_num'],course__category__title=kwargs['category']).order_by('lesson_num')
         cleared_lesson = Lesson.objects.filter(cleared_lesson__user=self.request.user)
-        # is_cleared = []
-        # for l in lesson_list:
-        #     if ClearedLesson.objects.filter(user=self.request.user,lesson=l).first():
-        #         is_cleared.append(1)
-        #     else:
-        #         is_cleared.append(0)
         if lesson_num := kwargs.get("lesson_num"):
             lesson = Lesson.objects.get(lesson_num=lesson_num,course__course_num=kwargs['course_num'],course__category__title=kwargs['category'])
         else:
@@ -825,6 +823,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
             user = self.request.user,
             lesson = lesson,
         )
+        context["next_lesson"] = info.learning_lesson
         return context
 
 

@@ -1,3 +1,4 @@
+
 from functools import partial
 
 from django.utils.safestring import mark_safe

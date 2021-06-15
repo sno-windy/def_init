@@ -13,7 +13,7 @@ $black: #212121;
   position: fixed;
   top: 48px;
   left: 0;
-  z-index: 10;
+  z-index: 1;
   display: flex;
   align-items: center;
   color: #4173c0;
@@ -43,7 +43,7 @@ $black: #212121;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-
+  z-index: 0;
   &-title, &-q{
     height: 48px;
     background-color: #FBFCFE;
@@ -62,7 +62,11 @@ $black: #212121;
       }
     }
   }
-
+  &-scroll{
+    overflow:auto;
+    width: 256px;
+    height: 80vh;
+  }
   &-title {
     border-left: 8px solid #76b2ea;
     p {
@@ -100,9 +104,65 @@ $black: #212121;
     background-color: #fff;
     border: 1px solid #EEEEEE;
     border-radius: 4px;
+    line-height: 1.5em;
+h1{
+  font-size: 2em;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+}
+h2{
+  font-size: 1.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+}
+h3{
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+}
+h4{
+  margin-block-start: 1.33em;
+  margin-block-end: 1.33em;
+}
+h5{
+  font-size: 16px;
+}
+h6{
+  font-size: 14px;
+}
+p{
+  font-size: 16px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 1.5em;
+}
+h1,h2{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+ol{
+  display: block;
+  list-style-type: decimal;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+}
+li{
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+code {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+//   font-size: 14px;
+//   line-height: 2em;
+//   background-color: #000;
+//   color: #eee;
+}
     &__contents{
-      width: 544px;
-      margin: 32px auto;
+      width: 80%;
+      margin: 64px auto 32px;
       &-title{
         letter-spacing: 0.73px;
         color: #1C1E21;
@@ -113,7 +173,7 @@ $black: #212121;
         font-size: 16px;
         color: #262626;
       }
-      .btn1{
+      .btn1,.btn2{
         display: inline-block;
         margin-top: 32px;
         border: 0;
@@ -129,5 +189,15 @@ $black: #212121;
         }
       }
     }
+  }
+}
+.header{
+  box-shadow: none;
+}
+.btn-container{
+  display: flex;
+  flex-direction: row;
+  .btn1{
+    margin-right: 64px;
   }
 }

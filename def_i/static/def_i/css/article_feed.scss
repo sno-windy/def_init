@@ -37,6 +37,11 @@ $black: #212121;
     width: 100%;
     color: #fafafa;
   }
+  &:hover{
+    background-color: #3d2dbd;
+    transition: 0.3s;
+    cursor: pointer;
+  }
 }
 
 .note_list__title {
