@@ -173,7 +173,7 @@ class BookMark(models.Model):
 
 
 class Talk(models.Model):
-    msg = models.TextField(max_length=1000)
+    msg = MarkdownxField(max_length=1000)
     msg_from = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_from",null=True)
     msg_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_to",null=True)
     time = models.DateTimeField(auto_now_add=True)
