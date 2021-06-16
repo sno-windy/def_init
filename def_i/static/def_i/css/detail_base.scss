@@ -49,6 +49,7 @@ $blue: #4e93e1;
     letter-spacing: 0.22px;
     line-height: 24px;
     word-break: break-word;
+    line-height: 1.5;
     p{
       font-size: 16px;
       font-weight: 300;
@@ -226,6 +227,7 @@ $blue: #4e93e1;
     letter-spacing: 0.22px;
     color: $contents-black;
     word-break: break-word;
+    line-height: 1.5;
     h1{
       font-size: 2em;
       margin-block-start: 0.67em;
@@ -408,14 +410,6 @@ $blue: #4e93e1;
     p {
         margin-left: 8px;
     }
-}
-code{
-    background-color: oldlace;
-    display: inline-block;
-    white-space: normal;
-    max-width:100%;
-    word-break:break-all;
-    word-wrap:break-word;
 }
 .no-contents {
   margin: 32px 0 32px 48px;
