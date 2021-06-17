@@ -83,7 +83,7 @@
                 </a>
                 <p>{{c.time|date:"Y/n/j H:i"}}</p>
             </div>
-            <div class="comment-text">{{c.msg}}</div>
+            <div class="comment-text">{{c.formatted_markdown|safe}}</div>
         </article>
         {% empty %}
         <p class="no-contents">コメントがありません．</p>

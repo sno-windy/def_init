@@ -37,7 +37,6 @@ urlpatterns = [
     path('mark_as_studying/', views.mark_as_studying, name="mark_as_studying"),
     path('task_detail/<str:category>/<int:course_num>/', views.TaskDetailView.as_view(), name='task_detail'),
     path('task_detail/<str:category>/<int:course_num>/<int:lesson_num>/', views.TaskDetailView.as_view(), name='task_detail'),
-    # path('task_detail/<int:pk>/memo', views.MemoView, name='task_memo'),
     path('task_detail/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),
     path('task_detail/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_detail/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),

@@ -9,7 +9,6 @@ from django.utils import timezone
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 from markdownx.models import MarkdownxField
-# from .markdown import markdownify
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
@@ -28,6 +27,7 @@ class Category(models.Model):
     def __str__(self):
         return str(self.title)
 
+
 class Course(models.Model):
     title = models.CharField(max_length=30)
     course_num = models.PositiveSmallIntegerField(default=0)
@@ -39,7 +39,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     title = models.CharField(max_length=30)
-    contents = MarkdownxField(max_length=100000,null=True)
+    contents = MarkdownxField(max_length=100000, null=True)
     lesson_num = models.PositiveSmallIntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.PROTECT, related_name="lessons")
 
@@ -80,19 +80,19 @@ class Article(models.Model):
     is_published = models.BooleanField(default=False)
     for_lesson_complete = models.BooleanField(default=False)
     # 画像を添付する
-        # works just like django's ImageField
+    # works just like django's ImageField
     article_image_1 = StdImageField(
         upload_to='def_i/img',
         null=True,
         blank=True,
-        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        variations={'thumbnail': {'width': 300, 'height': 225, "crop": True}},
         validators=[validate_image_file_extension]
     )
     article_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
-        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        variations={'thumbnail': {'width': 300, 'height': 225, "crop": True}},
         validators=[validate_image_file_extension]
     )
 
@@ -109,7 +109,6 @@ class Question(models.Model):
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_question", null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question", null=True)
     title = models.CharField(max_length=30)
-    # content = models.TextField(null=True)
     content = MarkdownxField(max_length=100000)
     is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -119,14 +118,14 @@ class Question(models.Model):
         upload_to='def_i/img',
         null=True,
         blank=True,
-        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        variations={'thumbnail': {'width': 300, 'height': 225, "crop": True}},
         validators=[validate_image_file_extension]
     )
     question_image_2 = StdImageField(
         upload_to="def_i/img",
         null=True,
         blank=True,
-        variations={'thumbnail': {'width': 300, 'height': 225,"crop": True}},
+        variations={'thumbnail': {'width': 300, 'height': 225, "crop": True}},
         validators=[validate_image_file_extension]
     )
 
@@ -134,7 +133,7 @@ class Question(models.Model):
 
     def browser_push(self):
         data = {
-            'app_id':'ea35df03-ba32-4c85-9f7e-383106fb1d24',
+            'app_id': 'ea35df03-ba32-4c85-9f7e-383106fb1d24',
             'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",
             'included_segments': ['All'],
             'contents': {'en': self.title},
@@ -148,10 +147,12 @@ class Question(models.Model):
         )
 
     def notify_new_question(self):
-        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        line_bot_api = LineBotApi(
+            channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         notify_to = LineFriend.objects.filter(is_answerer=True)
         for push in notify_to:
-            line_bot_api.push_message(push.line_user_id, TextSendMessage(text=f" 【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。"))
+            line_bot_api.push_message(push.line_user_id, TextSendMessage(
+                text=f" 【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。"))
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -173,65 +174,76 @@ class BookMark(models.Model):
 
 
 class Talk(models.Model):
-    msg = models.TextField(max_length=1000)
+    msg = MarkdownxField(max_length=5000)
     msg_from = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_from",null=True)
     msg_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name="msg_to",null=True)
     time = models.DateTimeField(auto_now_add=True)
     has_noticed = models.BooleanField(default=False)
-    # def __str__(self):
-    #     return "{}から{}へのメッセージ".format(self.msg_from,self.msg_to)
+
+    def formatted_markdown(self):
+        return markdownify(self.msg)
 
 
 CATEGORY_CHOICE = (
-    ('記事','記事'),
-    ('質問','質問'),
+    ('記事', '記事'),
+    ('質問', '質問'),
 )
 
 
 class TalkAtArticle(Talk):
     msg_at = models.ForeignKey(Article, on_delete=models.CASCADE)
     category = models.CharField(max_length=10,
-        choices=CATEGORY_CHOICE, default='記事')
+                                choices=CATEGORY_CHOICE, default='記事')
 
     def notify_new_comment(self):
-        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
-        other_commenters = TalkAtArticle.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from)
+        line_bot_api = LineBotApi(
+            channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        other_commenters = TalkAtArticle.objects.filter(
+            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to) | Q(
+            user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)
         for push in notify_to:
             if push.notify_comment:
                 if push.user == self.msg_at.poster:
                     line_bot_api.push_message(
                         push.line_user_id,
-                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                        TextSendMessage(
+                            text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
-                        TextSendMessage(text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                        TextSendMessage(
+                            text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
                     )
 
 
 class TalkAtQuestion(Talk):
     msg_at = models.ForeignKey(Question, on_delete=models.CASCADE)
     category = models.CharField(max_length=10,
-        choices=CATEGORY_CHOICE, default='質問')
+                                choices=CATEGORY_CHOICE, default='質問')
 
     def notify_new_comment(self):
-        line_bot_api = LineBotApi(channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
-        other_commenters = TalkAtQuestion.objects.filter(msg_at=self.msg_at).values("msg_from")  # 同じ質問にコメントした人全員に通知？
-        notify_to = LineFriend.objects.filter(Q(user=self.msg_to)|Q(user__in=other_commenters)).exclude(user=self.msg_from) #投稿者か，その質問でコメントしてる人,かつ今コメントした人以外
+        line_bot_api = LineBotApi(
+            channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
+        other_commenters = TalkAtQuestion.objects.filter(
+            msg_at=self.msg_at).values("msg_from")  # 同じ質問にコメントした人全員に通知？
+        notify_to = LineFriend.objects.filter(Q(user=self.msg_to) | Q(
+            user__in=other_commenters)).exclude(user=self.msg_from)  # 投稿者か，その質問でコメントしてる人,かつ今コメントした人以外
         for push in notify_to:
             if push.notify_answer:
                 if push.user == self.msg_at.poster:
                     line_bot_api.push_message(
                         push.line_user_id,
-                        TextSendMessage(text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                        TextSendMessage(
+                            text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
-                        TextSendMessage(text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                        TextSendMessage(
+                            text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
                     )
 
     def __str__(self):
