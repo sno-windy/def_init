@@ -97,7 +97,7 @@ class Article(models.Model):
     )
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title}({self.poster})"
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -158,7 +158,7 @@ class Question(models.Model):
         return markdownify(self.content)
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title}({self.poster})"
 
 
 class Like(models.Model):
