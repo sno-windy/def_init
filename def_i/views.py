@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
-
+from django.views import generic
 from .forms import *
 from .index_info import GetIndexInfo
 from .models import *
@@ -32,7 +32,8 @@ from .line import *
 #         'article_talk': article_talk,
 #         'question_talk':question_talk,
 
-
+class AaaIndexView(generic.TemplateView):
+    template_name="def_i/index.html"
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
