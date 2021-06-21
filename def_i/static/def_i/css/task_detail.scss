@@ -78,15 +78,17 @@ $black: #212121;
   &-lesson {
     background-color: #eeeeee;
     height: 40px;
-    padding-left: 32px;
+    padding-left: 16px;
     font-size: 14px;
     display: flex;
     align-items: center;
+
     color: $black;
 
     .lesson_checkbox{
       height: 16px;
       width: 16px;
+      min-width: 16px;
       margin-right: 16px;
     }
 
