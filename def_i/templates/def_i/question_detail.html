@@ -2,7 +2,7 @@
 {% load static sass_tags %}
 {% block extra_style %}
 <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'def_i/css/luminous-basic.min.css' %}">
+<link rel="stylesheet" href="{% sass_src 'def_i/css/popup.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/question.scss' %}">
 <link rel="stylesheet" href="{% sass_src 'def_i/css/detail_base.scss' %}">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -33,14 +33,28 @@
         </div>
         <div class="contents-images">
             {% if contents.question_image_1 %}
-            <a href="{{contents.question_image_1.url}}" class="luminous">
-                <img src="{{ contents.question_image_1.thumbnail.url }}" alt="">
-            </a>
+            <label>
+                <img src="{{contents.question_image_1.thumbnail.url}}" alt="">
+                <input type="checkbox" id="show_popup_1">
+                <div id="popup_1">
+                    <img src="{{contents.question_image_1.url}}" alt="">
+                    {% if contents.question_image_2 %}
+                    <input type="image" src="{% static 'def_i/img/next_icon.svg' %}" id="to_next_img_1">
+                    {% endif %}
+                </div>
+            </label>
             {% endif %}
             {% if contents.question_image_2 %}
-            <a href="{{contents.question_image_2.url}}" class="luminous">
-                <img src="{{ contents.question_image_2.thumbnail.url }}" alt="">
-            </a>
+            <label>
+                <img src="{{contents.question_image_2.thumbnail.url}}" alt="">
+                <input type="checkbox" id="show_popup_2">
+                <div id="popup_2">
+                    {% if contents.question_image_1 %}
+                    <input type="image" src="{% static 'def_i/img/back_icon_white.svg' %}" id="to_prev_img_2">
+                    {% endif %}
+                    <img src="{{contents.question_image_2.url}}" alt="">
+                </div>
+            </label>
             {% endif %}
         </div>
 
@@ -69,7 +83,7 @@
                 </a>
                 <p>{{c.time|date:"Y/n/j H:i"}}</p>
             </div>
-            <div class="comment-text">{{c.msg}}</div>
+            <div class="comment-text">{{c.formatted_markdown|safe}}</div>
         </article>
         {% empty %}
         <p class="no-contents">コメントがありません．</p>
@@ -118,15 +132,7 @@
 {% endblock contents %}
 
 {% block javascript %}
-<script src="{% static 'def_i/js/Luminous.min.js' %}"></script>
 <script>
-        const options = {
-            appendToSelector: 'body',
-        };
-        const luminousTrigger = document.querySelectorAll('.luminous');
-        if (luminousTrigger !== null) {
-            new LuminousGallery(luminousTrigger, options);
-        }
         //jQueryあんまりよくないと知る前に作ったので使っています．．．
         $(document).ready(function (e) {
             $(document).on('click', '#bookmark', function (e) {
@@ -168,6 +174,17 @@
         toAnswer.style.backgroundColor = "#f5f5f5"
 
         window.scrollTo(0, answers_position.top);
+    });
+
+    const showFirstPopup = document.getElementById("show_popup_1");
+    const showSecondPopup = document.getElementById("show_popup_2");
+    document.getElementById("to_next_img_1").addEventListener('click', function () {
+        showFirstPopup.checked = false;
+        showSecondPopup.checked = true;
+    });
+    document.getElementById("to_prev_img_2").addEventListener('click', function () {
+        showFirstPopup.checked = true;
+        showSecondPopup.checked = false;
     });
 </script>
 {% endblock javascript %}

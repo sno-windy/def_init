@@ -1,7 +1,7 @@
 from django import forms
 from markdownx.widgets import MarkdownxWidget
 from .models import (
-    User, Article, Question, Lesson, TalkAtArticle, TalkAtQuestion, Course, Category
+    Article, Question, Lesson, TalkAtArticle, TalkAtQuestion, Course, Category
 )
 
 

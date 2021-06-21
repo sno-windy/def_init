@@ -1,17 +1,17 @@
 from django import forms
-from django.forms import ModelForm
-from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm
 from allauth.account.forms import SignupForm, LoginForm
 from .models import User
 
 POSITION_CHOICE = (
-    ('インターン生','インターン生'),
-    ('エンジニア','エンジニア'),
-    ('デザイナー','デザイナー'),
-    ('凄いエンジニア','凄いエンジニア'),
-    ('素晴らしいデザイナー','素晴らしいデザイナー'),
-    ('運営','運営'),
+    ('インターン生', 'インターン生'),
+    ('エンジニア', 'エンジニア'),
+    ('デザイナー', 'デザイナー'),
+    ('凄いエンジニア', '凄いエンジニア'),
+    ('素晴らしいデザイナー', '素晴らしいデザイナー'),
+    ('運営', '運営'),
 )
+
 
 class MyCustomSignupForm(SignupForm):
     position = forms.ChoiceField(choices=POSITION_CHOICE)
@@ -27,8 +27,8 @@ class MyCustomSignupForm(SignupForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'position', 'user_image']
-
+        fields = ['username', 'email', 'password1',
+                  'password2', 'position', 'user_image']
 
     def save(self, request):
 
@@ -40,15 +40,18 @@ class MyCustomSignupForm(SignupForm):
 
         return user
 
+
 class MyCustomLoginForm(LoginForm):
 
     def login(self, *args, **kwargs):
         return super(MyCustomLoginForm, self).login(*args, **kwargs)
 
+
 class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email',  'position', 'user_image']
+
 
 class UserPasswordResetForm(PasswordResetForm):
     def __init__(self, *args, **kwargs):
@@ -59,4 +62,4 @@ class UserPasswordResetForm(PasswordResetForm):
         'placeholder': '  メールアドレス',
         'type': 'email',
         'name': 'email'
-        }))
+    }))
