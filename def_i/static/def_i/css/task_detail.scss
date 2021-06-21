@@ -191,10 +191,14 @@ strong{
     &__contents{
       width: 80%;
       margin: 64px auto 32px;
+      a{
+        text-decoration: underline;
+      }
       &-title{
         letter-spacing: 0.73px;
         color: #1C1E21;
         font-size: 26px;
+        line-height: 1.5;
       }
       &-text{
         margin-top: 48px;

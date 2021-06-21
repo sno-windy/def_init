@@ -10,8 +10,8 @@
     <a class="breadcrumbs-category" href="{% url 'course_list' category.title %}"><p>{{category.title}}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
     <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.course.title }}</p></a>
-    <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.title }}</p></a>
+    {% comment %} <img src="{% static 'def_i/img/arrow-right.svg' %}">
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.title }}</p></a> {% endcomment %}
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
