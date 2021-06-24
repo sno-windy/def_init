@@ -216,6 +216,9 @@ strong{
         vertical-align: middle;
         position: relative;
         padding-left: 0;
+        a{
+          text-decoration: none;
+        }
       }
     }
   }
@@ -229,4 +232,8 @@ strong{
   .btn1{
     margin-right: 64px;
   }
+}
+
+.nowopacity{
+  opacity: 0.5;
 }

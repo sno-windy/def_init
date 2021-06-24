@@ -25,7 +25,16 @@
             <img src="{% static 'def_i/img/check.svg' %}" alt="">
             {% endif %}
             </div>
-            <p>{% if lesson_num %}{{item.lesson_num|add:'-1'}}{% else %}{{forloop.counter0}}{% endif %}. {{item.title}}</p>
+            <p
+            {% if lesson_num %}
+             class="nowopacity">
+                {{item.lesson_num|add:'-1'}}
+            {% else %}
+            >
+                {{forloop.counter0}}
+            {% endif %}
+            . {{item.title}}
+            </p>
         </a>
         {% endfor %}
         <a href="{% url 'task_question_post' lesson.pk %}" class="main-container__contents-menubar-q">
