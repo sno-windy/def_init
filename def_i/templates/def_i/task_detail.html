@@ -27,8 +27,13 @@
             </div>
             <p
             {% if lesson_num %}
-             class="nowopacity">
-                {{item.lesson_num|add:'-1'}}
+                {% if lesson_num == item.lesson_num %}
+                class="nowopacity">
+                {% else %}
+                >
+                {% endif %}
+
+                    {{item.lesson_num|add:'-1'}}
             {% else %}
             >
                 {{forloop.counter0}}
