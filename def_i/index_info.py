@@ -191,10 +191,10 @@ class GetIndexInfo:
         new_bookmarks = BookMark.objects.filter(
             question__poster=user, has_noticed=False)
         # 記事へのコメント
-        article_talk = TalkAtArticle.objects.filter(
+        article_talk = TalkAtArticle.objects.exclude(msg_from=user).filter(
             msg_to=user, has_noticed=False).order_by('-time')
         # 質問へのコメント
-        question_talk = TalkAtQuestion.objects.filter(
+        question_talk = TalkAtQuestion.objects.exclude(msg_from=user).filter(
             msg_to=user, has_noticed=False).order_by('time')
 
         return new_likes, new_bookmarks, article_talk, question_talk

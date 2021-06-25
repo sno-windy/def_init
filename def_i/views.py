@@ -14,14 +14,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
-
+from django.views import generic
 from .forms import *
 from .index_info import GetIndexInfo
 from .models import *
 from .line import *
 
 
-# 反省 Controllerに処理を書きすぎない
+class AaaIndexView(generic.TemplateView):
+    template_name="def_i/index.html"
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -119,7 +120,7 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
             user=request.user).values_list('article', flat=True)
 
         comments = TalkAtArticle.objects.filter(
-            msg_at=article).order_by('-time')[:3]
+            msg_at=article).order_by('time')
         comments_count = comments.count()  # lenにしてQuerysetが走っている回数を数える．
 
         related_articles = Article.objects.exclude(pk=article.pk).filter(
@@ -129,20 +130,20 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
             request.user)
 
         return render(request, self.template_name,
-                      {
-                          'contents': article,
-                          'liked_set': liked_set,
-                          'comments_count': comments_count,
-                          'comments': comments,
-                          'related_articles': related_articles,
-                          'comment_form': ArticleTalkForm(),
+            {
+                'contents': article,
+                'liked_set': liked_set,
+                'comments_count': comments_count,
+                'comments': comments,
+                'related_articles': related_articles,
+                'comment_form': ArticleTalkForm(),
 
-                          'new_likes': new_likes,
-                          'new_bookmarks': new_bookmarks,
-                          'article_talk': article_talk,
-                          'question_talk': question_talk,
-                      }
-                      )
+                'new_likes': new_likes,
+                'new_bookmarks': new_bookmarks,
+                'article_talk': article_talk,
+                'question_talk': question_talk,
+            }
+        )
 
     def post(self, request, pk):
         if 'comment_form' in request.POST:
@@ -271,11 +272,11 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
         article = form.save(commit=False)
         article.poster = self.request.user
         self.article = form.save()
-        messages.success(self.request, '記事を編集しました．')
+        messages.success(self.request, 'ノートを編集しました．')
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, '記事更新に失敗しました．')
+        messages.error(self.request, 'ノート更新に失敗しました．')
         super().form_invalid(form)
         print(form.errors)
         return redirect("article_failed")
@@ -287,7 +288,7 @@ class ArticleDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('article_feed')
 
     def delete(self, request, *args, **kwargs):
-        messages.success(self.request, '記事を削除しました．')
+        messages.success(self.request, 'ノートを削除しました．')
         return super().delete(request, *args, **kwargs)
 
 
@@ -352,7 +353,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         question = Question.objects.get(pk=pk)
         bookmark_set = BookMark.objects.filter(
             question=question, user=request.user).values_list('question', flat=True)
-        comments = question.talkatquestion_set.all().order_by('-time')
+        comments = question.talkatquestion_set.all().order_by('time')
 
         related_questions = Question.objects.filter(course=question.course).exclude(
             pk=question.pk).order_by('-created_at')[:5]

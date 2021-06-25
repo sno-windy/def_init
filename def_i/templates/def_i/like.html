@@ -1,19 +1,18 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    {% comment %} <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title> {% endcomment %}
-</head>
+<head></head>
 <body>
     <form action="{% url 'like' contents.pk %}" method="POST">
     {% csrf_token %}
     {% if contents.id in liked_set %}
-        <span id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-after.svg' %}" alt="いいねを解除" width="22"></span>
+        <span id="like" name="{{contents.id}}">
+            <img src="{% static 'def_i/img/good-after.svg' %}" alt="いいねを解除" width="22">
+        </span>
     {% else %}
-        <span id="like" name="{{contents.id}}"><img src="{% static 'def_i/img/good-before.svg' %}" alt="いいね" width="22"></span>
+        <span id="like" name="{{contents.id}}">
+            <img src="{% static 'def_i/img/good-before.svg' %}" alt="いいね" width="22">
+        </span>
     {% endif %}
     </form>
     <p name="{{contents.id}}" class="count" id="count"> {{ contents.like_set.count }} </p>

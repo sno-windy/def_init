@@ -12,6 +12,7 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
+from .validators import FileSizeValidator
 
 from def_init.secret_settings import *
 
@@ -97,7 +98,7 @@ class Article(models.Model):
     )
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title}({self.poster})"
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -158,7 +159,7 @@ class Question(models.Model):
         return markdownify(self.content)
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title}({self.poster})"
 
 
 class Like(models.Model):
