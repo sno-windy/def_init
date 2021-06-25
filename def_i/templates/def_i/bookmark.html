@@ -15,6 +15,6 @@
             </span>
         {% endif %}
     </form>
-    <p class="count" id="count" name="{{contents.id}}">{{bookmark_count}}</p>
+    <p class="count" id="count" name="{{contents.id}}">{{contents.bookmark_set.count}}</p>
 </body>
 </html>

@@ -3,7 +3,7 @@ from markdownx.widgets import MarkdownxWidget
 from .models import (
     Article, Question, Lesson, TalkAtArticle, TalkAtQuestion, Course, Category
 )
-
+from .validators import FileSizeValidator
 
 class ArticleTalkForm(forms.ModelForm):
     class Meta:
@@ -11,7 +11,7 @@ class ArticleTalkForm(forms.ModelForm):
         fields = ['msg',]
         widgets = {
             'msg': MarkdownxWidget(
-                attrs={'placeholder': 'あなたの回答を入力（コードを含む場合はMarkdown記法をご使用ください）'}
+                attrs={'placeholder': 'あなたのコメントを入力（コードを含む場合はMarkdown記法をご使用ください）'}
             )
         }
 
@@ -19,8 +19,8 @@ class ArticlePostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='コースをタブから選択')
     course = forms.ModelChoiceField(Course.objects.all(), empty_label='レッスンをタブから選択')
     lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='セクションをタブから選択')
-    # article_image_1 = forms.ImageField(validators=[FileSizeValidator()], required=False)
-    # article_image_2 = forms.ImageField(validators=[FileSizeValidator()], required=False)
+    article_image_1 = forms.ImageField(validators=[FileSizeValidator()], required=False)
+    article_image_2 = forms.ImageField(validators=[FileSizeValidator()], required=False)
 
     class Meta:
         model = Article
@@ -58,8 +58,8 @@ class QuestionPostForm(forms.ModelForm):
     category = forms.ModelChoiceField(Category.objects.all(), empty_label='カテゴリーをタブから選択')
     course = forms.ModelChoiceField(Course.objects.all(), empty_label='コースをタブから選択')
     lesson = forms.ModelChoiceField(Lesson.objects.all(), empty_label='レッスンをタブから選択')
-    # question_image_1 = forms.ImageField(validators=[FileSizeValidator()], required=False)
-    # question_image_2 = forms.ImageField(validators=[FileSizeValidator()], required=False)
+    question_image_1 = forms.ImageField(validators=[FileSizeValidator()], required=False)
+    question_image_2 = forms.ImageField(validators=[FileSizeValidator()], required=False)
 
     class Meta:
         model = Question
