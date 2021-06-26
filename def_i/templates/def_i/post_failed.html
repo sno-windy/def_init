@@ -31,10 +31,18 @@
 </form>
 
 <div class="popup">
-    <p>{{message}}</p>
+    <div>
+        <p>{{message}}</p>
+        {% for field, fields_error in errors.items %}
+        {% for error in fields_error %}
+        <p>
+            {{error}}
+        </p>
+        {% endfor %}
+        {% endfor %}
+    </div>
     <span>
-        <!-- <a href="{#% url 'article_post' %#}">閉じる</a> -->
-        <a href="{% url next_page %}">閉じる</a>
+        <a href="{{ request.META.HTTP_REFERER }}">閉じる</a>
     </span>
 </div>
 {% endblock %}

@@ -209,6 +209,7 @@ class ArticlePost(LoginRequiredMixin, CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'ノート保存に失敗しました．')
         super().form_invalid(form)
+        self.request.session["errors"] = form.errors
         return redirect("article_failed")
 
 
@@ -219,7 +220,9 @@ class ArticlePostFailed(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["message"] = "ノート保存に失敗しました。"
         context["form"] = ArticlePostForm(self.request.POST)
-        context["next_page"] = "article_post"
+        errors = self.request.session.get("errors")
+        context["errors"] = errors
+        del errors
         return context
 
 
@@ -278,7 +281,7 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'ノート更新に失敗しました．')
         super().form_invalid(form)
-        print(form.errors)
+        self.request.session["errors"] = form.errors
         return redirect("article_failed")
 
 
@@ -466,15 +469,13 @@ class QuestionPost(LoginRequiredMixin, CreateView):
         self.question = question
         # push通知
         question.notify_new_question()
-
         messages.success(self.request, '質問を投稿しました．')
         return super().form_valid(form)
 
     def form_invalid(self, form):
-
         messages.error(self.request, '質問作成に失敗しました．')
-        print(form.errors)
         super().form_invalid(form)
+        self.request.session["errors"] = form.errors
         return redirect("question_failed")
 
 
@@ -493,7 +494,9 @@ class QuestionPostFailed(LoginRequiredMixin, TemplateView):
 
         context["message"] = "質問の投稿に失敗しました。"
         context["form"] = QuestionPostForm(self.request.POST)
-        context["next_page"] = "question_post"
+        errors = self.request.session.get("errors")
+        context["errors"] = errors
+        del errors
         return context
 
 
@@ -527,7 +530,7 @@ class QuestionUpdateView(LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, '質問更新に失敗しました．')
         super().form_invalid(form)
-        print(form.errors)
+        self.request.session["errors"] = form.errors
         return redirect("question_failed")
 
 
@@ -582,7 +585,9 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, '質問作成に失敗しました．')
-        return super().form_invalid(form)
+        self.request.session["errors"] = form.errors
+        super().form_invalid(form)
+        return redirect("question_failed")
 
     def get_success_url(self):
         return reverse_lazy('question_post_suc', kwargs={"pk": self.question.pk})
@@ -629,7 +634,9 @@ class TaskArticlePost(LoginRequiredMixin, CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, 'ノート保存に失敗しました．')
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        self.request.session["errors"] = form.errors
+        return redirect("article_failed")
 
     def get_success_url(self):
         if self.article.is_published:
@@ -667,8 +674,9 @@ class TaskCompleteArticlePost(TaskArticlePost):
 
     def form_invalid(self, form):
         print('フォーム保存に失敗しました。')
-        print(form.errors)
-        return super().form_invalid(form)
+        super().form_invalid(form)
+        self.request.session["errors"] = form.errors
+        return redirect("article_failed")
 
     def get_success_url(self):
         if self.request.POST.get("id_clear"):
