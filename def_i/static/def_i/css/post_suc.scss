@@ -17,13 +17,17 @@
   transform: translate(-50%, -50%);
   width: 384px;
   height: 214px;
+  padding-bottom: 32px;
   background: #FFFFFF 0% 0% no-repeat padding-box;
   border-radius: 4px;
   opacity: 1;
   text-align: center;
   justify-content: center;
-  p {
+  div {
     margin: 39px 0 73px 0;
+    p {
+      line-height: 1.5;
+    }
   }
   span {
     display: inline-block;
