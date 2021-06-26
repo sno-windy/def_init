@@ -321,14 +321,17 @@ $blue: #4e93e1;
     button {
       background: #ffffff;
       border: none;
-      margin: 0 14px 22px;
+      margin: 0 4px 22px;
       position: relative;
       left: 575px;
-      bottom: 33px;
+      bottom: 43px;
 
       img {
-        width: 20px;
-        height: 20px;
+        width: 30px;
+        height: 30px;
+      }
+      &:hover{
+        cursor: pointer;
       }
     }
   }

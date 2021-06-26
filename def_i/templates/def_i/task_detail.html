@@ -35,7 +35,11 @@
 
                     {{item.lesson_num|add:'-1'}}
             {% else %}
-            >
+                {% if item.lesson_num == 1 %}
+                class="nowopacity">
+                {% else %}
+                >
+                {% endif %}
                 {{forloop.counter0}}
             {% endif %}
             . {{item.title}}

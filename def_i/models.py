@@ -12,6 +12,7 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
+from .validators import FileSizeValidator
 
 from def_init.secret_settings import *
 
