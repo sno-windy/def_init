@@ -55,6 +55,6 @@ class PasswordResetConfirm(PasswordResetConfirmView):
     template_name = 'account/password_reset_confirm.html'
 
 
-class SocialSignupView(SocialSignupView):
+class CustomSocialSignupView(SocialSignupView):
     form_class = MyCustomSocialSignupForm
     template_name = 'socialaccount/signup.html'

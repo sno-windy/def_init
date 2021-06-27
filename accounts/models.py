@@ -21,6 +21,6 @@ class User(AbstractUser):
     user_image = ProcessedImageField(upload_to="accounts/img",
                                      processors=[ResizeToFill(250, 250)],
                                      format='JPEG',
-                                     options={'quality': 60},
+                                     options={'quality': 80},
                                      blank=True
                                      )
