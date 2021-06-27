@@ -121,7 +121,10 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile','openid'],
     }
 }
-
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSocialSignupForm'
+}
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 

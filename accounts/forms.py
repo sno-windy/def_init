@@ -76,13 +76,10 @@ class MyCustomSocialSignupForm(SocialSignupForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'position']
+        fields = ['username','position', 'email']
 
     def save(self, request):
-
         user = super(MyCustomSocialSignupForm, self).save(request)
-
         user.position = request.POST.get('position')
         user.save()
-
         return user
