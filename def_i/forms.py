@@ -76,7 +76,7 @@ class QuestionPostForm(forms.ModelForm):
                 attrs={'placeholder':'タイトルを入力：わからないことを書いてください'}
             ),
             'content': MarkdownxWidget(
-                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください） &#13;・実現したいこと &#13;・試したこと &#13;・出力されたエラー &#13;などを書きましょう'}
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください） &#13;・実現したいこと &#13;・試したこと &#13;・出力されたエラー &#13;などを書きましょう. &#13;画像の拡張子は.jpg,.pngで20MB以下のもの'}
             )
         }
 
