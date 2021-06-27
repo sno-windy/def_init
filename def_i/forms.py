@@ -34,7 +34,7 @@ class ArticlePostForm(forms.ModelForm):
                 attrs={'placeholder':'記事タイトル：30文字以内'}
             ),
             'content': MarkdownxWidget(
-                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください） &#13;※画像の拡張子は.jpg,.pngで20MB以下のもの'}
+                attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）※画像は.jpg,.pngでファイルサイズが20MB以下のもの'}
             )
         }
 
