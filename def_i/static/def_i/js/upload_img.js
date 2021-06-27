@@ -28,13 +28,20 @@ function handleImage(image, previewSpace) {
         if (previewSpaceFor1.hasChildNodes() && previewSpaceFor2.hasChildNodes()) {
             window.alert("添付できる画像は2枚までです。");
         } else {
-            previewImg(e, previewSpace);
-            if (previewSpace == document.getElementById("new_img_wrapper_1")) {
-                imgLabel1.classList.add("hidden_class");
-                imgLabel2.classList.remove("hidden_class");
-            } else {
-                imgLabel1.classList.remove("hidden_class");
-                imgLabel2.classList.add("hidden_class");
+            try {
+                if (e.target.files[0].size > 20 * 1024 * 1024) {
+                    throw new RangeError("ファイルサイズが大きすぎます。20MB以下の画像を使用してください。");
+                }
+                previewImg(e, previewSpace);
+                if (previewSpace == document.getElementById("new_img_wrapper_1")) {
+                    imgLabel1.classList.add("hidden_class");
+                    imgLabel2.classList.remove("hidden_class");
+                } else {
+                    imgLabel1.classList.remove("hidden_class");
+                    imgLabel2.classList.add("hidden_class");
+                }
+            } catch (e) {
+                window.alert(e.message);
             }
         }
     })
