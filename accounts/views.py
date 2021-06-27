@@ -6,8 +6,9 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.views import ( PasswordChangeView,  PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView)
 from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from allauth.account.views import SignupView, login, logout, signup, PasswordChangeView
+from allauth.socialaccount.views import SignupView as SocialSignupView
 from .models import User
-from .forms import MyCustomSignupForm, UserChangeForm, UserPasswordResetForm
+from .forms import MyCustomSignupForm, UserChangeForm, UserPasswordResetForm, MyCustomSocialSignupForm
 
 
 class MySignupView(SignupView):
@@ -52,3 +53,8 @@ class PasswordResetConfirm(PasswordResetConfirmView):
     form_class = SetPasswordForm
     success_url = reverse_lazy('account_login')
     template_name = 'account/password_reset_confirm.html'
+
+
+class CustomSocialSignupView(SocialSignupView):
+    form_class = MyCustomSocialSignupForm
+    template_name = 'socialaccount/signup.html'

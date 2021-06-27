@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import PasswordResetForm
 from allauth.account.forms import SignupForm, LoginForm
+from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from .models import User
 
 POSITION_CHOICE = (
@@ -63,3 +64,22 @@ class UserPasswordResetForm(PasswordResetForm):
         'type': 'email',
         'name': 'email'
     }))
+
+class MyCustomSocialSignupForm(SocialSignupForm):
+    position = forms.ChoiceField(choices=POSITION_CHOICE)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # django-allauthのフィールドを上書き
+        self.fields['username'].widget.attrs['placeholder'] = '8文字以下'
+        self.fields['email'].widget.attrs['placeholder'] = 'メールアドレス'
+
+    class Meta:
+        model = User
+        fields = ['username','position', 'email']
+
+    def save(self, request):
+        user = super(MyCustomSocialSignupForm, self).save(request)
+        user.position = request.POST.get('position')
+        user.save()
+        return user
