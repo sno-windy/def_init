@@ -8,7 +8,7 @@ from django.contrib.auth.forms import PasswordChangeForm, SetPasswordForm
 from allauth.account.views import SignupView, login, logout, signup, PasswordChangeView
 from allauth.socialaccount.views import SignupView as SocialSignupView
 from .models import User
-from .forms import MyCustomSignupForm, UserChangeForm, UserPasswordResetForm
+from .forms import MyCustomSignupForm, UserChangeForm, UserPasswordResetForm, MyCustomSocialSignupForm
 
 
 class MySignupView(SignupView):
@@ -55,4 +55,5 @@ class PasswordResetConfirm(PasswordResetConfirmView):
     template_name = 'account/password_reset_confirm.html'
 
 
-# class SocialSignupView(SocialSignupView):
+class SocialSignupView(SocialSignupView):
+    form_class = MyCustomSocialSignupForm
