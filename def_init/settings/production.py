@@ -1,9 +1,9 @@
 from .base import *
 
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["127.0.0.1", "def-init.tk", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "def-init.demia.co.jp"]
 
 STATIC_ROOT = BASE_DIR / 'static'
 
