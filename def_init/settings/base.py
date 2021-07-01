@@ -235,5 +235,3 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
 #     'class',
 #     'style'
 # ]
-
-POSTGRES_PASSWORD = ''
