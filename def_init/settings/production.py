@@ -7,7 +7,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "def-init.demia.co.jp"]
 
 STATIC_ROOT = BASE_DIR / 'static'
 
-SITE_ID = 3
+SITE_ID = 4
 # email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.muumuu-mail.com'
