@@ -69,15 +69,15 @@ class GetIndexInfo:
                 .annotate(count=Count('pk'))
                 .values('count')
             ),
-            note_num=Subquery(
-                Article.objects
-                .filter(poster=OuterRef('pk'))
-                .filter(created_at__gte=a_week_ago)
-                .values('poster')
-                .annotate(count=Count('pk'))
-                .values('count')
-            )
-        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？
+            # note_num=Subquery(
+            #     Article.objects
+            #     .filter(poster=OuterRef('pk'))
+            #     .filter(created_at__gte=a_week_ago)
+            #     .values('poster')
+            #     .annotate(count=Count('pk'))
+            #     .values('count')
+            # )
+        ).order_by('-cleared_lesson_num')  # 何位まで表示する？.order_by('-note_num').
 
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
