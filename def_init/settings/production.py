@@ -73,3 +73,14 @@ LOGGING = {
         "main": {"handlers": ["file", "console", "mail_admins"], "level": "DEBUG", "propagate": True,},  # NOQA: E231
     },
 }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': 'def-init.cjxtzhczhfg9.ap-northeast-1.rds.amazonaws.com',
+        'PORT': '5432',
+    }
+}
