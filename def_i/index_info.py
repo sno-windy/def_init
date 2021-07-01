@@ -78,15 +78,6 @@ class GetIndexInfo:
                 .values('count')
             )
         ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？.
-        a = User.objects.annotate(
-            cleared_lesson_num=Subquery(
-                ClearedLesson.objects
-                .filter(user=OuterRef('pk'))
-                .filter(cleared_at__gte=a_week_ago)
-                .values('user')
-            )
-        ).order_by('-cleared_lesson_num')
-        print(a)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
