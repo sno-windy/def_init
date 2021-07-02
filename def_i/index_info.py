@@ -61,25 +61,30 @@ class GetIndexInfo:
         date = make_aware(timezone.datetime.today())
         a_week_ago = date + datetime.timedelta(days=-7)
         ranking = User.objects.annotate(
-            cleared_lesson_num=Subquery(
-                ClearedLesson.objects
-                .filter(user=OuterRef('pk'))
-                # .filter(cleared_at__gte=a_week_ago)
-                .values('user')
-                .annotate(count=Count('pk'))
-                .values('count')
+            # cleared_lesson_num=Subquery(
+            #     ClearedLesson.objects
+            #     .filter(user=OuterRef('pk'))
+            #     # .filter(cleared_at__gte=a_week_ago)
+            #     .annotate(count=Count('pk'))
+            #     .values('count')[:1]
+            # ),
+            cleared_lesson_num=Count(
+                "cleared_user",
+                # filter=Q(
+                #     cleared_user__cleared_at__gte=a_week_ago
+                # )
             ),
-            note_num=Subquery(
+            note_num=Count(
+
                 Article.objects
                 .filter(poster=OuterRef('pk'))
                 # .filter(created_at__gte=a_week_ago)
-                .values('poster')
+                # .values('poster')
                 .annotate(count=Count('pk'))
-                .values('count')
+                .values('count')[:1]
             )
-        ).order_by('-note_num',Case(
-            When(cleared_lesson_num__isnull = True,then = Value(0)),
-        ),'-cleared_lesson_num')  # 何位まで表示する？.
+        ).order_by('-note_num','-cleared_lesson_num')  # 何位まで表示する？.
+        print(ranking)
         for i in ranking:
             print(i.cleared_lesson_num)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
