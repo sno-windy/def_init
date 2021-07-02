@@ -1,7 +1,7 @@
 import datetime
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count, OuterRef, Subquery
+from django.db.models import Count, OuterRef, Subquery, Case, Value, When
 from django.utils.timezone import make_aware
 
 from .models import *
@@ -66,7 +66,12 @@ class GetIndexInfo:
                 .filter(user=OuterRef('pk'))
                 # .filter(cleared_at__gte=a_week_ago)
                 .values('user')
-                .annotate(count=Count('pk'))
+                .annotate(count=Case(
+                    When(
+                        Count('pk') == None, then = Value(0)
+                    ),
+                    default=Count('pk')
+                ))
                 .values('count')
             ),
             note_num=Subquery(
@@ -74,7 +79,12 @@ class GetIndexInfo:
                 .filter(poster=OuterRef('pk'))
                 # .filter(created_at__gte=a_week_ago)
                 .values('poster')
-                .annotate(count=Count('pk'))
+                .annotate(count=Case(
+                    When(
+                        Count('pk') == None, then = Value(0)
+                    ),
+                    default=Count('pk')
+                ))
                 .values('count')
             )
         ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？.
