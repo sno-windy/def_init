@@ -79,7 +79,7 @@ class GetIndexInfo:
             )
         ).order_by('-note_num',Case(
             When(cleared_lesson_num__isnull = True,then = Value(0))
-            ,default=Value('cleared_lesson_num')
+            ,default=Value(Count('pk'))
         ),'-cleared_lesson_num')  # 何位まで表示する？.
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
