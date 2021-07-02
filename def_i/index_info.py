@@ -78,8 +78,10 @@ class GetIndexInfo:
                 .values('count')
             )
         ).order_by('-note_num',Case(
-            When(cleared_lesson_num__isnull = True,then = Value(0))
+            When(cleared_lesson_num__isnull = True,then = Value(0)),
         ),'-cleared_lesson_num')  # 何位まで表示する？.
+        for i in ranking:
+            print(i.cleared_lesson_num)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
