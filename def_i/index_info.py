@@ -66,12 +66,7 @@ class GetIndexInfo:
                 .filter(user=OuterRef('pk'))
                 # .filter(cleared_at__gte=a_week_ago)
                 .values('user')
-                .annotate(count=Case(
-                    When(
-                        Q(Count('pk') == None), then = Value(0)
-                    ),
-                    default=Count('pk')
-                ))
+                .annotate(count=Count('pk'))
                 .values('count')
             ),
             note_num=Subquery(
@@ -79,15 +74,13 @@ class GetIndexInfo:
                 .filter(poster=OuterRef('pk'))
                 # .filter(created_at__gte=a_week_ago)
                 .values('poster')
-                .annotate(count=Case(
-                    When(
-                        Q(Count('pk')==None), then = Value(0)
-                    ),
-                    default=Count('pk')
-                ))
+                .annotate(count=Count('pk'))
                 .values('count')
             )
-        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？.
+        ).order_by('-note_num',Case(
+            When(cleared_lesson_num__isnull = True,then = Value(0))
+            ,default=Value('cleared_lesson_num')
+        ),'-cleared_lesson_num')  # 何位まで表示する？.
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
