@@ -64,7 +64,7 @@ class GetIndexInfo:
             cleared_lesson_num=Subquery(
                 ClearedLesson.objects
                 .filter(user=OuterRef('pk'))
-                .filter(cleared_at__gte=a_week_ago)
+                # .filter(cleared_at__gte=a_week_ago)
                 .values('user')
                 .annotate(count=Count('pk'))
                 .values('count')
@@ -72,7 +72,7 @@ class GetIndexInfo:
             note_num=Subquery(
                 Article.objects
                 .filter(poster=OuterRef('pk'))
-                .filter(created_at__gte=a_week_ago)
+                # .filter(created_at__gte=a_week_ago)
                 .values('poster')
                 .annotate(count=Count('pk'))
                 .values('count')
