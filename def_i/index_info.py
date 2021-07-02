@@ -68,7 +68,7 @@ class GetIndexInfo:
                 .values('user')
                 .annotate(count=Case(
                     When(
-                        Count('pk') == None, then = Value(0)
+                        Q(Count('pk') == None), then = Value(0)
                     ),
                     default=Count('pk')
                 ))
@@ -81,7 +81,7 @@ class GetIndexInfo:
                 .values('poster')
                 .annotate(count=Case(
                     When(
-                        Count('pk') == None, then = Value(0)
+                        Q(Count('pk')==None), then = Value(0)
                     ),
                     default=Count('pk')
                 ))
