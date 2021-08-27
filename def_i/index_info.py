@@ -149,7 +149,7 @@ class GetIndexInfo:
     # 進行中のコースに関連したノートを取得
     def get_related_articles(self):
         related_articles = Article.objects.filter(
-            lesson__course__category=self.studying_category).order_by('-created_at')[:5]  # 並べる順番
+            lesson__course__category=self.studying_category, is_published=True).order_by('-created_at')[:5]  # 並べる順番
         return related_articles
 
     # 進捗が近いユーザーを取得
