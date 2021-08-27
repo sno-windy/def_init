@@ -106,14 +106,16 @@
     <div class="sidebar-poster">
 
         <h3>投稿者</h3>
-        <div class="sidebar-poster-info">
-            {% if contents.poster.user_image %}
-                <img src="{{contents.poster.user_image.url}}" alt="">
-            {% else %}
-                <img src="{% static 'def_i/img/default.png' %}" alt="">
-            {% endif %}
-            {{contents.poster}}
-        </div>
+        <a href="{% url 'user_page' contents.poster.pk %}">
+            <div class="sidebar-poster-info">
+                {% if contents.poster.user_image %}
+                    <img src="{{contents.poster.user_image.url}}" alt="">
+                {% else %}
+                    <img src="{% static 'def_i/img/default.png' %}" alt="">
+                {% endif %}
+                {{contents.poster}}
+            </div>
+        </a>
     </div>
     <div class="sidebar-move">
         <div id="to_question">質問</div>

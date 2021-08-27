@@ -14,15 +14,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin, ModelFormMixin
-from django.views import generic
 from .forms import *
 from .index_info import GetIndexInfo
 from .models import *
 from .line import *
-
-
-class AaaIndexView(generic.TemplateView):
-    template_name="def_i/index.html"
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -70,17 +65,17 @@ class ArticleFeed(LoginRequiredMixin, FormMixin, ListView):
         articles = Article.objects.order_by('-created_at')
         order_by = self.request.GET.get('orderby')
 
-        if order_by == 'new':
-            articles = Article.objects.filter(
-                is_published=True).order_by('-created_at')
-
-        elif order_by == 'like':
+        if order_by == 'like':
             articles = Article.objects.filter(
                 is_published=True).order_by('-like_count', '-created_at')
 
         elif order_by == 'mynote':
             articles = articles.filter(
                 poster=self.request.user).order_by('-created_at')
+
+        else:  # new など
+            articles = Article.objects.filter(
+                is_published=True).order_by('-created_at')
 
         if (query_word := self.request.GET.get('keyword')):  # 代入式
             articles = articles.filter(
@@ -864,6 +859,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         return context
 
 
+@login_required(login_url='accounts/login/')
 def lesson_complete(request, pk):
     if request.method == "GET":
         user = request.user
@@ -1027,6 +1023,7 @@ def LikeView(request, pk):
         return JsonResponse(params)
 
 
+@login_required(login_url='accounts/login/')
 def mypage_view(request):
     user = request.user
     orderby = request.GET.get('orderby')
@@ -1090,6 +1087,7 @@ def mypage_view(request):
     return render(request, 'def_i/my_page.html', params)
 
 
+@login_required(login_url='accounts/login/')
 def userpage_view(request, pk):
     user = User.objects.get(pk=pk)
     question = Question.objects.order_by('created_at').filter(poster=user)

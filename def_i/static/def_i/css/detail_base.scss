@@ -3,7 +3,9 @@ $title-black: #1c1e21;
 $info-black: #212121;
 $contents-black: #262626;
 $blue: #4e93e1;
-
+.main{
+  width: 100%;
+}
 .main-container {
   margin-top: 96px;
   margin-right: 48px;
@@ -14,7 +16,7 @@ $blue: #4e93e1;
   }
 }
 .main-bar {
-  width: 640px;
+  width: 75%;
 }
 .contents {
   border: 1px solid $line-gray;
@@ -323,7 +325,7 @@ $blue: #4e93e1;
       border: none;
       margin: 0 4px 22px;
       position: relative;
-      left: 575px;
+      left: calc(100% - 54px);
       bottom: 43px;
 
       img {
@@ -338,7 +340,7 @@ $blue: #4e93e1;
 }
 
 .sidebar {
-  width: 240px;
+  width: 20%;
   height: 600px;
   margin-left: 32px;
   letter-spacing: 0.38px;

@@ -7,9 +7,9 @@ Twitter: @rich_clark
 */
 
 html, body, div, span,
-h1, h2, h3, p, blockquote,
+h1, h2, h3, p,
 img,
-ul, li,
+li,
 fieldset, form, label,
 article,
 footer, header{
@@ -44,4 +44,11 @@ a {
 
 input, select {
     vertical-align:middle;
+}
+blockquote{
+    font-size: 11px;
+    color: #777;
+    margin-left: 2px;
+    padding-left: 10px;
+    border-left: 5px solid #ddd;
 }

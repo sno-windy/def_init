@@ -1,7 +1,7 @@
 import datetime
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count, OuterRef, Subquery
+from django.db.models import Count, OuterRef, Subquery, Case, Value, When
 from django.utils.timezone import make_aware
 
 from .models import *
@@ -61,24 +61,32 @@ class GetIndexInfo:
         date = make_aware(timezone.datetime.today())
         a_week_ago = date + datetime.timedelta(days=-7)
         ranking = User.objects.annotate(
-            cleared_lesson_num=Subquery(
-                ClearedLesson.objects
-                .filter(user=OuterRef('pk'))
-                .filter(cleared_at__gte=a_week_ago)
-                .values('user')
-                .annotate(count=Count('pk'))
-                .values('count')
+            # cleared_lesson_num=Subquery(
+            #     ClearedLesson.objects
+            #     .filter(user=OuterRef('pk'))
+            #     # .filter(cleared_at__gte=a_week_ago)
+            #     .annotate(count=Count('pk'))
+            #     .values('count')[:1]
+            # ),
+            cleared_lesson_num=Count(
+                "cleared_user",
+                # filter=Q(
+                #     cleared_user__cleared_at__gte=a_week_ago
+                # )
             ),
-            note_num=Subquery(
+            note_num=Count(
+
                 Article.objects
                 .filter(poster=OuterRef('pk'))
-                .filter(created_at__gte=a_week_ago)
-                .values('poster')
+                # .filter(created_at__gte=a_week_ago)
+                # .values('poster')
                 .annotate(count=Count('pk'))
-                .values('count')
+                .values('count')[:1]
             )
-        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？
-
+        ).order_by('-note_num','-cleared_lesson_num')  # 何位まで表示する？.
+        print(ranking)
+        for i in ranking:
+            print(i.cleared_lesson_num)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
@@ -141,7 +149,7 @@ class GetIndexInfo:
     # 進行中のコースに関連したノートを取得
     def get_related_articles(self):
         related_articles = Article.objects.filter(
-            lesson__course__category=self.studying_category).order_by('-created_at')[:5]  # 並べる順番
+            lesson__course__category=self.studying_category, is_published=True).order_by('-created_at')[:5]  # 並べる順番
         return related_articles
 
     # 進捗が近いユーザーを取得

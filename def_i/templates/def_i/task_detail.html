@@ -87,7 +87,7 @@
                 {% if is_cleared %}
                     {% if next_lesson %}
                         <p class="btn2">
-                            <a href="{% url 'task_detail' category.title next_lesson.course.course_num next_lesson.lesson_num %}">次のレッスンへ</a>
+                            <a href="{% url 'task_detail' category.title next_lesson.course.course_num next_lesson.lesson_num %}" style="font-size:14px;">次の未完了のレッスンへ</a>
                         </p>
                     {% endif %}
                 {% endif %}
