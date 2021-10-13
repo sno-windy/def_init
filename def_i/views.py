@@ -1046,7 +1046,7 @@ def mypage_view(request):
 
     article = Article.objects.order_by('-created_at')
     if orderby == 'like':
-        article_like = article.filter(like__user=user)
+        article_like = article.filter(like__user=user)  # .query() で確認する　user.liked_article
         paginator = Paginator(article_like, 5)
     else:
         article = article.filter(poster=user)
