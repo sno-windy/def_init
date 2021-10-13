@@ -1111,7 +1111,7 @@ def userpage_view(request, pk):
     except EmptyPage:
         question = paginator.page(paginator.num_pages)
 
-    article = Article.objects.order_by('-created_at').filter(poster=user)
+    article = Article.objects.order_by('-created_at').filter(poster=user, is_published=True)
 
     paginator = Paginator(article, 5)
     page = request.GET.get('page')
