@@ -3,7 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.db.models import F, OuterRef, Q, Subquery
@@ -396,7 +396,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         context['comments'] = comments.order_by('-time')[:3]
         return context
 
-
+@login_required(login_url='accounts/login/')
 def BookMarkView(request, pk):
     if request.method == "GET":
         question = Question.objects.get(pk=pk)
@@ -712,6 +712,7 @@ class TaskCompleteArticleUpdate(ArticleUpdateView):
         return context
 
 
+@login_required(login_url='accounts/login/')
 def pass_courses():
     categories = Category.objects.all().prefetch_related("course_set")
     course_dict = {}
@@ -727,6 +728,7 @@ def pass_courses():
     return course_dict_json
 
 
+@login_required(login_url='accounts/login/')
 def pass_lessons():
     courses = Course.objects.all().prefetch_related("lessons")
     lesson_dict = {}
@@ -741,6 +743,7 @@ def pass_lessons():
     return lesson_dict_json
 
 
+@login_required(login_url='accounts/login/')
 def course(request):
     if request.method == 'GET':
         try:
@@ -824,6 +827,10 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_permitted == False:
+            raise PermissionDenied
+
         info = GetIndexInfo(self.request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
             self.request.user)
@@ -831,6 +838,7 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
         context["new_likes"] = new_likes
         context["article_talk"] = article_talk
         context["question_talk"] = question_talk
+
         lesson_list = Lesson.objects.filter(
             course__course_num=kwargs['course_num'], course__category__title=kwargs['category']).order_by('lesson_num')
         cleared_lesson = Lesson.objects.filter(
@@ -993,6 +1001,7 @@ class MessageNotification(LoginRequiredMixin, TemplateView):
         return context
 
 
+@login_required(login_url='accounts/login/')
 def LikeView(request, pk):
     if request.method == "GET":
         article = Article.objects.get(pk=pk)  # filterでないとF&updateが使えにゃい

@@ -24,3 +24,4 @@ class User(AbstractUser):
                                      options={'quality': 80},
                                      blank=True
                                      )
+    is_permitted = models.BooleanField(default=False)

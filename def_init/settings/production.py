@@ -28,7 +28,7 @@ AWS_STORAGE_BUCKET_NAME = 'demia-def-init'
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
-ADMINS = [("Higaki", "souta0829win7@yahoo.co.jp")]
+ADMINS = [("Higaki", "souta0829win782@gmail.com")]
 
 SESSION_COOKIE_SECURE = True
 
