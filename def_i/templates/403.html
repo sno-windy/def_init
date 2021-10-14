@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="UTF-8" />
+  </head>
+  <body>
+  <section>
+    <div class="error403">
+        <h1>403 Forbidden</h1>
+    </div>
+    <p>アクセス権限がありません。あなたが権限が付与されるべきユーザであるならば、担当者に問い合わせてください。</p>
+    {% if exception %}
+    <p style="color: red">{{ exception }}</p>
+    {% endif %}
+  </section>
+  </body>
+</html>

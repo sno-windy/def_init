@@ -3,10 +3,10 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from django.db.models import F, OuterRef, Q, Subquery
+from django.db.models import F, OuterRef, Q, Subquery, Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -25,12 +25,10 @@ class IndexView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:
-            studying = StudyingCategory.objects.get(user=self.request.user)
-        except ObjectDoesNotExist:
-            studying = None
 
+        studying = StudyingCategory.objects.filter(user=self.request.user).first()
         context["studying"] = studying
+
         info = GetIndexInfo(self.request.user)
 
         context["ranking"], context["user_ranking"] = info.get_ranking(self.request.user)
@@ -42,11 +40,30 @@ class IndexView(LoginRequiredMixin, TemplateView):
         context["article"] = info.get_related_articles()
 
         context["colleagues"] = info.get_colleagues(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
+        return context
+
+
+class RankingView(LoginRequiredMixin,TemplateView):
+    template_name = "def_i/ranking.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        info = GetIndexInfo(self.request.user)
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
+
+        ranking = User.objects.annotate(
+            cleared_lesson_num=Count("cleared_user"),
+            note_num=Count(
+                Article.objects
+                .filter(poster=OuterRef('pk'))
+                .annotate(count=Count('pk'))
+                .values('count')[:1]
+            )
+        ).order_by('-cleared_lesson_num','-note_num')
+        ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
+
+        context["ranking"] = ranking_zip
         return context
 
 
@@ -95,12 +112,7 @@ class ArticleFeed(LoginRequiredMixin, FormMixin, ListView):
                     'pk'), is_published=True).values('created_at')[:1],
             )).order_by('-latest_post_time')[:30]  # 最大表示数を指定
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         return context
 
@@ -183,13 +195,7 @@ class ArticlePost(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
-
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
         return context
@@ -255,12 +261,7 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
@@ -323,12 +324,7 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context['orderby'] = self.request.GET.get('orderby')
         context['article'] = context["page_obj"]
@@ -396,7 +392,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         context['comments'] = comments.order_by('-time')[:3]
         return context
 
-
+@login_required(login_url='accounts/login/')
 def BookMarkView(request, pk):
     if request.method == "GET":
         question = Question.objects.get(pk=pk)
@@ -432,12 +428,7 @@ class QuestionPostSuc(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["pk"] = self.kwargs["pk"]
         context["form"] = QuestionPostForm()
@@ -480,12 +471,7 @@ class QuestionPostFailed(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["message"] = "質問の投稿に失敗しました。"
         context["form"] = QuestionPostForm(self.request.POST)
@@ -506,12 +492,7 @@ class QuestionUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
@@ -557,12 +538,7 @@ class TaskQuestionPost(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["course_dict"] = pass_courses
         context["lesson_dict"] = pass_lessons
@@ -741,6 +717,7 @@ def pass_lessons():
     return lesson_dict_json
 
 
+@login_required(login_url='accounts/login/')
 def course(request):
     if request.method == 'GET':
         try:
@@ -807,12 +784,7 @@ class CourseList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
 
         context["category"] = self.kwargs["category"]
         return context
@@ -824,13 +796,13 @@ class TaskDetailView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_permitted == False:
+            raise PermissionDenied
+
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
+
         lesson_list = Lesson.objects.filter(
             course__course_num=kwargs['course_num'], course__category__title=kwargs['category']).order_by('lesson_num')
         cleared_lesson = Lesson.objects.filter(
@@ -896,12 +868,7 @@ class TaskQuestion(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
         context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
         lesson = Lesson.objects.get(pk=self.kwargs['pk'])
@@ -940,12 +907,7 @@ class TaskArticle(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         info = GetIndexInfo(self.request.user)
-        new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
-            self.request.user)
-        context["new_bookmarks"] = new_bookmarks
-        context["new_likes"] = new_likes
-        context["article_talk"] = article_talk
-        context["question_talk"] = question_talk
+        context["new_likes"], context["new_bookmarks"], context["article_talk"], context["question_talk"] = info.get_notification(self.request.user)
         context['orderby'] = self.request.GET.get('orderby')
         user = self.request.user
         pk = self.kwargs['pk']
@@ -993,6 +955,7 @@ class MessageNotification(LoginRequiredMixin, TemplateView):
         return context
 
 
+@login_required(login_url='accounts/login/')
 def LikeView(request, pk):
     if request.method == "GET":
         article = Article.objects.get(pk=pk)  # filterでないとF&updateが使えにゃい
@@ -1046,7 +1009,7 @@ def mypage_view(request):
 
     article = Article.objects.order_by('-created_at')
     if orderby == 'like':
-        article_like = article.filter(like__user=user)
+        article_like = article.filter(like__user=user)  # .query() で確認する　user.liked_article
         paginator = Paginator(article_like, 5)
     else:
         article = article.filter(poster=user)
@@ -1102,7 +1065,7 @@ def userpage_view(request, pk):
     except EmptyPage:
         question = paginator.page(paginator.num_pages)
 
-    article = Article.objects.order_by('-created_at').filter(poster=user)
+    article = Article.objects.order_by('-created_at').filter(poster=user, is_published=True)
 
     paginator = Paginator(article, 5)
     page = request.GET.get('page')

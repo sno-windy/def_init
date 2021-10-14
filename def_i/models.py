@@ -12,7 +12,6 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
-from .validators import FileSizeValidator
 
 from def_init.secret_settings import *
 
@@ -164,7 +163,7 @@ class Question(models.Model):
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_like")
     has_noticed = models.BooleanField(default=False)
 
 

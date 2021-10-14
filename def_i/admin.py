@@ -2,7 +2,7 @@ from .models import  *
 from django.contrib import admin
 from django.contrib.sites.models import Site
 
-def notify(request,queryset):
+def notify(request, queryset):
     for q in queryset:
         q.browser_push(request)
 

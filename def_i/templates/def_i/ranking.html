@@ -1,0 +1,51 @@
+{% extends 'def_i/base.html' %}
+{% load static sass_tags %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% sass_src 'def_i/css/ranking.scss' %}">
+{% endblock %}
+{% block contents %}
+<div class="ranking_container">
+    <h1 class="index_title">ランキング</h1>
+    <div class="ranking_box">
+        {% for _,rank in ranking %}
+            {% ifchanged rank.cleared_lesson_num rank.note_num %}
+                <div class="ranking_contents">
+                    <p class="rank_num">{{forloop.counter}}</p>
+                    {% if rank.user_image %}
+                        <img src="{{rank.user_image.url}}" width="30">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                    <a href="{% url 'user_page' rank.pk %}">
+                        <p class="rank_user">{{rank}}</p>
+                    </a>
+                    <p class="rank_point">
+                        {% if rank.cleared_lesson_num == None %}0
+                        {% else %}{{rank.cleared_lesson_num}}
+                        {% endif %} Pt
+                    </p>
+                    {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
+                </div>
+            {% else %}
+                <div class="ranking_contents">
+                    <p class="rank_num">(同率)</p>
+                    {% if rank.user_image %}
+                        <img src="{{rank.user_image.url}}" width="30">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                    <a href="{% url 'user_page' rank.pk %}">
+                        <p class="rank_user">{{rank}}</p>
+                    </a>
+                    <p class="rank_point">
+                        {% if rank.cleared_lesson_num == None %}0
+                        {% else %}{{rank.cleared_lesson_num}}
+                        {% endif %} Pt
+                    </p>
+                    {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
+                </div>
+            {% endifchanged %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock contents %}

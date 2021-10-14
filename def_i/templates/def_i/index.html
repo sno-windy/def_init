@@ -10,7 +10,7 @@
 {% block contents %}
 <div class="ranking_wrapper">
     <div class="ranking_container">
-        <h1 class="index_title">今週のランキング</h1>
+        <h1 class="index_title">ランキング</h1>
         <div class="ranking_box">
             {% for _,rank in ranking %}
                 {% ifchanged rank.cleared_lesson_num rank.note_num %}
@@ -98,6 +98,7 @@
         </div>
     </div>
 </div>
+<a href="{% url 'ranking' %}">ランキング一覧へ</a>
 {% if studying %}
 <h1 class="index_title">学習中のコース</h1>
 <div class="main-container__contents-studying">

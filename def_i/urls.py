@@ -10,6 +10,7 @@ sitemaps = {
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
+    path('ranking/', views.RankingView.as_view(), name='ranking'),
 
     # 記事系
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
