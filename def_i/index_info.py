@@ -19,42 +19,33 @@ class GetIndexInfo:
         self.cleared_lesson = ClearedLesson.objects.filter(
             user=user).order_by('-cleared_at')
 
-        # ↓この辺三項式でやれば簡潔にできそうだね
+        # 値がない場合の初期化
+        self.last_cleared_lesson = 0
+        self.last_cleared_course = 0
+        next_lesson_num = 1
+        next_course_num = 1
 
-        try:
-            self.last_cleared_lesson = self.cleared_lesson[0]
+        self.last_cleared_lesson = self.cleared_lesson.first()
 
-            self.last_cleared_course = self.last_cleared_lesson.lesson.course.course_num
+        # self.last_cleared_lesson の値があるなら
+        if  not ((l := self.last_cleared_lesson) == None):
+            self.last_cleared_course = l.lesson.course.course_num
+            next_lesson_num = l.lesson.lesson_num + 1
 
-            next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+        next_lesson = Lesson.objects.filter(course__in=self.studying_course, lesson_num=next_lesson_num,
+                                            course__course_num=self.last_cleared_course).first()
+        self.learning_lesson = next_lesson
 
-        except IndexError:  # ひとつも取り組んでいない
-            self.last_cleared_lesson = 0
-
-            self.last_cleared_course = 0
-
-            next_lesson_num = 1
-
-            next_course_num = 1
-
-        try:
-            next_lesson = Lesson.objects.get(course__in=self.studying_course, lesson_num=next_lesson_num,
-                                             course__course_num=self.last_cleared_course)  # この場合ほしいのは一つなわけだから、filter().first()でいいよね
-
-            self.learning_lesson = next_lesson
-
-        except ObjectDoesNotExist:
+        # next_lesson が見つからないなら
+        if next_lesson == None:
 
             next_course_num = self.last_cleared_course + 1
 
-            try:
-                next_course = Course.objects.get(
-                    category=self.studying_category, course_num=next_course_num)
+            next_course = Course.objects.filter(
+                category=self.studying_category, course_num=next_course_num).first()
 
-                self.learning_lesson = Lesson.objects.get(
-                    course__in=self.studying_course, course=next_course, lesson_num=1)
-            except ObjectDoesNotExist:
-                self.learning_lesson = None
+            self.learning_lesson = Lesson.objects.filter(
+                course__in=self.studying_course, course=next_course, lesson_num=1).first()
 
     # ユーザーのランキング情報を取得
     def get_ranking(self, user):
@@ -83,10 +74,7 @@ class GetIndexInfo:
                 .annotate(count=Count('pk'))
                 .values('count')[:1]
             )
-        ).order_by('-note_num','-cleared_lesson_num')  # 何位まで表示する？.
-        print(ranking)
-        for i in ranking:
-            print(i.cleared_lesson_num)
+        ).order_by('-cleared_lesson_num','-note_num')  # 何位まで表示する？.
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
