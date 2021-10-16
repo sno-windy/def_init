@@ -8,6 +8,10 @@ def notify(request, queryset):
 
 class QuestionAdmin(admin.ModelAdmin):
     actions = [notify]
+    list_display = ('title', 'poster', 'bookmark_count','created_at')
+
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'poster', 'like_count','created_at')
 
 class LessonAdmin(admin.ModelAdmin):
     ordering = ('course__category','course','lesson_num')
@@ -15,7 +19,7 @@ class LessonAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     ordering = ('category','course_num')
 
-admin.site.register(Article)
+admin.site.register(Article,ArticleAdmin)
 notify.short_description = '通知を送信する'
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Like)
