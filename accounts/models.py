@@ -28,4 +28,4 @@ class User(AbstractUser):
 
     def __str__(self):
 
-        return f"{self.username}({self.date_joined})"
+        return f"{self.username}"
