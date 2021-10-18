@@ -11,7 +11,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('title', 'poster', 'bookmark_count','created_at')
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'poster', 'like_count','created_at')
+    fields = ('title', 'poster', 'like_count','created_at')
 
 class LessonAdmin(admin.ModelAdmin):
     ordering = ('course__category','course','lesson_num')

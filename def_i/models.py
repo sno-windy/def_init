@@ -53,10 +53,10 @@ class Lesson(models.Model):
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name = "cleared_lesson", null=True)
-    cleared_at = models.DateTimeField(default=timezone.now)
+    cleared_at = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
-        return f"{self.user} cleared lesson {self.lesson}"
+        return f"{self.lesson.course.category}-{self.lesson.course.course_num}-{self.lesson.lesson_num}"
 
 
 class StudyingCategory(models.Model):
