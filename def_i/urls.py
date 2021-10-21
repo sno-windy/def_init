@@ -22,6 +22,7 @@ urlpatterns = [
     path('article_failed/', views.ArticlePostFailed.as_view(), name="article_failed"),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
+    path('article_talk_delete/<int:pk>/',views.ArticleTalkDeleteView.as_view(),name='article_talk_delete'),
 
     # 質問系
     path('question_feed/',views.QuestionFeed.as_view(),name='question_feed'),
@@ -31,6 +32,7 @@ urlpatterns = [
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
     path('question_edit/<int:pk>/',views.QuestionUpdateView.as_view(),name='question_edit'),
     path('question_delete/<int:pk>/',views.QuestionDeleteView.as_view(),name='question_delete'),
+    path('question_talk_delete/<int:pk>/',views.QuestionTalkDeleteView.as_view(),name='question_talk_delete'),
 
     # コース系
     path('course/', views.course, name="course"),

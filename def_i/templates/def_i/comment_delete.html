@@ -10,9 +10,9 @@
 <div class="background">
     <form action="" method="POST" class="popup">
         {% csrf_token %}
-        <p>本当にノートを削除しますか？</p>
+        <p>本当にコメントを削除しますか？</p>
         <div class="btns">
-            <button class="button" type="submit"><span>ノートを削除する</span></button>
+            <button class="button" type="submit"><span>コメントを削除する</span></button>
             <div class="cancel">
                 <a href="{% url 'article_detail' object.pk %}">キャンセル</a>
             </div>

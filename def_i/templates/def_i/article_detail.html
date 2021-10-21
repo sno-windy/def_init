@@ -83,6 +83,7 @@
                     <p>{{c.time|date:"Y/n/j H:i"}}</p>
                 </div>
                 <div class="comment-text">{{c.formatted_markdown|safe}}</div>
+                {% if c.msg_from == user %}<p class="delete_comment"><a href="{% url 'question_talk_delete' c.pk %}">削除</a></p>{% endif %}
             </article>
             {% empty %}
             <p class="no-contents">コメントがありません．</p>
