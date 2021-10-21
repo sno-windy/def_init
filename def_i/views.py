@@ -94,7 +94,7 @@ class ArticleFeed(LoginRequiredMixin, FormMixin, ListView):
             articles = Article.objects.filter(
                 is_published=True).order_by('-created_at')
 
-        if (query_word := self.request.GET.get('keyword')):  # 代入式
+        if (query_word := self.request.GET.get('keyword')):
             articles = articles.filter(
                 Q(title__icontains=query_word) | Q(poster__username__icontains=query_word)
             ).filter(is_published=True).order_by('-created_at')
@@ -128,10 +128,10 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
 
         comments = TalkAtArticle.objects.filter(
             msg_at=article).order_by('time')
-        comments_count = comments.count()  # lenにしてQuerysetが走っている回数を数える．
 
         related_articles = Article.objects.exclude(pk=article.pk).filter(
-            course=article.course).filter(is_published=True).order_by('-created_at')[:5]
+            course=article.course,is_published=True).order_by('-created_at')[:5]
+        # 通知ベル
         info = GetIndexInfo(request.user)
         new_likes, new_bookmarks, article_talk, question_talk = info.get_notification(
             request.user)
@@ -140,11 +140,10 @@ class ArticleDetail(LoginRequiredMixin, ModelFormMixin, ListView):
             {
                 'contents': article,
                 'liked_set': liked_set,
-                'comments_count': comments_count,
                 'comments': comments,
                 'related_articles': related_articles,
                 'comment_form': ArticleTalkForm(),
-
+                # 通知ベル
                 'new_likes': new_likes,
                 'new_bookmarks': new_bookmarks,
                 'article_talk': article_talk,

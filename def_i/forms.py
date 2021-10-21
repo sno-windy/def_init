@@ -12,7 +12,7 @@ class ArticleTalkForm(forms.ModelForm):
         widgets = {
             'msg': MarkdownxWidget(
                 attrs={'placeholder': 'あなたのコメントを入力（コードを含む場合はMarkdown記法をご使用ください）'}
-            )
+            ),
         }
 
 class ArticlePostForm(forms.ModelForm):

@@ -199,7 +199,7 @@ class TalkAtArticle(Talk):
         line_bot_api = LineBotApi(
             channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtArticle.objects.filter(
-            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
+            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知
         notify_to = LineFriend.objects.filter(Q(user=self.msg_to) | Q(
             user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)
