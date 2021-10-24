@@ -338,7 +338,6 @@ class QuestionFeed(LoginRequiredMixin, FormMixin, ListView):
 
 class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
     model = TalkAtQuestion
-    form_class = QuestionTalkForm
     template_name = 'def_i/question_detail.html'
 
     def get(self, request, pk):
@@ -369,20 +368,32 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         })
 
     def post(self, request, pk):
-        form = QuestionTalkForm(request.POST)
-        if form.is_valid():
-            messages = form.cleaned_data.get('msg')
-            question = Question.objects.select_related('poster').get(pk=pk)
-            question_poster = question.poster
-            msg = self.model.objects.create(
-                msg=messages, msg_from=request.user, msg_to=question_poster, msg_at=question)
-            msg.save()
-            msg.notify_new_comment()
-            if not question.is_answered:  # コメントの時にブール値を編集する
-                question.is_answered = True
+        # Qestion へのコメントの場合
+        if 'answer_form' in request.POST:
+            form = QuestionTalkForm(request.POST)
+            if form.is_valid():
+                messages = form.cleaned_data.get('msg')
+                question = Question.objects.select_related('poster').get(pk=pk)
+                question_poster = question.poster
+                msg = self.model.objects.create(
+                    msg=messages, msg_from=request.user, msg_to=question_poster, msg_at=question)
+                msg.save()
+                msg.notify_new_comment()
+
+        # 解決済にする
+        elif 'answered_form' in request.POST:
+            question = Question.objects.get(pk=pk)
+            answered_form = QuestionAnsweredForm(request.POST, instance=question)
+            answered = request.POST.get("answered")
+            if answered == "on":
+                answered = True
+            else:
+                answered = False
+            if answered_form.is_valid():
+                question.is_answered = answered
                 question.save()
 
-            return redirect("question_detail", pk=pk)
+        return redirect("question_detail", pk=pk)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -390,6 +401,7 @@ class QuestionDetail(LoginRequiredMixin, FormMixin, ListView):
         context['comments_count'] = comments.count()
         context['comments'] = comments.order_by('-time')[:3]
         return context
+
 
 @login_required(login_url='accounts/login/')
 def BookMarkView(request, pk):
@@ -402,16 +414,13 @@ def BookMarkView(request, pk):
         if bookmark.exists():
             bookmark.delete()
             question.bookmark_count = F('bookmark_count')-1
-            # question_poster.bookmark_count=F('bookmark_count')-1
 
         else:
             BookMark.objects.create(question=question, user=user)
             question.bookmark_count = F('bookmark_count')+1
-            # question_poster.bookmark_count=F('bookmark_count')+1
             is_bookmarked = True
 
         question.save()
-        # question_poster.save()
         params = {
             'question_id': question.id,
             'bookmarked': is_bookmarked,

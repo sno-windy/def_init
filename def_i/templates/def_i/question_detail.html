@@ -117,6 +117,19 @@
                 {{contents.poster}}
             </div>
         </a>
+        {% if user == contents.poster %}
+            <form name="answered_form" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="answered_form">
+                {% if contents.is_answered %}
+                    <input type="checkbox" id="id_is_answered" name="answered" checked>
+                {% else %}
+                    <input type="checkbox" id="id_is_answered" name="answered">
+                {% endif %}
+                <span>解決済みにする</span>
+            </form>
+        {% endif %}
+
     </div>
     <div class="sidebar-move">
         <div id="to_question">質問</div>
@@ -170,6 +183,7 @@
         window.scrollTo(0, question_position.top);
     });
 
+    // コメントへスクロール
     document.getElementById("to_answer").addEventListener('click', function(){
         const answers = document.getElementById("answers");
         const answers_position = answers.getBoundingClientRect();
@@ -177,6 +191,11 @@
         toAnswer.style.backgroundColor = "#f5f5f5"
 
         window.scrollTo(0, answers_position.top);
+    });
+
+    // 解決済にする
+    document.getElementById("id_is_answered").addEventListener('change', function(){
+        document.answered_form.submit();
     });
 
     const showFirstPopup = document.getElementById("show_popup_1");
