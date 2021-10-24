@@ -534,7 +534,7 @@ class ArticleTalkDeleteView(LoginRequiredMixin,DeleteView):
 
     def get_success_url(self):
         article = self.object.msg_at
-        return reverse_lazy('article_detail',kwargs={'pk':article})
+        return reverse_lazy('article_detail',kwargs={'pk':article.pk})
 
 
 class QuestionTalkDeleteView(LoginRequiredMixin,DeleteView):
