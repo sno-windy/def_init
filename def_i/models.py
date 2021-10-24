@@ -53,10 +53,10 @@ class Lesson(models.Model):
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name = "cleared_lesson", null=True)
-    cleared_at = models.DateTimeField(default=timezone.now)
+    cleared_at = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
-        return f"{self.user} cleared lesson {self.lesson}"
+        return f"{self.lesson.course.category}-{self.lesson.course.course_num}-{self.lesson.lesson_num}"
 
 
 class StudyingCategory(models.Model):
@@ -199,7 +199,7 @@ class TalkAtArticle(Talk):
         line_bot_api = LineBotApi(
             channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtArticle.objects.filter(
-            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
+            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知
         notify_to = LineFriend.objects.filter(Q(user=self.msg_to) | Q(
             user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)

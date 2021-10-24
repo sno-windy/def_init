@@ -283,3 +283,4 @@ $RECYCLE.BIN/
 local_settings.py
 secret_settings.py
 **/__pycache/__
+update_comments.js

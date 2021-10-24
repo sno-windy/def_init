@@ -200,7 +200,7 @@ $blue: #4e93e1;
   margin: 0 48px;
   border-bottom: 1px solid $line-gray;
   &-info {
-    margin-top: 34px;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -316,7 +316,7 @@ $blue: #4e93e1;
       text-align: left;
       font: normal normal 300 12px/24px Noto Sans JP;
       letter-spacing: 0.22px;
-      color: #9e9e9e;
+      color: black;
       opacity: 1;
       resize: vertical;
     }
@@ -420,4 +420,7 @@ $blue: #4e93e1;
 }
 .no-contents {
   margin: 32px 0 32px 48px;
+}
+.delete_comment {
+  margin: -20px 0 10px 0;
 }
