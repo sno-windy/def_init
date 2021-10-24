@@ -528,22 +528,33 @@ class QuestionDeleteView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class ArticleTalkDeleteView(LoginRequiredMixin,DeleteView):
+class ArticleTalkDeleteView(LoginRequiredMixin, DeleteView):
     model = TalkAtArticle
     template_name = 'def_i/comment_delete.html'
 
     def get_success_url(self):
         article = self.object.msg_at
-        return reverse_lazy('article_detail',kwargs={'pk':article.pk})
+        return reverse_lazy('article_detail', kwargs={'pk':article.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = "article"
+        return context
 
 
-class QuestionTalkDeleteView(LoginRequiredMixin,DeleteView):
+
+class QuestionTalkDeleteView(LoginRequiredMixin, DeleteView):
     model = TalkAtQuestion
     template_name = 'def_i/comment_delete.html'
 
     def get_success_url(self):
         question = self.object.msg_at
-        return reverse_lazy('question_detail',kwargs={'pk':question.pk})
+        return reverse_lazy('question_detail', kwargs={'pk':question.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = "question"
+        return context
 
 
 class TaskQuestionPost(LoginRequiredMixin, CreateView):
