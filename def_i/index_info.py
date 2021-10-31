@@ -1,9 +1,4 @@
-import datetime
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count, OuterRef, Subquery, Case, Value, When
-from django.utils.timezone import make_aware
-
+from django.db.models import Count
 from .models import *
 
 
@@ -49,32 +44,13 @@ class GetIndexInfo:
 
     # ユーザーのランキング情報を取得
     def get_ranking(self, user):
-        date = make_aware(timezone.datetime.today())
-        a_week_ago = date + datetime.timedelta(days=-7)
+        # date = make_aware(timezone.datetime.today())
+        # a_week_ago = date + datetime.timedelta(days=-7)
         ranking = User.objects.annotate(
-            # cleared_lesson_num=Subquery(
-            #     ClearedLesson.objects
-            #     .filter(user=OuterRef('pk'))
-            #     # .filter(cleared_at__gte=a_week_ago)
-            #     .annotate(count=Count('pk'))
-            #     .values('count')[:1]
-            # ),
-            cleared_lesson_num=Count(
-                "cleared_user",
-                # filter=Q(
-                #     cleared_user__cleared_at__gte=a_week_ago
-                # )
-            ),
-            note_num=Count(
-
-                Article.objects
-                .filter(poster=OuterRef('pk'))
-                # .filter(created_at__gte=a_week_ago)
-                # .values('poster')
-                .annotate(count=Count('pk'))
-                .values('count')[:1]
-            )
-        ).order_by('-cleared_lesson_num','-note_num')  # 何位まで表示する？.
+            Count("cleared_user",distinct=True),
+            Count("user_article",distinct=True)
+        ).order_by('-cleared_user__count','-user_article__count')  # 何位まで表示する？.
+        print(ranking)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
@@ -94,13 +70,11 @@ class GetIndexInfo:
         else:
             user_ranking = ranking_zip[user_rank-2:user_rank+1]
         return top_ranking, user_ranking
-        # return ranking_zip
 
     # 進捗状況を取得
     def get_progress(self, user):
         all_lesson = Lesson.objects.all()
         all_cleared_lesson = ClearedLesson.objects.filter(user=user)
-        course = Course.objects.all()
         category_list = Category.objects.all()
         progress_percent_list = []
 
@@ -147,13 +121,7 @@ class GetIndexInfo:
         else:
             studying = None
         if self.last_cleared_lesson:
-            colleague_list = User.objects.annotate(
-                # 別のカテゴリで競合している人を取りたい場合、必要
-                # colleague_studying = Subquery(
-                #     StudyingCategory.objects.filter(user=OuterRef('pk'))
-                #         .values('category__title')[:1]
-                # )
-            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
+            colleague_list = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
 
         # colleagueの進捗情報をとってきている。
             colleague_studying_progress = []
@@ -161,13 +129,8 @@ class GetIndexInfo:
             for data in colleague_list:
                 _, colleague_progress = self.get_progress(data)
                 for co in colleague_progress:
-                    # 別のカテゴリで競合している人を取りたい場合、必要
-                    # if co[0].title == data.colleague_studying:
-                    # if studying is not None:
                     if co[0] == studying:
                         colleague_studying_progress.append(co[1])
-                    # else:
-                    #     colleague_studying_progress.append(0)
             colleague_data = [[colleague, prog] for colleague, prog in zip(
                 colleague_list, colleague_studying_progress)]
 

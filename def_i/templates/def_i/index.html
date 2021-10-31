@@ -13,7 +13,7 @@
         <h1 class="index_title">ランキング</h1>
         <div class="ranking_box">
             {% for _,rank in ranking %}
-                {% ifchanged rank.cleared_lesson_num rank.note_num %}
+                {% ifchanged rank.cleared_user__count rank.note_num %}
                     <div class="ranking_contents">
                         <p class="rank_num">{{forloop.counter}}</p>
                         {% if rank.user_image %}
@@ -25,8 +25,8 @@
                             <p class="rank_user">{{rank}}</p>
                         </a>
                         <p class="rank_point">
-                            {% if rank.cleared_lesson_num == None %}0
-                            {% else %}{{rank.cleared_lesson_num}}
+                            {% if rank.cleared_user__count == None %}0
+                            {% else %}{{rank.cleared_user__count}}
                             {% endif %} Pt
                         </p>
                         {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
@@ -43,8 +43,8 @@
                             <p class="rank_user">{{rank}}</p>
                         </a>
                         <p class="rank_point">
-                            {% if rank.cleared_lesson_num == None %}0
-                            {% else %}{{rank.cleared_lesson_num}}
+                            {% if rank.cleared_user__count == None %}0
+                            {% else %}{{rank.cleared_user__count}}
                             {% endif %} Pt
                         </p>
                         {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
@@ -57,7 +57,7 @@
         <h2 class="index_title">自分の順位</h2>
         <div class="ranking_box">
         {% for rank_num,rank in user_ranking %}
-        {% ifchanged rank.cleared_lesson_num rank.note_num %}
+        {% ifchanged rank.cleared_user__count rank.note_num %}
                 <div class="ranking_contents">
                     <p class="rank_num">{{rank_num}}</p>
                     {% if rank.user_image %}
@@ -69,8 +69,8 @@
                         <p class="rank_user">{{rank}}</p>
                     </a>
                     <p class="rank_point">
-                        {% if rank.cleared_lesson_num == None %}0
-                        {% else %}{{rank.cleared_lesson_num}}
+                        {% if rank.cleared_user__count == None %}0
+                        {% else %}{{rank.cleared_user__count}}
                         {% endif %} Pt
                     </p>
                     {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
@@ -87,8 +87,8 @@
                         <p class="rank_user">{{rank}}</p>
                     </a>
                     <p class="rank_point">
-                        {% if rank.cleared_lesson_num == None %}0
-                        {% else %}{{rank.cleared_lesson_num}}
+                        {% if rank.cleared_user__count == None %}0
+                        {% else %}{{rank.cleared_user__count}}
                         {% endif %} Pt
                     </p>
                     {% comment %} , ノート {% if rank.note_num == None %}0{% else %}{{rank.note_num}}{% endif %} Pt {% endcomment %}
