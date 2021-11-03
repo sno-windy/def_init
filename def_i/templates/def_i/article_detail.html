@@ -19,11 +19,12 @@
             <div class="like-outer">
                 {% include 'def_i/like.html' %}
             </div>
-
-            <div class="contents-info-at">
-                <div class="contents-info-at-category">{{contents.category}}</div>
-                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
-            </div>
+            <a href="{% url 'task_detail' contents.category contents.course.course_num contents.lesson.lesson_num %}">
+                <div class="contents-info-at">
+                    <div class="contents-info-at-category">{{contents.category}}</div>
+                    <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+                </div>
+            </a>
             <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
         </div>
 
