@@ -1105,7 +1105,7 @@ def userpage_view(request, pk):
     article = Article.objects.order_by('-created_at').filter(poster=user, is_published=True)
 
     paginator = Paginator(article, 5)
-    page = request.GET.get('page')
+    page = request.GET.get('a_page')
 
     try:
         article = paginator.page(page)
