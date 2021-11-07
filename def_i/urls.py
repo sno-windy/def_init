@@ -40,13 +40,10 @@ urlpatterns = [
     path('mark_as_studying/', views.mark_as_studying, name="mark_as_studying"),
     path('task_detail/<str:category>/<int:course_num>/', views.TaskDetailView.as_view(), name='task_detail'),
     path('task_detail/<str:category>/<int:course_num>/<int:lesson_num>/', views.TaskDetailView.as_view(), name='task_detail'),
-    path('task_detail/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),
     path('task_detail/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_detail/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),
     path('task_detail/<int:pk>/article_for_complete/post', views.TaskCompleteArticlePost.as_view(), name="task_complete_article"),
     path('task_detail/<int:pk>/article_for_complete_edit/', views.TaskCompleteArticleUpdate.as_view(), name="task_complete_article_edit"),
-    path('task_detail/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
-    path('note_list/', views.note_list, name='note_list'),
     path('complete/<int:pk>/', views.lesson_complete, name="complete"),
 
     # マイページ系

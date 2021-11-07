@@ -109,6 +109,7 @@
     <div class="sidebar-poster">
 
         <h3>投稿者</h3>
+        {% if contents.poster %}
         <a href="{% url 'user_page' contents.poster.pk %}">
             <div class="sidebar-poster-info">
                 {% if contents.poster.user_image %}
@@ -119,6 +120,7 @@
                 {{contents.poster}}
             </div>
         </a>
+        {% endif %}
         {% if user == contents.poster %}
             <form name="answered_form" method="POST">
                 {% csrf_token %}
