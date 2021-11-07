@@ -73,6 +73,7 @@
         {% for c in comments %}
             <article class="comment">
                 <div class="comment-info">
+                    {% if c.msg_from %}
                     <a href="{% url 'user_page' c.msg_from.pk %}">
                         {% if c.msg_from.user_image %}
                             <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
@@ -81,6 +82,7 @@
                         {% endif %}
                         <p>{{c.msg_from}}</p>
                     </a>
+                    {% endif %}
                     <p>{{c.time|date:"Y/n/j H:i"}}</p>
                 </div>
                 <div class="comment-text">{{c.formatted_markdown|safe}}</div>
