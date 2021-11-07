@@ -75,6 +75,7 @@
         {% for c in comments %}
         <article class="comment">
             <div class="comment-info">
+            {% if c.msg_from %}
                 <a href="{% url 'user_page' c.msg_from.pk %}">
                     {% if c.msg_from.user_image %}
                         <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
@@ -83,6 +84,7 @@
                     {% endif %}
                     <p>{{c.msg_from}}></p>
                 </a>
+            {% endif %}
                 <p>{{c.time|date:"Y/n/j H:i"}}</p>
             </div>
             <div class="comment-text">{{c.formatted_markdown|safe}}</div>
@@ -109,6 +111,7 @@
     <div class="sidebar-poster">
 
         <h3>投稿者</h3>
+        {% if contents.poster %}
         <a href="{% url 'user_page' contents.poster.pk %}">
             <div class="sidebar-poster-info">
                 {% if contents.poster.user_image %}
@@ -119,6 +122,7 @@
                 {{contents.poster}}
             </div>
         </a>
+        {% endif %}
         {% if user == contents.poster %}
             <form name="answered_form" method="POST">
                 {% csrf_token %}

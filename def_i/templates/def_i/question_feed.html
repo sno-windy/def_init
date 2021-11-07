@@ -71,8 +71,8 @@
                     <div>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</div>
                 </div>
                 <div class="user_date">
+                    {% if q.poster %}
                     <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
-
                         {% if q.poster.user_image %}
                         <img src="{{q.poster.user_image.url}}" width="30" alt="">
                         {% else %}
@@ -80,6 +80,9 @@
                         {% endif %}
                         <p>{{q.poster}}</p>
                     </a>
+                    {% else %}
+                        <a class="user-disp"><img src="{% static 'def_i/img/default.png' %}"></a>
+                    {% endif %}
                     <p class="post-date">{{q.created_at|date:"Y/n/j H:i"}}に投稿</p>
                 </div>
             </div>

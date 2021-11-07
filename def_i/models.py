@@ -133,19 +133,6 @@ class Question(models.Model):
     # ブラウザのプッシュ通知
     def browser_push(self):
         pass
-    #     data = {
-    #         'app_id': 'ea35df03-ba32-4c85-9f7e-383106fb1d24',
-    #         'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",
-    #         'included_segments': ['All'],
-    #         'contents': {'en': self.title},
-    #         'headings': {'en': '新しい質問が投稿されました！質問に答えましょう．'},
-    #         'url': resolve_url('question_feed'),
-    #     }
-    #     requests.post(
-    #         "https://onesignal.com/api/v1/notifications",
-    #         headers={'Authorization': ONESIGNAL_SECRET_KEY},
-    #         json=data,
-    #     )
 
     def notify_new_question(self):
         line_bot_api = LineBotApi(
