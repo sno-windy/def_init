@@ -284,3 +284,4 @@ local_settings.py
 secret_settings.py
 **/__pycache/__
 article.py
+update_comments.js

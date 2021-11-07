@@ -18,6 +18,8 @@
 {% endif %}
 <p>{{user.username}}</p>
 <p class="user_position">{{user.position}}</p>
+<br>
+<p class="like_count">{{user.like_count}}<span style="color:#3011ab;font-weight:100;">いいね</span></p>
 </div>
 {% if studying %}
 <h1 class="index_title">学習中のコース</h1>
@@ -73,15 +75,18 @@
                     <div>{{q.category}}</div>
                     <div>レッスン{{q.course.course_num}}-{{q.lesson.lesson_num}}</div>
                 </div>
-
-                <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
-                {% if q.poster.user_image %}
-                    <img src="{{q.poster.user_image.url}}">
+                {% if q.poster %}
+                    <a href="{% url 'user_page' q.poster.pk %}" class="user-disp">
+                    {% if q.poster.user_image %}
+                        <img src="{{q.poster.user_image.url}}">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                        <p>{{q.poster}}</p>
+                    </a>
                 {% else %}
-                    <img src="{% static 'def_i/img/default.png' %}">
+                    <a class="user-disp"><img src="{% static 'def_i/img/default.png' %}"></a>
                 {% endif %}
-                    <p>{{q.poster}}</p>
-                </a>
                 <p class="post-date">{{q.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
             </div>
             <a href="{% url 'question_detail' q.pk %}">
@@ -162,15 +167,18 @@
                     <div>{{a.category}}</div>
                     <div>レッスン{{a.course.course_num}}-{{a.lesson.lesson_num}}</div>
                 </div>
-                <a href="{% url 'user_page' a.poster.pk %}" class="user-disp">
-                {% if a.poster.user_image %}
-                    <img src="{{a.poster.user_image.url}}">
+                {% if a.poster %}
+                    <a href="{% url 'user_page' a.poster.pk %}" class="user-disp">
+                    {% if a.poster.user_image %}
+                        <img src="{{a.poster.user_image.url}}">
+                    {% else %}
+                        <img src="{% static 'def_i/img/default.png' %}">
+                    {% endif %}
+                        <p>{{a.poster}}</p>
+                    </a>
                 {% else %}
-                    <img src="{% static 'def_i/img/default.png' %}">
+                    <a class="user-disp"><img src="{% static 'def_i/img/default.png' %}"></a>
                 {% endif %}
-
-                    <p>{{a.poster}}</p>
-                </a>
                 <p class="post-date">{{a.created_at|date:"Y/n/j H:i:s"}}に投稿</p>
             </div>
         </article>

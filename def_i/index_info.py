@@ -1,9 +1,4 @@
-import datetime
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count, OuterRef, Subquery
-from django.utils.timezone import make_aware
-
+from django.db.models import Count
 from .models import *
 
 
@@ -19,66 +14,43 @@ class GetIndexInfo:
         self.cleared_lesson = ClearedLesson.objects.filter(
             user=user).order_by('-cleared_at')
 
-        # ↓この辺三項式でやれば簡潔にできそうだね
+        # 値がない場合の初期化
+        self.last_cleared_lesson = 0
+        self.last_cleared_course = 0
+        next_lesson_num = 1
+        next_course_num = 1
 
-        try:
-            self.last_cleared_lesson = self.cleared_lesson[0]
+        self.last_cleared_lesson = self.cleared_lesson.first()
 
-            self.last_cleared_course = self.last_cleared_lesson.lesson.course.course_num
+        # self.last_cleared_lesson の値があるなら
+        if  not ((l := self.last_cleared_lesson) == None):
+            self.last_cleared_course = l.lesson.course.course_num
+            next_lesson_num = l.lesson.lesson_num + 1
 
-            next_lesson_num = self.last_cleared_lesson.lesson.lesson_num + 1
+        next_lesson = Lesson.objects.filter(course__in=self.studying_course, lesson_num=next_lesson_num,
+                                            course__course_num=self.last_cleared_course).first()
+        self.learning_lesson = next_lesson
 
-        except IndexError:  # ひとつも取り組んでいない
-            self.last_cleared_lesson = 0
-
-            self.last_cleared_course = 0
-
-            next_lesson_num = 1
-
-            next_course_num = 1
-
-        try:
-            next_lesson = Lesson.objects.get(course__in=self.studying_course, lesson_num=next_lesson_num,
-                                             course__course_num=self.last_cleared_course)  # この場合ほしいのは一つなわけだから、filter().first()でいいよね
-
-            self.learning_lesson = next_lesson
-
-        except ObjectDoesNotExist:
+        # next_lesson が見つからないなら
+        if next_lesson == None:
 
             next_course_num = self.last_cleared_course + 1
 
-            try:
-                next_course = Course.objects.get(
-                    category=self.studying_category, course_num=next_course_num)
+            next_course = Course.objects.filter(
+                category=self.studying_category, course_num=next_course_num).first()
 
-                self.learning_lesson = Lesson.objects.get(
-                    course__in=self.studying_course, course=next_course, lesson_num=1)
-            except ObjectDoesNotExist:
-                self.learning_lesson = None
+            self.learning_lesson = Lesson.objects.filter(
+                course__in=self.studying_course, course=next_course, lesson_num=1).first()
 
     # ユーザーのランキング情報を取得
     def get_ranking(self, user):
-        date = make_aware(timezone.datetime.today())
-        a_week_ago = date + datetime.timedelta(days=-7)
+        # date = make_aware(timezone.datetime.today())
+        # a_week_ago = date + datetime.timedelta(days=-7)
         ranking = User.objects.annotate(
-            cleared_lesson_num=Subquery(
-                ClearedLesson.objects
-                .filter(user=OuterRef('pk'))
-                .filter(cleared_at__gte=a_week_ago)
-                .values('user')
-                .annotate(count=Count('pk'))
-                .values('count')
-            ),
-            note_num=Subquery(
-                Article.objects
-                .filter(poster=OuterRef('pk'))
-                .filter(created_at__gte=a_week_ago)
-                .values('poster')
-                .annotate(count=Count('pk'))
-                .values('count')
-            )
-        ).order_by('-note_num').order_by('-cleared_lesson_num')  # 何位まで表示する？
-
+            Count("cleared_user",distinct=True),
+            Count("user_article",distinct=True)
+        ).order_by('-cleared_user__count','-user_article__count')  # 何位まで表示する？.
+        print(ranking)
         ranking_zip = list(zip(range(1, len(ranking)+1), ranking))
 
         top_ranking = ranking_zip[:3]
@@ -98,13 +70,11 @@ class GetIndexInfo:
         else:
             user_ranking = ranking_zip[user_rank-2:user_rank+1]
         return top_ranking, user_ranking
-        # return ranking_zip
 
     # 進捗状況を取得
     def get_progress(self, user):
         all_lesson = Lesson.objects.all()
         all_cleared_lesson = ClearedLesson.objects.filter(user=user)
-        course = Course.objects.all()
         category_list = Category.objects.all()
         progress_percent_list = []
 
@@ -141,7 +111,7 @@ class GetIndexInfo:
     # 進行中のコースに関連したノートを取得
     def get_related_articles(self):
         related_articles = Article.objects.filter(
-            lesson__course__category=self.studying_category).order_by('-created_at')[:5]  # 並べる順番
+            lesson__course__category=self.studying_category, is_published=True).order_by('-created_at')[:5]  # 並べる順番
         return related_articles
 
     # 進捗が近いユーザーを取得
@@ -151,13 +121,7 @@ class GetIndexInfo:
         else:
             studying = None
         if self.last_cleared_lesson:
-            colleague_list = User.objects.annotate(
-                # 別のカテゴリで競合している人を取りたい場合、必要
-                # colleague_studying = Subquery(
-                #     StudyingCategory.objects.filter(user=OuterRef('pk'))
-                #         .values('category__title')[:1]
-                # )
-            ).filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
+            colleague_list = User.objects.filter(cleared_user__lesson=self.last_cleared_lesson.lesson).exclude(cleared_user__user=user).order_by('-cleared_user__cleared_at')[:3]
 
         # colleagueの進捗情報をとってきている。
             colleague_studying_progress = []
@@ -165,13 +129,8 @@ class GetIndexInfo:
             for data in colleague_list:
                 _, colleague_progress = self.get_progress(data)
                 for co in colleague_progress:
-                    # 別のカテゴリで競合している人を取りたい場合、必要
-                    # if co[0].title == data.colleague_studying:
-                    # if studying is not None:
                     if co[0] == studying:
                         colleague_studying_progress.append(co[1])
-                    # else:
-                    #     colleague_studying_progress.append(0)
             colleague_data = [[colleague, prog] for colleague, prog in zip(
                 colleague_list, colleague_studying_progress)]
 

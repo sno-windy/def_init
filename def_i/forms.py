@@ -12,7 +12,7 @@ class ArticleTalkForm(forms.ModelForm):
         widgets = {
             'msg': MarkdownxWidget(
                 attrs={'placeholder': 'あなたのコメントを入力（コードを含む場合はMarkdown記法をご使用ください）'}
-            )
+            ),
         }
 
 class ArticlePostForm(forms.ModelForm):
@@ -43,6 +43,13 @@ class ArticlePublishForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = ['is_published']
+
+
+class QuestionAnsweredForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['is_answered']
+
 
 class QuestionTalkForm(forms.ModelForm):
     class Meta:

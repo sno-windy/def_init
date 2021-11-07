@@ -19,11 +19,12 @@
             <div class="like-outer">
                 {% include 'def_i/like.html' %}
             </div>
-
-            <div class="contents-info-at">
-                <div class="contents-info-at-category">{{contents.category}}</div>
-                <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
-            </div>
+            <a href="{% url 'task_detail' contents.category contents.course.course_num contents.lesson.lesson_num %}">
+                <div class="contents-info-at">
+                    <div class="contents-info-at-category">{{contents.category}}</div>
+                    <div>レッスン{{contents.course.course_num}}-{{contents.lesson.lesson_num}}</div>
+                </div>
+            </a>
             <div>{{contents.created_at|date:"Y/n/j H:i"}}</div>
         </div>
 
@@ -72,6 +73,7 @@
         {% for c in comments %}
             <article class="comment">
                 <div class="comment-info">
+                    {% if c.msg_from %}
                     <a href="{% url 'user_page' c.msg_from.pk %}">
                         {% if c.msg_from.user_image %}
                             <img src="{{c.msg_from.user_image.url}}" width="30" alt="">
@@ -80,9 +82,11 @@
                         {% endif %}
                         <p>{{c.msg_from}}</p>
                     </a>
+                    {% endif %}
                     <p>{{c.time|date:"Y/n/j H:i"}}</p>
                 </div>
                 <div class="comment-text">{{c.formatted_markdown|safe}}</div>
+                {% if c.msg_from == user %}<p class="delete_comment"><a href="{% url 'article_talk_delete' c.pk %}">削除</a></p>{% endif %}
             </article>
             {% empty %}
             <p class="no-contents">コメントがありません．</p>
@@ -104,6 +108,7 @@
 <div class="sidebar">
     <div class="sidebar-poster">
         <h3>投稿者</h3>
+        {% if contents.poster %}
         <a href="{% url 'user_page' contents.poster.pk %}">
             <div class="sidebar-poster-info">
                 {% if contents.poster.user_image %}
@@ -114,6 +119,7 @@
                 {{contents.poster}}
             </div>
         </a>
+        {% endif %}
         {% if user == contents.poster %}
             <form name="publish_form" method="POST">
                 {% csrf_token %}
@@ -124,7 +130,6 @@
                     <input type="checkbox" id="id_is_published" name="publish">
                 {% endif %}
                 <span>ノートを公開する</span>
-
             </form>
         {% endif %}
     </div>

@@ -12,11 +12,10 @@ from markdownx.models import MarkdownxField
 from markdownx.utils import markdownify
 from taggit.managers import TaggableManager
 from stdimage.models import StdImageField
-from .validators import FileSizeValidator
 
 from def_init.secret_settings import *
 
-
+domain = "https://def-init.demia.co.jp"
 User = get_user_model()
 
 
@@ -54,10 +53,10 @@ class Lesson(models.Model):
 class ClearedLesson(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "cleared_user")
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name = "cleared_lesson", null=True)
-    cleared_at = models.DateTimeField(default=timezone.now)
+    cleared_at = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
-        return f"{self.user} cleared lesson {self.lesson}"
+        return f"{self.lesson.course.category}-{self.lesson.course.course_num}-{self.lesson.lesson_num}"
 
 
 class StudyingCategory(models.Model):
@@ -131,21 +130,9 @@ class Question(models.Model):
     )
 
     bookmark_count = models.PositiveIntegerField(default=0)
-
+    # ブラウザのプッシュ通知
     def browser_push(self):
-        data = {
-            'app_id': 'ea35df03-ba32-4c85-9f7e-383106fb1d24',
-            'safari_web_id': "web.onesignal.auto.47a2f439-afd3-4bb7-8cdd-92cc4f5ee46c",
-            'included_segments': ['All'],
-            'contents': {'en': self.title},
-            'headings': {'en': '新しい質問が投稿されました！質問に答えましょう．'},
-            'url': resolve_url('question_feed'),
-        }
-        requests.post(
-            "https://onesignal.com/api/v1/notifications",
-            headers={'Authorization': ONESIGNAL_SECRET_KEY},
-            json=data,
-        )
+        pass
 
     def notify_new_question(self):
         line_bot_api = LineBotApi(
@@ -153,7 +140,7 @@ class Question(models.Model):
         notify_to = LineFriend.objects.filter(is_answerer=True)
         for push in notify_to:
             line_bot_api.push_message(push.line_user_id, TextSendMessage(
-                text=f" 【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。"))
+                text=f"【{self.category}】 の質問 【{self.title}】 が投稿されました。回答をお願いします。{domain}{resolve_url('question_detail', self.pk)}"))
 
     def formatted_markdown(self):
         return markdownify(self.content)
@@ -164,7 +151,7 @@ class Question(models.Model):
 
 class Like(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_like")
     has_noticed = models.BooleanField(default=False)
 
 
@@ -200,7 +187,7 @@ class TalkAtArticle(Talk):
         line_bot_api = LineBotApi(
             channel_access_token=LINE_CHANNEL_ACCESS_TOKEN)
         other_commenters = TalkAtArticle.objects.filter(
-            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知？
+            msg_at=self.msg_at).values("msg_from")  # 同じ記事にコメントした人全員に通知
         notify_to = LineFriend.objects.filter(Q(user=self.msg_to) | Q(
             user__in=other_commenters)).exclude(user=self.msg_from)
         print("to:", notify_to)
@@ -210,13 +197,13 @@ class TalkAtArticle(Talk):
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                            text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.pk)}")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。")
+                            text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.pk)}")
                     )
 
 
@@ -238,13 +225,13 @@ class TalkAtQuestion(Talk):
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                            text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.pk)}")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。")
+                            text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.pk)}")
                     )
 
     def __str__(self):

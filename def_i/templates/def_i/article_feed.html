@@ -58,14 +58,18 @@
                     <div>レッスン{{article.course.course_num}}-{{article.lesson.lesson_num}}</div>
                 </div>
                 <div class="user_date">
-                    <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
-                        {% if article.poster.user_image %}
-                        <img src="{{article.poster.user_image.url}}" width="30" alt="">
-                        {% else %}
-                        <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
-                        {% endif %}
-                        <p>{{article.poster}}</p>
-                    </a>
+                    {% if article.poster %}
+                        <a href="{% url 'user_page' article.poster.pk %}" class="user-disp">
+                            {% if article.poster.user_image %}
+                            <img src="{{article.poster.user_image.url}}" width="30" alt="">
+                            {% else %}
+                            <img src="{% static 'def_i/img/default.png' %}" width="30" alt="">
+                            {% endif %}
+                            <p>{{article.poster}}</p>
+                        </a>
+                    {% else %}
+                        <a class="user-disp"><img src="{% static 'def_i/img/default.png' %}"></a>
+                    {% endif %}
                     <p class="post-date">{{article.created_at|date:"Y/n/j H:i"}}に投稿</p>
                 </div>
             </div>

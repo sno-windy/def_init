@@ -7,7 +7,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "def-init.demia.co.jp"]
 
 STATIC_ROOT = BASE_DIR / 'static'
 
-SITE_ID = 3
+SITE_ID = 4
 # email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.muumuu-mail.com'
@@ -28,7 +28,7 @@ AWS_STORAGE_BUCKET_NAME = 'demia-def-init'
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
-ADMINS = ("Higaki", "souta0829win7@yahoo.co.jp")
+ADMINS = [("Higaki", "souta0829win782@gmail.com")]
 
 SESSION_COOKIE_SECURE = True
 
@@ -72,4 +72,15 @@ LOGGING = {
         "django": {"handlers": ["file", "console", "mail_admins"], "level": "DEBUG", "propagate": True,},  # NOQA: E231
         "main": {"handlers": ["file", "console", "mail_admins"], "level": "DEBUG", "propagate": True,},  # NOQA: E231
     },
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': 'def-init.cjxtzhczhfg9.ap-northeast-1.rds.amazonaws.com',
+        'PORT': '5432',
+    }
 }

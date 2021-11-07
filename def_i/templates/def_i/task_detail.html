@@ -9,13 +9,13 @@
 <div class="breadcrumbs">
     <a class="breadcrumbs-category" href="{% url 'course_list' category.title %}"><p>{{category.title}}</p></a>
     <img src="{% static 'def_i/img/arrow-right.svg' %}">
-    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.course.title }}</p></a>
+    <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{lesson.course.course_num}}. {{ lesson.course.title }}</p></a>
     {% comment %} <img src="{% static 'def_i/img/arrow-right.svg' %}">
     <a class="breadcrumbs-course" href="{% url 'task_detail' category.title course_num %}"><p>{{ lesson.title }}</p></a> {% endcomment %}
 </div>
 <div class="main-container__contents-menubar">
     <div class="main-container__contents-menubar-title">
-        <p>{{ lesson.course.title }}</p>
+        <p>{{lesson.course.course_num}}. {{ lesson.course.title }}</p>
     </div>
     <div class="main-container__contents-menubar-scroll">
         {% for item in lesson_list %}
@@ -33,14 +33,14 @@
                 >
                 {% endif %}
 
-                    {{item.lesson_num|add:'-1'}}
+                    {{item.lesson_num}}
             {% else %}
                 {% if item.lesson_num == 1 %}
                 class="nowopacity">
                 {% else %}
                 >
                 {% endif %}
-                {{forloop.counter0}}
+                {{forloop.counter}}
             {% endif %}
             . {{item.title}}
             </p>

@@ -10,6 +10,7 @@ sitemaps = {
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
+    path('ranking/', views.RankingView.as_view(), name='ranking'),
 
     # 記事系
     path('article_feed/',views.ArticleFeed.as_view(), name='article_feed'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('article_failed/', views.ArticlePostFailed.as_view(), name="article_failed"),
     path('article_edit/<int:pk>/',views.ArticleUpdateView.as_view(),name='article_edit'),
     path('article_delete/<int:pk>/',views.ArticleDeleteView.as_view(),name='article_delete'),
+    path('article_talk_delete/<int:pk>/',views.ArticleTalkDeleteView.as_view(),name='article_talk_delete'),
 
     # 質問系
     path('question_feed/',views.QuestionFeed.as_view(),name='question_feed'),
@@ -30,6 +32,7 @@ urlpatterns = [
     path('question_post/',views.QuestionPost.as_view(),name='question_post'),
     path('question_edit/<int:pk>/',views.QuestionUpdateView.as_view(),name='question_edit'),
     path('question_delete/<int:pk>/',views.QuestionDeleteView.as_view(),name='question_delete'),
+    path('question_talk_delete/<int:pk>/',views.QuestionTalkDeleteView.as_view(),name='question_talk_delete'),
 
     # コース系
     path('course/', views.course, name="course"),
@@ -37,13 +40,10 @@ urlpatterns = [
     path('mark_as_studying/', views.mark_as_studying, name="mark_as_studying"),
     path('task_detail/<str:category>/<int:course_num>/', views.TaskDetailView.as_view(), name='task_detail'),
     path('task_detail/<str:category>/<int:course_num>/<int:lesson_num>/', views.TaskDetailView.as_view(), name='task_detail'),
-    path('task_detail/<int:pk>/question', views.TaskQuestion.as_view(), name='task_question'),
     path('task_detail/<int:pk>/question/post', views.TaskQuestionPost.as_view(), name='task_question_post'),
     path('task_detail/<int:pk>/article/post', views.TaskArticlePost.as_view(), name='task_article_post'),
     path('task_detail/<int:pk>/article_for_complete/post', views.TaskCompleteArticlePost.as_view(), name="task_complete_article"),
     path('task_detail/<int:pk>/article_for_complete_edit/', views.TaskCompleteArticleUpdate.as_view(), name="task_complete_article_edit"),
-    path('task_detail/<int:pk>/article', views.TaskArticle.as_view(), name='task_article'),
-    path('note_list/', views.note_list, name='note_list'),
     path('complete/<int:pk>/', views.lesson_complete, name="complete"),
 
     # マイページ系

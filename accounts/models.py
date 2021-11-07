@@ -24,3 +24,8 @@ class User(AbstractUser):
                                      options={'quality': 80},
                                      blank=True
                                      )
+    is_permitted = models.BooleanField(default=False)
+
+    def __str__(self):
+
+        return f"{self.username}"
