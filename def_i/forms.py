@@ -31,7 +31,7 @@ class ArticlePostForm(forms.ModelForm):
         }
         widgets = {
             'title': forms.TextInput(
-                attrs={'placeholder':'記事タイトル：30文字以内'}
+                attrs={'placeholder':'記事タイトル：50文字以内'}
             ),
             'content': MarkdownxWidget(
                 attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください）※画像は.jpg,.pngでファイルサイズが20MB以下のもの'}
@@ -80,7 +80,7 @@ class QuestionPostForm(forms.ModelForm):
         }
         widgets = {
             'title': forms.TextInput(
-                attrs={'placeholder':'タイトルを入力：わからないことを書いてください'}
+                attrs={'placeholder':'タイトルを入力：50文字以内でわからないことを書いてください'}
             ),
             'content': MarkdownxWidget(
                 attrs={'placeholder':'本文を入力（コードを含む場合はMarkdown記法をご使用ください） &#13;・実現したいこと &#13;・試したこと &#13;・出力されたエラー &#13;などを書きましょう. &#13;画像の拡張子は.jpg,.pngで20MB以下のもの'}
