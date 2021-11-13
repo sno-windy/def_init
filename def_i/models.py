@@ -72,7 +72,7 @@ class Article(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_article", null=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_article", null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_article", null=True)
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=50)
     content = MarkdownxField(max_length=100000)
     like_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
@@ -108,7 +108,7 @@ class Question(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="category_question", null=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, related_name="course_question", null=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, related_name="lesson_question", null=True)
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=50)
     content = MarkdownxField(max_length=100000)
     is_answered = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -197,13 +197,13 @@ class TalkAtArticle(Talk):
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.pk)}")
+                            text=f"あなたの 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.msg_at.pk)}")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.pk)}")
+                            text=f"あなたがコメントした 【{self.msg_at.category}】 のノート 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('article_detail', self.msg_at.pk)}")
                     )
 
 
@@ -225,13 +225,13 @@ class TalkAtQuestion(Talk):
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.pk)}")
+                            text=f"あなたの 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.msg_at.pk)}")
                     )
                 else:
                     line_bot_api.push_message(
                         push.line_user_id,
                         TextSendMessage(
-                            text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.pk)}")
+                            text=f"あなたが回答した 【{self.msg_at.category}】 の質問 【{self.msg_at}】 にコメントが来ました。{domain}{resolve_url('question_detail', self.msg_at.pk)}")
                     )
 
     def __str__(self):
