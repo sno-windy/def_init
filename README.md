@@ -4,4 +4,4 @@
 
 ## Acknowledgments
 
-このアプリケーションは [株式会社 DeMiA] (https://demia.co.jp) 様のご厚意によりMITライセンス化されています。
+このアプリケーションは [株式会社 DeMiA](https://demia.co.jp) 様のご厚意によりMITライセンス化されています。
