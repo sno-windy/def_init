@@ -1,12 +1,7 @@
-# def_init
+# Def init
 
+## This software is released under the MIT License, see LICENSE.txt.
 
-## 注意点
+## Acknowledgments
 
-- 最新は **higaki-new** ブランチなので作業開始時はここから始めてください。
-- runserver時は
-  ```bash
-  python manage.py runserver --setting=def_init.settings.dev
-  ```
-  にすること
-- secretkey などは admin に問い合わせること
+このアプリケーションは [株式会社 DeMiA] (https://demia.co.jp) 様のご厚意によりMITライセンス化されています。
